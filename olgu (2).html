@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>🎓 پایاپرو | پرامپت‌ساز هوشمند</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn&display=swap');
+
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: #f0f8ff;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      color: #1565c0;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+      font-size: 16px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 8px 4px;
+    }
+
+    .generate-btn {
+      background: #0288d1;
+      color: white;
+    }
+
+    .save-btn {
+      background: #4caf50;
+      color: white;
+    }
+
+    .message {
+      color: green;
+      font-weight: bold;
+    }
+
+    /* 📱 موبایل ریسپانسیو */
+    @media (max-width: 600px) {
+      body {
+        padding: 12px;
+      }
+
+      .container {
+        padding: 16px;
+        border-radius: 12px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      label, input, textarea, button {
+        font-size: 17px;
+      }
+
+      textarea {
+        min-height: 140px;
+      }
+
+      button {
+        width: 100%;
+        margin: 6px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🧠 پایاپرو | تولید پرامپت با حفظ ساختار متن نمونه</h2>
+
+    <label>🎯 موضوع جدید تحقیق:</label>
+    <input id="topic" placeholder="مثلاً: تأثیر هوش مصنوعی بر آموزش زبان فارسی" />
+
+    <label>📌 متن نمونه با ساختار دلخواه (شامل تیترها، زیرتیترها و پاراگراف‌ها):</label>
+    <textarea id="template" rows="10" placeholder="متن نمونه شامل ساختار دلخواه را اینجا وارد کنید..."></textarea>
+
+    <button class="generate-btn" onclick="generatePrompt()">✨ ساخت و کپی پرامپت</button>
+    <div id="copyMessage" class="message"></div>
+
+    <label>📥 پاسخ تولیدشده از ChatGPT:</label>
+    <textarea id="response" rows="8" placeholder="پاسخ را از ChatGPT اینجا وارد کنید..."></textarea>
+
+    <button class="save-btn" onclick="saveAsWord()">💾 ذخیره فایل Word</button>
+  </div>
+
+  <script>
+    function generatePrompt() {
+      const topic = document.getElementById('topic').value.trim();
+      const template = document.getElementById('template').value.trim();
+      if (!topic || !template) {
+        alert("⚠️ لطفاً موضوع و متن نمونه را وارد کنید.");
+        return;
+      }
+
+      const prompt =
+        `لطفاً یک متن کامل برای موضوع «${topic}» بنویس که ساختار، سبک، لحن، تیترها و زیرتیترهای آن دقیقاً مشابه نمونه زیر باشد:\n\n"${template}"\n\nفقط محتوا را با توجه به موضوع جدید  و طبق الگوی داده شده مو به مو و سبک و چهار چوب متن داده شده بازنویسی کن و از توضیح اضافی پرهیزکن و فقط خواسته را بنویس از توضیحات اضافی قویا خودداری کن.`;
+
+      navigator.clipboard.writeText(prompt).then(() => {
+        document.getElementById('copyMessage').innerText = "📋 پرامپت ساخته شد و به کلیپ‌بورد کپی شد.";
+      });
+    }
+
+    function saveAsWord() {
+      const content = document.getElementById("response").value.trim();
+      if (!content) {
+        alert("⚠️ لطفاً پاسخ را وارد کنید.");
+        return;
+      }
+
+      const blob = new Blob(['\uFEFF' + content], { type: 'application/msword' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = "پاسخ_پایان_نامه.doc";
+      link.click();
+    }
+  </script>
+</body>
+</html>
