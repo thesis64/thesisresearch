@@ -67,8 +67,13 @@ opacity:0.9;
 text-align:justify;
 }
 
+/* ✅ دکمه‌های جدید */
 .cta{
 margin-top:20px;
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:12px;
 }
 
 .btn{
@@ -80,11 +85,42 @@ text-decoration:none;
 border-radius:10px;
 font-weight:bold;
 transition:0.3s;
+font-size:15px;
 }
 
 .btn:hover{
 transform:scale(1.05);
 background:#e3f2fd;
+}
+
+.btn-primary{
+background:#2563eb;
+color:white;
+border:2px solid white;
+}
+
+.btn-primary:hover{
+background:#1d4ed8;
+}
+
+.btn-secondary{
+background:rgba(255,255,255,0.15);
+color:white;
+border:2px solid rgba(255,255,255,0.4);
+}
+
+.btn-secondary:hover{
+background:rgba(255,255,255,0.25);
+}
+
+.btn-github{
+background:#24292e;
+color:white;
+border:2px solid #24292e;
+}
+
+.btn-github:hover{
+background:#000;
 }
 
 .contact{
@@ -111,6 +147,14 @@ margin:6px 0;
 margin-top:25px;
 opacity:.8;
 font-size:14px;
+}
+
+/* ✅ ریسپانسیو برای موبایل */
+@media (max-width: 600px) {
+    h1 { font-size: 32px; }
+    .subtitle { font-size: 16px; }
+    .btn { padding: 12px 20px; font-size: 14px; }
+    .cta { flex-direction: column; }
 }
 </style>
 </head>
@@ -150,8 +194,60 @@ font-size:14px;
 
 </div>
 
+<!-- ✅ دکمه‌های جدید با لینک‌های کامل -->
 <div class="cta">
-<a class="btn" href="thesis.html">ورود به سامانه</a>
+
+<!-- دکمه اصلی: ورود به سامانه -->
+<a class="btn btn-primary" 
+   href="https://payapro.streamlit.app" 
+   target="_blank"
+   title="ورود به سامانه هوشمند پایاپرو">
+   🚀 ورود به سامانه
+</a>
+
+<!-- دکمه: نسخه دمو (اگر thesis.html وجود دارد) -->
+<a class="btn" 
+   href="thesis.html" 
+   title="نسخه نمایشی">
+   🎬 نسخه نمایشی
+</a>
+
+<!-- دکمه: دانلود سورس کد از GitHub -->
+<a class="btn btn-github" 
+   href="https://github.com/thesis64/thesisresearch" 
+   target="_blank"
+   title="دانلود سورس کد از GitHub">
+   💾 سورس کد (GitHub)
+</a>
+
+<!-- دکمه: راهنمای استفاده -->
+<a class="btn btn-secondary" 
+   href="#guide"
+   title="راهنمای استفاده">
+   📖 راهنما
+</a>
+
+</div>
+
+<!-- ✅ بخش راهنما -->
+<div class="contact" id="guide" style="text-align: right;">
+
+<h3 style="text-align: center;">📖 راهنمای استفاده از پایاپرو</h3>
+
+<p><strong>۱. ورود به سامانه:</strong> روی دکمه «ورود به سامانه» کلیک کنید.</p>
+
+<p><strong>۲. انتخاب API Key:</strong> می‌توانید از API پیش‌فرض (رایگان - ۳ بخش در هر نوبت) یا API Key شخصی خود از Groq استفاده کنید.</p>
+
+<p><strong>۳. وارد کردن موضوع:</strong> موضوع پژوهش خود را وارد کنید و نوع سند (پایان‌نامه، مقاله، پروپوزال) را انتخاب کنید.</p>
+
+<p><strong>۴. شروع نگارش:</strong> روی دکمه «شروع نگارش» کلیک کنید و منتظر تولید محتوا بمانید.</p>
+
+<p><strong>۵. دانلود فایل:</strong> پس از اتمام، فایل Word را دانلود کنید.</p>
+
+<p style="margin-top: 15px; color: #fbbf24;">
+💡 <strong>نکته:</strong> برای رفع محدودیت، از API Key شخصی خود استفاده کنید. راهنمای دریافت API Key رایگان در داخل سامانه موجود است.
+</p>
+
 </div>
 
 <div class="contact">
@@ -165,7 +261,10 @@ font-size:14px;
 </div>
 
 <div class="footer">
-© 2026 PayaPro Research Platform
+© 2026 PayaPro Research Platform | 
+<a href="https://github.com/thesis64/thesisresearch" style="color: #60a5fa; text-decoration: none;" target="_blank">
+GitHub Repository
+</a>
 </div>
 
 </div>
