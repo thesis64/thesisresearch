@@ -138,16 +138,10 @@ function generatePrompt() {
   navigator.clipboard.writeText(prompt)
     .then(() => {
       document.getElementById('copyMessage').innerText =
-        "📋برای استفاده از پرامپ ساز پیشرفته پایان نامه هزینه را واریز کنید  ";
-
-      setTimeout(() => {
-        window.location.href = "https://ppng.ir/d/FLjD";
-      }, 1200);
-
+        "✅ پرامپت با موفقیت ساخته و در کلیپ‌بورد کپی شد!";
     })
     .catch(() => {
-      alert("❌ کپی انجام نشد، اما به صفحه پرداخت منتقل می‌شوید");
-      window.location.href = "https://ppng.ir/d/FLjD";
+      alert("❌ کپی انجام نشد. لطفاً دوباره تلاش کنید.");
     });
 }
 </script>
