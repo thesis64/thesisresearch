@@ -1,0 +1,2464 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persian AI Writer PRO - تبدیل تاریخ‌ها به فارسی</title>
+    
+    <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+    <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Tahoma', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+            direction: rtl;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        header h1 { color: #2c3e50; font-size: 2em; margin-bottom: 5px; }
+        header p { color: #7f8c8d; font-size: 0.95em; }
+        
+        .status-banner {
+            background: #fff3cd;
+            border-right: 4px solid #f39c12;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-banner.active { display: flex; }
+        .status-banner.success { background: #d4edda; border-color: #27ae60; }
+        .status-banner.error { background: #f8d7da; border-color: #e74c3c; }
+        .status-banner.info { background: #d1ecf1; border-color: #17a2b8; }
+        
+        .row {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            margin-bottom: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .row label { font-size: 0.9em; color: #2c3e50; font-weight: bold; margin-left: 5px; }
+        
+        input[type="text"], select {
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Tahoma', sans-serif;
+            font-size: 0.9em;
+            direction: rtl;
+        }
+        
+        input[type="text"]:focus, select:focus { outline: none; border-color: #667eea; }
+        .topic-input { flex: 1; min-width: 200px; }
+        
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Tahoma', sans-serif;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .btn-start { background: #27ae60; }
+        .btn-stop { background: #e74c3c; }
+        .btn-download { background: #2980b9; }
+        .btn-resume { background: #f39c12; }
+        .btn-structure { background: #8e44ad; }
+        .btn-refs { background: #d35400; }
+        .btn-refs-sections { background: #16a085; }
+        .btn-secondary { background: #95a5a6; }
+        
+        .progress-section {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            margin-bottom: 12px;
+        }
+        
+        .progress-section h3 { color: #2c3e50; margin-bottom: 10px; font-size: 1em; }
+        
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: #ecf0f1;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        
+        .progress-label { text-align: center; font-size: 0.95em; font-weight: bold; color: #2c3e50; }
+        
+        .typing-indicator { display: inline-block; margin-right: 8px; color: #27ae60; font-weight: bold; }
+        .typing-indicator .dot { display: inline-block; animation: typing 1.4s infinite; opacity: 0; }
+        .typing-indicator .dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { opacity: 0; } 30% { opacity: 1; } }
+        
+        .main-area { display: grid; grid-template-columns: 320px 1fr; gap: 12px; margin-bottom: 15px; }
+        @media (max-width: 900px) { .main-area { grid-template-columns: 1fr; } }
+        
+        .sections-panel, .output-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            padding: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .sections-panel h3, .output-panel h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1em;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        .section-item { display: flex; align-items: center; padding: 8px; border-radius: 6px; margin-bottom: 4px; }
+        
+        .section-item .checkbox {
+            width: 18px; height: 18px;
+            border: 2px solid #bdc3c7;
+            border-radius: 4px;
+            margin-left: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            color: white;
+        }
+        
+        .section-item .checkbox.checked { background: #27ae60; border-color: #27ae60; }
+        .section-item .checkbox.in-progress { background: #f39c12; border-color: #f39c12; animation: pulse 1.5s infinite; }
+        .section-item .checkbox.thinking { background: #9b59b6; border-color: #9b59b6; animation: pulse 1s infinite; }
+        .section-item .checkbox.searching { background: #e91e63; border-color: #e91e63; animation: pulse 1s infinite; }
+        .section-item .checkbox.error { background: #e74c3c; border-color: #e74c3c; }
+        
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        .section-item .section-name { flex: 1; font-size: 0.9em; color: #2c3e50; }
+        .section-item .status { font-size: 1em; width: 25px; text-align: center; }
+        .section-item .ref-badge {
+            background: #16a085;
+            color: white;
+            font-size: 0.7em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        .section-item .no-ref-badge {
+            background: #95a5a6;
+            color: white;
+            font-size: 0.7em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        
+        .output-content {
+            font-family: 'Tahoma', serif;
+            font-size: 1.05em;
+            line-height: 1.9;
+            color: #2c3e50;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin: 20px 0 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+            text-decoration: underline;
+        }
+        
+        .section-content { margin-bottom: 15px; position: relative; }
+        
+        .thinking-box {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border-right: 4px solid #8b5cf6;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #4c1d95;
+        }
+        
+        .thinking-box strong { color: #6d28d9; }
+        
+        .thinking-box .thinking-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .thinking-box .thinking-icon { animation: spin 2s linear infinite; display: inline-block; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .thinking-box .thinking-item { padding: 3px 0; padding-right: 15px; position: relative; }
+        .thinking-box .thinking-item::before { content: "✓"; position: absolute; right: 0; color: #8b5cf6; font-weight: bold; }
+        
+        .search-box {
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            border-right: 4px solid #ec4899;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #831843;
+        }
+        
+        .search-box .search-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #be185d;
+        }
+        
+        .search-box .search-icon { animation: spin 1.5s linear infinite; display: inline-block; }
+        
+        .search-progress {
+            background: #fff;
+            border-right: 3px solid #3b82f6;
+            padding: 8px 12px;
+            margin: 6px 0;
+            border-radius: 6px;
+            font-size: 0.85em;
+            color: #1e40af;
+        }
+        
+        .search-progress.success { border-color: #10b981; color: #065f46; background: #d1fae5; }
+        .search-progress.warning { border-color: #f59e0b; color: #92400e; background: #fef3c7; }
+        .search-progress.error { border-color: #ef4444; color: #991b1b; background: #fee2e2; }
+        
+        .ref-found {
+            background: #fff;
+            border-right: 3px solid #10b981;
+            padding: 8px 12px;
+            margin: 6px 0;
+            border-radius: 6px;
+            font-size: 0.85em;
+            color: #065f46;
+            line-height: 1.6;
+        }
+        
+        .ref-found .ref-title { font-weight: bold; color: #047857; }
+        .ref-found .ref-authors { color: #065f46; font-size: 0.9em; }
+        .ref-found .ref-meta { color: #6b7280; font-size: 0.85em; margin-top: 3px; }
+        
+        .part-indicator {
+            background: #e0f2fe;
+            border-right: 3px solid #0284c7;
+            padding: 6px 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-size: 0.85em;
+            color: #075985;
+            font-weight: bold;
+        }
+        
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.1em;
+            background: #2c3e50;
+            margin-right: 2px;
+            vertical-align: text-bottom;
+            animation: blink 0.8s infinite;
+        }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        
+        .modal {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal h2 { color: #2c3e50; margin-bottom: 15px; font-size: 1.3em; }
+        
+        .modal textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Tahoma', serif;
+            font-size: 1em;
+            line-height: 1.7;
+            resize: vertical;
+            direction: rtl;
+        }
+        
+        .modal-buttons { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        
+        .modal-info {
+            background: #e8f5e9;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 0.9em;
+            color: #2e7d32;
+        }
+        
+        .settings-group { margin: 15px 0; padding: 12px; background: #f8f9fa; border-radius: 8px; }
+        .settings-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2c3e50; }
+        .settings-group input[type="range"] { width: 200px; }
+        
+        .sections-select-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .section-select-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            border-right: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .section-select-item:hover {
+            background: #f0f9ff;
+            border-right-color: #667eea;
+        }
+        
+        .section-select-item.has-ref {
+            border-right-color: #16a085;
+            background: #f0fdf4;
+        }
+        
+        .section-select-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        
+        .section-select-item .section-label {
+            flex: 1;
+            font-size: 0.95em;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+        
+        .section-select-item .section-badge {
+            font-size: 0.75em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-right: 8px;
+        }
+        
+        .badge-ref { background: #16a085; color: white; }
+        .badge-no-ref { background: #95a5a6; color: white; }
+        
+        .quick-actions { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+        
+        .quick-action-btn {
+            padding: 6px 12px;
+            font-size: 0.85em;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .api-key-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85em;
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .guide-steps { margin: 20px 0; }
+        
+        .guide-step {
+            background: #f8f9fa;
+            border-right: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        
+        .guide-step h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .guide-step .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .guide-step p { color: #555; line-height: 1.8; margin-bottom: 8px; }
+        .guide-step a { color: #667eea; text-decoration: none; font-weight: bold; }
+        .guide-step a:hover { text-decoration: underline; }
+        .guide-step code {
+            background: #2c3e50;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+        
+        .guide-step .tip {
+            background: #fff3cd;
+            border-right: 3px solid #f39c12;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        
+        .guide-step .warning {
+            background: #f8d7da;
+            border-right: 3px solid #e74c3c;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            color: #721c24;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c3e50;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .toast.show { opacity: 1; }
+        .toast.success { background: #27ae60; }
+        .toast.error { background: #e74c3c; }
+        .toast.warning { background: #f39c12; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Persian AI Writer PRO</h1>
+            <p>ربات نویسنده هوشمند - تبدیل تاریخ‌ها به فارسی</p>
+        </header>
+
+        <div class="status-banner" id="statusBanner">
+            <span id="statusIcon">⚠️</span>
+            <span id="statusText"></span>
+        </div>
+
+        <div class="row">
+            <button class="btn-start" id="startBtn" onclick="startGeneration()">▶ شروع نگارش</button>
+            <button class="btn-resume" id="resumeBtn" onclick="resumeGeneration()" style="display: none;">▶ ادامه نگارش قبلی</button>
+            <button class="btn-stop" id="stopBtn" onclick="stopGeneration()" disabled>⛔ توقف</button>
+            <button class="btn-download" id="downloadBtn" onclick="downloadWord()" disabled>⬇ دانلود Word</button>
+            <button class="btn-secondary" onclick="openModal('typingModal')">⌨️ سرعت تایپ</button>
+            
+            <label>مدل:</label>
+            <select id="modelSelect">
+                <option value="qwen/qwen3-32b">Qwen 3 32B</option>
+                <option value="llama-3.3-70b-versatile">Llama 3.3 70B</option>
+                <option value="openai/gpt-oss-120b">GPT OSS 120B</option>
+                <option value="openai/gpt-oss-20b">GPT OSS 20B</option>
+                <option value="qwen/qwen3.6-27b">Qwen 3.6 27B</option>
+                <option value="meta-llama/llama-4-scout-17b-16e-instruct">Llama 4 Scout</option>
+            </select>
+            
+            <label>موضوع:</label>
+            <input type="text" id="topicInput" class="topic-input" placeholder="موضوع پژوهش را وارد کنید...">
+            <button class="btn-secondary" onclick="pasteTopic()" style="padding: 8px 12px;">📌</button>
+        </div>
+
+        <div class="row">
+            <label>نوع سند:</label>
+            <select id="docTypeSelect" onchange="onDocTypeChange()">
+                <option value="مقاله">مقاله</option>
+                <option value="پروپوزال" selected>پروپوزال</option>
+                <option value="پایان نامه">پایان نامه</option>
+                <option value="کتاب">کتاب</option>
+                <option value="گزارش">گزارش</option>
+                <option value="ساختار دلخواه">ساختار دلخواه</option>
+            </select>
+            
+            <label>حالت ساختار:</label>
+            <select id="structureMode" onchange="onStructureModeChange()">
+                <option value="auto">خودکار</option>
+                <option value="custom">سفارشی</option>
+            </select>
+            <button class="btn-structure" id="editStructureBtn" onclick="openModal('structureModal')" disabled>✎ ویرایش ساختار</button>
+            
+            <button class="btn-refs-sections" onclick="openRefsSectionsModal()">
+                🎯 انتخاب بخش‌های رفرنس‌دار (<span id="refSectionsCount">0</span>)
+            </button>
+            
+            <button class="btn-refs" onclick="openModal('refsModal')">📚 منابع کاربر</button>
+            
+            <button class="btn-secondary" onclick="openModal('apiModal')">🔑 تنظیم API</button>
+        </div>
+
+        <div class="progress-section">
+            <h3>پیشرفت نگارش</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+            <div class="progress-label" id="progressLabel">0٪ | آماده شروع</div>
+        </div>
+
+        <div class="main-area">
+            <div class="sections-panel">
+                <h3>بخش‌های سند</h3>
+                <div id="sectionsList"></div>
+            </div>
+
+            <div class="output-panel">
+                <h3>
+                    متن تولیدی 
+                    <span id="typingIndicator" class="typing-indicator" style="display: none;">
+                        در حال نوشتن<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+                    </span>
+                </h3>
+                <div class="output-content" id="outputContent">
+                    <p style="color: #95a5a6; text-align: center; padding: 40px;">
+                        🎯 برای انتخاب بخش‌های رفرنس‌دار، روی دکمه «🎯 انتخاب بخش‌های رفرنس‌دار» کلیک کنید<br><br>
+                        📚 منابع داخلی: تاریخ شمسی (فارسی)<br>
+                        🌍 منابع خارجی: تاریخ میلادی به فارسی (مثلاً 2020 → ۲۰۲۰)<br>
+                        🕌 تاریخ هجری قمری: به فارسی (مثلاً 1445 → ۱۴۴۵)<br><br>
+                        ✅ هر پاراگراف در بخش‌های رفرنس‌دار دارای استناد درون‌متنی
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال انتخاب بخش‌های رفرنس‌دار -->
+    <div class="modal-overlay" id="refsSectionsModal">
+        <div class="modal">
+            <h2>🎯 انتخاب بخش‌های دارای رفرنس</h2>
+            <p style="margin-bottom: 10px; color: #7f8c8d;">
+                💡 بخش‌هایی که تیک می‌زنید، منابع واقعی جستجو می‌کنند و در متن استفاده می‌کنند.
+            </p>
+            
+            <div class="quick-actions">
+                <button class="quick-action-btn btn-start" onclick="selectAllRefSections()">✓ انتخاب همه</button>
+                <button class="quick-action-btn btn-stop" onclick="deselectAllRefSections()">✗ لغو انتخاب همه</button>
+                <button class="quick-action-btn btn-refs-sections" onclick="selectDefaultRefSections()">🎯 انتخاب پیش‌فرض</button>
+            </div>
+            
+            <div class="sections-select-container" id="sectionsSelectContainer"></div>
+            
+            <div class="modal-info" id="refSectionsInfo">
+                📊 <strong>0</strong> بخش برای رفرنس‌دهی انتخاب شده است
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="btn-start" onclick="applyRefsSections()">✓ اعمال انتخاب</button>
+                <button class="btn-secondary" onclick="closeModal('refsSectionsModal')">✗ لغو</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال API -->
+    <div class="modal-overlay" id="apiModal">
+        <div class="modal">
+            <h2>🔑 تنظیم کلید API - راهنمای کامل</h2>
+            <div class="guide-steps">
+                <div class="guide-step">
+                    <h4><span class="step-number">1</span> ورود به سایت Groq</h4>
+                    <p><a href="https://console.groq.com" target="_blank">🌐 https://console.groq.com</a></p>
+                </div>
+                <div class="guide-step">
+                    <h4><span class="step-number">2</span> ثبت‌نام یا ورود</h4>
+                    <p>با ایمیل یا Google ثبت‌نام کنید. <strong>رایگان</strong> و بدون نیاز به کارت اعتباری.</p>
+                </div>
+                <div class="guide-step">
+                    <h4><span class="step-number">3</span> رفتن به بخش API Keys</h4>
+                    <p><a href="https://console.groq.com/keys" target="_blank">🔑 https://console.groq.com/keys</a></p>
+                </div>
+                <div class="guide-step">
+                    <h4><span class="step-number">4</span> ساخت کلید جدید</h4>
+                    <p>روی <strong>Create API Key</strong> کلیک کنید. نام: <code>PersianWriter</code></p>
+                </div>
+                <div class="guide-step">
+                    <h4><span class="step-number">5</span> کپی کلید</h4>
+                    <p>کلید با <code>gsk_</code> شروع می‌شود. کپی و ذخیره کنید.</p>
+                    <div class="warning">⚠️ فقط یک بار نمایش داده می‌شود!</div>
+                </div>
+                <div class="guide-step">
+                    <h4><span class="step-number">6</span> وارد کردن کلید</h4>
+                    <p>کلید را در کادر زیر وارد کنید:</p>
+                </div>
+            </div>
+            <input type="text" id="apiKeyInput" class="api-key-input" placeholder="gsk_...">
+            <div class="modal-buttons">
+                <button class="btn-start" onclick="saveApiKey()">✓ ذخیره</button>
+                <button class="btn-secondary" onclick="closeModal('apiModal')">✗ لغو</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="typingModal">
+        <div class="modal">
+            <h2>⌨️ تنظیم سرعت تایپ</h2>
+            <div class="settings-group">
+                <label><input type="checkbox" id="typingEnabled" checked> ✓ تایپ تدریجی</label>
+            </div>
+            <div class="settings-group">
+                <label>سرعت: <span id="typingSpeedLabel">50</span> ms</label>
+                <input type="range" id="typingSpeed" min="10" max="200" value="50" oninput="updateTypingSpeedLabel()">
+            </div>
+            <div class="settings-group">
+                <label><input type="checkbox" id="typingRandomness" checked> ✓ تصادفی‌سازی</label>
+            </div>
+            <div class="settings-group">
+                <label><input type="checkbox" id="typingPauses" checked> ✓ مکث در علائم</label>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-start" onclick="saveTypingSettings()">✓ ذخیره</button>
+                <button class="btn-secondary" onclick="closeModal('typingModal')">✗ لغو</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="structureModal">
+        <div class="modal">
+            <h2>✎ ویرایش ساختار دلخواه</h2>
+            <textarea id="structureInput" placeholder="1- مقدمه
+2- فصل اول"></textarea>
+            <div class="modal-info" id="structureCounter">📊 0 بخش</div>
+            <div class="modal-buttons">
+                <button class="btn-start" onclick="applyStructure()">✓ اعمال</button>
+                <button class="btn-secondary" onclick="closeModal('structureModal')">✗ لغو</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="refsModal">
+        <div class="modal">
+            <h2>📚 بارگذاری منابع کاربر (اختیاری)</h2>
+            <p style="margin-bottom: 10px; color: #7f8c8d;">💡 این منابع فقط در صورت استفاده از «منابع کاربر» در بخش‌های انتخاب‌شده، استفاده می‌شوند.</p>
+            <textarea id="refsInput" placeholder="منابع فارسی:
+1. احمدی (1400). عنوان کتاب.
+
+منابع انگلیسی:
+1. Smith (2020). Book."></textarea>
+            <div class="modal-info" id="refsCounter">📊 0 فارسی | 0 انگلیسی</div>
+            <div class="modal-buttons">
+                <button class="btn-start" onclick="applyReferences()">✓ اعمال</button>
+                <button class="btn-secondary" onclick="closeModal('refsModal')">✗ لغو</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============ Web Worker ============
+        const workerCode = `
+            let timer = null;
+            self.onmessage = function(e) {
+                if (e.data.action === 'start') {
+                    if (timer) clearTimeout(timer);
+                    timer = setTimeout(() => { self.postMessage('tick'); timer = null; }, e.data.delay);
+                } else if (e.data.action === 'stop') {
+                    if (timer) { clearTimeout(timer); timer = null; }
+                }
+            };
+        `;
+        const typingWorker = new Worker(URL.createObjectURL(new Blob([workerCode], { type: 'application/javascript' })));
+        typingWorker.onmessage = function(e) { if (e.data === 'tick') processTypingQueue(); };
+
+        // ============ CONFIG ============
+        const CONFIG = {
+            API_BASE_URL: "https://api.groq.com/openai/v1/chat/completions",
+            TEMPERATURE: 0.4,
+            MAX_TOKENS: 1500,
+            MAX_PREVIOUS_CHARS: 200,
+            MAX_REFERENCES_PER_LANGUAGE: 8,
+            RETRY_ATTEMPTS: 3,
+            RETRY_DELAY: 10000,
+            SECTION_DELAY: 1500,
+            MIN_REFERENCES_REQUIRED: 5,
+            MAX_SEARCH_ATTEMPTS: 3,
+            REFS_PER_SECTION: 8,
+            SEARCH_TIMEOUT: 20000
+        };
+
+        const TYPING_CONFIG = { enabled: true, baseSpeed: 50, randomness: true, pauses: true, punctuationPause: 250 };
+
+        const state = {
+            apiKey: localStorage.getItem('groq_api_key') || '',
+            isRunning: false,
+            stopFlag: false,
+            sections: [],
+            currentSectionIndex: 0,
+            previousSummary: '',
+            topic: '',
+            docType: '',
+            model: '',
+            generatedContent: {},
+            structureMode: 'auto',
+            customStructure: [],
+            userReferences: { persian: [], english: [], raw_text: '' },
+            sectionsWithRefs: [],
+            sectionStatus: {},
+            sectionPlans: {},
+            foundReferences: [],
+            sectionReferences: {},
+            typingQueue: [],
+            isTyping: false,
+            currentTypingElement: null,
+            typingResolve: null,
+            notificationPermission: 'default'
+        };
+
+        const OUTLINES = {
+            "مقاله": ["چکیده", "مقدمه", "بیان مسئله", "اهمیت موضوع", "پیشینه تحقیق", "مبانی نظری", "روش تحقیق", "یافته‌ها", "بحث", "نتیجه‌گیری", "پیشنهادها", "منابع"],
+            "پروپوزال": ["عنوان انگلیسی و کلیدواژه‌ها", "بیان مسئله", "اهمیت و ضرورت انجام پژوهش", "مرور ادبیات و سوابق", "جنبه جدید بودن و نوآوری", "اهداف مشخص پژوهش", "بهره‌وران", "سوال‌ها و فرضیه‌های پژوهش", "تعاریف نظری و عملیاتی متغیرها", "روش‌شناسی پژوهش", "ضوابط اخلاقی", "فهرست منابع", "زمان‌بندی پژوهش"],
+            "پایان نامه": ["فصل اول: کلیات تحقیق", "فصل دوم: مبانی نظری", "فصل سوم: روش تحقیق", "فصل چهارم: تجزیه و تحلیل", "فصل پنجم: نتیجه‌گیری و پیشنهادها", "منابع"],
+            "کتاب": ["مقدمه", "فصل اول", "فصل دوم", "فصل سوم", "فصل چهارم", "جمع‌بندی"],
+            "گزارش": ["مقدمه", "شرح موضوع", "تحلیل", "نتیجه‌گیری", "پیشنهاد"],
+            "ساختار دلخواه": []
+        };
+
+        const DEFAULT_REF_SECTIONS = [
+            "بیان مسئله", "مرور ادبیات و سوابق", "پیشینه تحقیق", "مبانی نظری", 
+            "فصل دوم: مبانی نظری", "فصل دوم", "بحث", "اهمیت و ضرورت انجام پژوهش",
+            "اهمیت موضوع", "تعاریف نظری و عملیاتی متغیرها", "یافته‌ها"
+        ];
+
+        const SECTION_GUIDELINES = {
+            "عنوان انگلیسی و کلیدواژه‌ها": { minWords: 50, maxWords: 100, description: "فقط عنوان و کلیدواژه", parts: 1 },
+            "چکیده": { minWords: 250, maxWords: 350, description: "خلاصه کامل پژوهش", parts: 1 },
+            "مقدمه": { minWords: 600, maxWords: 900, description: "معرفی موضوع", parts: 1 },
+            "بیان مسئله": { minWords: 1800, maxWords: 2500, description: "تشریح کامل مسئله با رفرنس", parts: 3 },
+            "اهمیت و ضرورت انجام پژوهش": { minWords: 800, maxWords: 1200, description: "دلایل اهمیت", parts: 2 },
+            "مرور ادبیات و سوابق": { minWords: 2000, maxWords: 3000, description: "بررسی جامع پژوهش‌ها", parts: 3 },
+            "جنبه جدید بودن و نوآوری": { minWords: 500, maxWords: 800, description: "نوآوری‌های پژوهش", parts: 1 },
+            "اهداف مشخص پژوهش": { minWords: 500, maxWords: 800, description: "اهداف اصلی و فرعی", parts: 1 },
+            "بهره‌وران": { minWords: 200, maxWords: 400, description: "بهره‌مندان از پژوهش", parts: 1 },
+            "سوال‌ها و فرضیه‌های پژوهش": { minWords: 500, maxWords: 800, description: "سوالات و فرضیه‌ها", parts: 1 },
+            "تعاریف نظری و عملیاتی متغیرها": { minWords: 800, maxWords: 1200, description: "تعاریف متغیرها", parts: 2 },
+            "روش‌شناسی پژوهش": { minWords: 1200, maxWords: 1800, description: "روش‌شناسی کامل", parts: 2 },
+            "ضوابط اخلاقی": { minWords: 200, maxWords: 400, description: "رعایت اخلاق", parts: 1 },
+            "فهرست منابع": { minWords: 200, maxWords: 500, description: "لیست APA", parts: 1 },
+            "زمان‌بندی پژوهش": { minWords: 150, maxWords: 300, description: "جدول زمانی", parts: 1 },
+            "اهمیت موضوع": { minWords: 600, maxWords: 900, description: "دلایل اهمیت", parts: 1 },
+            "پیشینه تحقیق": { minWords: 1500, maxWords: 2200, description: "مرور کارهای قبلی", parts: 2 },
+            "مبانی نظری": { minWords: 1500, maxWords: 2200, description: "نظریه‌های مرتبط", parts: 2 },
+            "روش تحقیق": { minWords: 800, maxWords: 1200, description: "روش‌شناسی", parts: 1 },
+            "یافته‌ها": { minWords: 1000, maxWords: 1500, description: "نتایج", parts: 2 },
+            "بحث": { minWords: 1200, maxWords: 1800, description: "تحلیل یافته‌ها", parts: 2 },
+            "نتیجه‌گیری": { minWords: 600, maxWords: 900, description: "جمع‌بندی", parts: 1 },
+            "پیشنهادها": { minWords: 400, maxWords: 700, description: "پیشنهادها", parts: 1 },
+            "منابع": { minWords: 200, maxWords: 500, description: "لیست APA", parts: 1 },
+            "فصل اول: کلیات تحقیق": { minWords: 3500, maxWords: 5000, description: "کلیات", parts: 4 },
+            "فصل دوم: مبانی نظری": { minWords: 8000, maxWords: 12000, description: "مبانی نظری جامع", parts: 8 },
+            "فصل سوم: روش تحقیق": { minWords: 4000, maxWords: 6000, description: "روش‌شناسی", parts: 4 },
+            "فصل چهارم: تجزیه و تحلیل": { minWords: 6000, maxWords: 9000, description: "تحلیل داده‌ها", parts: 6 },
+            "فصل پنجم: نتیجه‌گیری و پیشنهادها": { minWords: 2500, maxWords: 3500, description: "نتیجه‌گیری", parts: 3 },
+            "فصل اول": { minWords: 3500, maxWords: 5000, description: "فصل اول", parts: 4 },
+            "فصل دوم": { minWords: 8000, maxWords: 12000, description: "فصل دوم", parts: 8 },
+            "فصل سوم": { minWords: 4000, maxWords: 6000, description: "فصل سوم", parts: 4 },
+            "فصل چهارم": { minWords: 6000, maxWords: 9000, description: "فصل چهارم", parts: 6 },
+            "جمع‌بندی": { minWords: 800, maxWords: 1200, description: "جمع‌بندی", parts: 1 },
+            "شرح موضوع": { minWords: 1000, maxWords: 1500, description: "تشریح موضوع", parts: 2 },
+            "تحلیل": { minWords: 1500, maxWords: 2200, description: "تحلیل", parts: 2 },
+            "پیشنهاد": { minWords: 500, maxWords: 800, description: "پیشنهادها", parts: 1 }
+        };
+
+        const SYSTEM_PROMPT = `نویسنده دانشگاهی حرفه‌ای. فقط متن نهایی. بدون think. علمی، آکادمیک، روان. ❌ عنوان ننویس.`;
+
+        // ============ 🆕 سیستم تبدیل تاریخ‌ها به فارسی ============
+        
+        /**
+         * تبدیل اعداد انگلیسی به فارسی
+         * @param {string|number} input - ورودی (عدد یا رشته)
+         * @returns {string} - خروجی با اعداد فارسی
+         */
+        function convertToPersianNumbers(input) {
+            if (input === null || input === undefined) return '';
+            const str = String(input);
+            const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+            return str.replace(/[0-9]/g, (d) => persianDigits[parseInt(d)]);
+        }
+
+        /**
+         * تشخیص نوع تاریخ (شمسی، میلادی، قمری)
+         * @param {number} year - سال
+         * @returns {string} - نوع تاریخ: 'shamsi', 'miladi', 'qamari'
+         */
+        function detectCalendarType(year) {
+            if (!year || isNaN(year)) return 'unknown';
+            const y = parseInt(year);
+            
+            // تاریخ شمسی: معمولاً بین 1300 تا 1500
+            if (y >= 1300 && y <= 1500) {
+                return 'shamsi';
+            }
+            
+            // تاریخ قمری: معمولاً بین 1300 تا 1500 (اما با الگوهای خاص)
+            // اگر سال بین 1300-1500 است و در منابع فارسی است، می‌تواند قمری باشد
+            // اما برای سادگی، فرض می‌کنیم اگر در منابع فارسی است، شمسی است
+            
+            // تاریخ میلادی: معمولاً بین 1900 تا 2100
+            if (y >= 1900 && y <= 2100) {
+                return 'miladi';
+            }
+            
+            // تاریخ قمری: معمولاً بین 1300 تا 1500 (در منابع عربی/اسلامی)
+            if (y >= 1300 && y <= 1500) {
+                return 'qamari';
+            }
+            
+            // پیش‌فرض
+            return 'unknown';
+        }
+
+        /**
+         * تبدیل سال به فرمت فارسی با تشخیص نوع تقویم
+         * @param {number} year - سال
+         * @param {string} language - زبان منبع ('fa' یا 'en')
+         * @returns {string} - سال به فارسی
+         */
+        function formatYearPersian(year, language = 'en') {
+            if (!year || isNaN(year)) return 'بدون سال';
+            
+            const y = parseInt(year);
+            const persianYear = convertToPersianNumbers(y);
+            
+            // اگر منبع فارسی است، سال را همان‌طور که هست نمایش بده (احتمالاً شمسی یا قمری است)
+            if (language === 'fa') {
+                return persianYear;
+            }
+            
+            // اگر منبع انگلیسی است، سال میلادی را به فارسی تبدیل کن
+            if (language === 'en') {
+                return persianYear;
+            }
+            
+            return persianYear;
+        }
+
+        /**
+         * تبدیل تاریخ کامل به فارسی (برای منابع خاص)
+         * @param {string} dateStr - رشته تاریخ
+         * @param {string} language - زبان منبع
+         * @returns {string} - تاریخ به فارسی
+         */
+        function formatFullDatePersian(dateStr, language = 'en') {
+            if (!dateStr) return '';
+            
+            // تبدیل اعداد به فارسی
+            let result = convertToPersianNumbers(dateStr);
+            
+            // تبدیل ماه‌های انگلیسی به فارسی
+            const months = {
+                'January': 'ژانویه', 'February': 'فوریه', 'March': 'مارس',
+                'April': 'آوریل', 'May': 'مه', 'June': 'ژوئن',
+                'July': 'ژوئیه', 'August': 'اوت', 'September': 'سپتامبر',
+                'October': 'اکتبر', 'November': 'نوامبر', 'December': 'دسامبر',
+                'Jan': 'ژانویه', 'Feb': 'فوریه', 'Mar': 'مارس',
+                'Apr': 'آوریل', 'Jun': 'ژوئن', 'Jul': 'ژوئیه',
+                'Aug': 'اوت', 'Sep': 'سپتامبر', 'Oct': 'اکتبر',
+                'Nov': 'نوامبر', 'Dec': 'دسامبر'
+            };
+            
+            for (const [en, fa] of Object.entries(months)) {
+                result = result.replace(new RegExp(en, 'gi'), fa);
+            }
+            
+            return result;
+        }
+
+        // ============ 🔍 سیستم جستجوی منابع ============
+        
+        async function searchCrossRef(query, rows = 15) {
+            try {
+                const url = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&rows=${rows}&select=DOI,title,author,published-print,published-online,container-title,publisher,type&mailto=persianwriter@example.com`;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), CONFIG.SEARCH_TIMEOUT);
+                const response = await fetch(url, { 
+                    signal: controller.signal,
+                    headers: { 'User-Agent': 'PersianAIWriter/1.0 (mailto:persianwriter@example.com)' }
+                });
+                clearTimeout(timeoutId);
+                if (!response.ok) return [];
+                const data = await response.json();
+                const items = data.message?.items || [];
+                return items.map(item => {
+                    const authors = (item.author || []).map(a => `${a.given || ''} ${a.family || ''}`.trim()).filter(a => a);
+                    const title = (item.title && item.title[0]) || 'بدون عنوان';
+                    const year = item['published-print']?.['date-parts']?.[0]?.[0] || item['published-online']?.['date-parts']?.[0]?.[0] || null;
+                    const journal = (item['container-title'] && item['container-title'][0]) || item.publisher || '';
+                    return {
+                        title, authors, year, journal, doi: item.DOI || '',
+                        type: item.type || 'article', source: 'CrossRef', sourceIcon: '📚',
+                        language: detectLanguage(title + ' ' + authors.join(' '))
+                    };
+                }).filter(r => r.year && r.authors.length > 0);
+            } catch (e) { return []; }
+        }
+
+        async function searchSemanticScholar(query, limit = 10) {
+            try {
+                const url = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(query)}&limit=${limit}&fields=title,authors,year,venue,externalIds,citationCount`;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), CONFIG.SEARCH_TIMEOUT);
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (!response.ok) return [];
+                const data = await response.json();
+                return (data.data || []).map(paper => ({
+                    title: paper.title || 'بدون عنوان',
+                    authors: (paper.authors || []).map(a => a.name || '').filter(a => a),
+                    year: paper.year || null,
+                    journal: paper.venue || '',
+                    doi: paper.externalIds?.DOI || '',
+                    type: 'article', source: 'Semantic Scholar', sourceIcon: '🎓',
+                    language: detectLanguage(paper.title + ' ' + (paper.authors || []).map(a => a.name).join(' ')),
+                    citations: paper.citationCount || 0
+                })).filter(r => r.year && r.authors.length > 0);
+            } catch (e) { return []; }
+        }
+
+        async function searchOpenAlex(query, limit = 20) {
+            try {
+                const url = `https://api.openalex.org/works?search=${encodeURIComponent(query)}&per_page=${limit}&select=id,title,authorships,publication_year,primary_location,cited_by_count,doi,type`;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), CONFIG.SEARCH_TIMEOUT);
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (!response.ok) return [];
+                const data = await response.json();
+                return (data.results || []).map(work => ({
+                    title: work.title || 'بدون عنوان',
+                    authors: (work.authorships || []).map(a => a.author?.display_name || '').filter(a => a),
+                    year: work.publication_year || null,
+                    journal: work.primary_location?.source?.display_name || '',
+                    doi: work.doi ? work.doi.replace('https://doi.org/', '') : '',
+                    type: work.type || 'article', source: 'OpenAlex', sourceIcon: '🌐',
+                    language: detectLanguage(work.title + ' ' + (work.authorships || []).map(a => a.author?.display_name).join(' ')),
+                    citations: work.cited_by_count || 0
+                })).filter(r => r.year && r.authors.length > 0);
+            } catch (e) { return []; }
+        }
+
+        async function searchCORE(query, limit = 15) {
+            try {
+                const apiKey = 'a27c2d68d6a7ec4ac7d6aec6b1e4d3f2';
+                const url = `https://api.core.ac.uk/v3/search/works?q=${encodeURIComponent(query)}&limit=${limit}&apiKey=${apiKey}`;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), CONFIG.SEARCH_TIMEOUT);
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (!response.ok) return [];
+                const data = await response.json();
+                return (data.results || []).map(item => ({
+                    title: item.title || 'بدون عنوان',
+                    authors: (item.authors || []).map(a => a.name || '').filter(a => a),
+                    year: item.year || item.publishedDate?.substring(0, 4) || null,
+                    journal: item.publisher || item.journalTitle || '',
+                    doi: item.doi || '',
+                    type: item.type || 'article', source: 'CORE', sourceIcon: '📖',
+                    language: detectLanguage(item.title + ' ' + (item.authors || []).map(a => a.name).join(' '))
+                })).filter(r => r.year && r.authors.length > 0);
+            } catch (e) { return []; }
+        }
+
+        function detectLanguage(text) {
+            if (!text) return 'en';
+            const per = (text.match(/[\u0600-\u06FF]/g) || []).length;
+            const lat = (text.match(/[A-Za-z]/g) || []).length;
+            return per > lat ? 'fa' : 'en';
+        }
+
+        function buildSearchQueries(topic, sectionName) {
+            const queries = [];
+            const topicEn = topic.replace(/[\u0600-\u06FF]+/g, '').replace(/[^\w\s]/g, ' ').trim();
+            const topicWords = topicEn.split(/\s+/).filter(w => w.length > 3);
+            const sectionKeywords = {
+                'بیان مسئله': 'problem statement',
+                'مرور ادبیات': 'literature review',
+                'پیشینه تحقیق': 'research background',
+                'مبانی نظری': 'theoretical framework',
+                'فصل دوم': 'theoretical foundations',
+                'اهمیت': 'importance significance',
+                'بحث': 'discussion analysis',
+                'تعاریف': 'definitions concepts'
+            };
+            let sectionEn = '';
+            for (const [key, value] of Object.entries(sectionKeywords)) {
+                if (sectionName.includes(key)) { sectionEn = value; break; }
+            }
+            queries.push(topicEn || topic);
+            if (topicWords.length > 0 && sectionEn) queries.push(topicWords.slice(0, 3).join(' ') + ' ' + sectionEn);
+            if (topicWords.length > 2) queries.push(topicWords.slice(0, 4).join(' '));
+            queries.push((topicEn || topic) + ' research study');
+            return [...new Set(queries)].filter(q => q.trim().length > 3);
+        }
+
+        function removeDuplicateReferences(refs) {
+            const seen = new Set();
+            return refs.filter(ref => {
+                const key = ref.title.toLowerCase().replace(/[^\w\s]/g, '').substring(0, 80);
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
+        }
+
+        async function searchRealReferences(topic, sectionName, onProgress) {
+            const queries = buildSearchQueries(topic, sectionName);
+            let allRefs = [];
+            let attempts = 0;
+            for (const query of queries) {
+                if (attempts >= CONFIG.MAX_SEARCH_ATTEMPTS) break;
+                if (allRefs.length >= CONFIG.REFS_PER_SECTION) break;
+                attempts++;
+                if (onProgress) onProgress({ type: 'info', message: `🔍 تلاش ${convertToPersianNumbers(attempts)}: جستجو با "${query.substring(0, 50)}..."` });
+                const [crossref, semantic, openalex, core] = await Promise.all([
+                    searchCrossRef(query, 15),
+                    searchSemanticScholar(query, 10),
+                    searchOpenAlex(query, 20),
+                    searchCORE(query, 15)
+                ]);
+                if (onProgress) onProgress({ type: 'info', message: `📊 CrossRef=${convertToPersianNumbers(crossref.length)} | Semantic=${convertToPersianNumbers(semantic.length)} | OpenAlex=${convertToPersianNumbers(openalex.length)} | CORE=${convertToPersianNumbers(core.length)}` });
+                allRefs = removeDuplicateReferences([...allRefs, ...crossref, ...semantic, ...openalex, ...core]);
+                if (onProgress) onProgress({ type: 'info', message: `✅ مجموع یکتا: ${convertToPersianNumbers(allRefs.length)}` });
+                if (allRefs.length >= CONFIG.REFS_PER_SECTION) break;
+                await sleep(500);
+            }
+            allRefs.sort((a, b) => {
+                if (b.citations && a.citations && b.citations !== a.citations) return b.citations - a.citations;
+                return (b.year || 0) - (a.year || 0);
+            });
+            return { refs: allRefs.slice(0, CONFIG.REFS_PER_SECTION), totalFound: allRefs.length, attempts };
+        }
+
+        function transliterateToPersian(name) {
+            if (!name) return name;
+            const map = {
+                'Smith': 'اسمیت', 'Johnson': 'جانسون', 'Williams': 'ویلیامز', 'Brown': 'براون',
+                'Jones': 'جونز', 'Davis': 'دیویس', 'Miller': 'میلر', 'Wilson': 'ویلسون',
+                'Moore': 'مور', 'Taylor': 'تیلور', 'Anderson': 'اندرسون', 'Thomas': 'توماس',
+                'Jackson': 'جکسون', 'White': 'وایت', 'Harris': 'هریس', 'Martin': 'مارتین',
+                'Thompson': 'تامپسون', 'Garcia': 'گارسیا', 'Robinson': 'رابینسون', 'Clark': 'کلارک',
+                'Lewis': 'لوئیس', 'Lee': 'لی', 'Walker': 'واکر', 'Hall': 'هال', 'Allen': 'آلن',
+                'Young': 'یانگ', 'King': 'کینگ', 'Wright': 'رایت', 'Lopez': 'لوپز', 'Hill': 'هیل',
+                'Scott': 'اسکات', 'Green': 'گرین', 'Adams': 'آدامز', 'Baker': 'بیکر', 'Nelson': 'نلسون',
+                'Carter': 'کارتر', 'Mitchell': 'میچل', 'Roberts': 'رابرتز', 'Turner': 'ترنر',
+                'Phillips': 'فیلیپس', 'Campbell': 'کمپبل', 'Parker': 'پارکر', 'Evans': 'اونز',
+                'Edwards': 'ادواردز', 'Collins': 'کالینز', 'Stewart': 'استوارت', 'Morris': 'موریس',
+                'Rogers': 'راجرز', 'Reed': 'رید', 'Cook': 'کوک', 'Morgan': 'مورگان', 'Bell': 'بل',
+                'Murphy': 'مورفی', 'Bailey': 'بیلی', 'Rivera': 'ریورا', 'Cooper': 'کوپر',
+                'Richardson': 'ریچاردسون', 'Cox': 'کاکس', 'Howard': 'هاوارد', 'Ward': 'وارد',
+                'Torres': 'تورز', 'Peterson': 'پترسون', 'Gray': 'گری', 'Ramirez': 'رامیرز',
+                'James': 'جیمز', 'Watson': 'واتسون', 'Brooks': 'بروکس', 'Kelly': 'کلی',
+                'Sanders': 'سندرز', 'Price': 'پرایس', 'Bennett': 'بنت', 'Wood': 'وود',
+                'Barnes': 'بارنز', 'Ross': 'راس', 'Henderson': 'هندرسون', 'Coleman': 'کلمن',
+                'Jenkins': 'جنکینز', 'Perry': 'پری', 'Powell': 'پاول', 'Long': 'لانگ',
+                'Hughes': 'هیوز', 'Flores': 'فلورز', 'Washington': 'واشنگتن', 'Butler': 'باتلر',
+                'Simmons': 'سیمونز', 'Foster': 'فاستر', 'Bryant': 'برایانت', 'Alexander': 'الکساندر',
+                'Russell': 'راسل', 'Griffin': 'گریفین', 'Hayes': 'هیز', 'Myers': 'مایرز',
+                'Ford': 'فورد', 'Hamilton': 'همیلتون', 'Graham': 'گراهام', 'Sullivan': 'سالیوان',
+                'Wallace': 'والاس', 'Woods': 'وودز', 'Cole': 'کول', 'West': 'وست', 'Jordan': 'جردن',
+                'Owens': 'اونز', 'Reynolds': 'رینولدز', 'Fisher': 'فیشر', 'Ellis': 'الیس',
+                'Harrison': 'هاریسون', 'Gibson': 'گیبسون', 'Mcdonald': 'مک‌دونالد', 'Cruz': 'کروز',
+                'Marshall': 'مارشال', 'Ortiz': 'اورتیز', 'Gomez': 'گومز', 'Murray': 'موری',
+                'Freeman': 'فریمن', 'Wells': 'ولز', 'Webb': 'وب', 'Simpson': 'سیمپسون',
+                'Stevens': 'استیونز', 'Tucker': 'تاکر', 'Porter': 'پورتر', 'Hunter': 'هانتر',
+                'Hicks': 'هیکز', 'Crawford': 'کرافورد', 'Henry': 'هنری', 'Boyd': 'بوید',
+                'Mason': 'میسن', 'Morales': 'مورالس', 'Kennedy': 'کندی', 'Warren': 'وارن',
+                'Dixon': 'دیکسون', 'Ramos': 'راموس', 'Reyes': 'ریز', 'Burns': 'برنز',
+                'Gordon': 'گوردون', 'Shaw': 'شاو', 'Holmes': 'هولمز', 'Rice': 'رایس',
+                'Robertson': 'رابرتسون', 'Hunt': 'هانت', 'Black': 'بلک', 'Daniels': 'دنیلز',
+                'Palmer': 'پالمر', 'Mills': 'میلز', 'Nichols': 'نیکولز', 'Grant': 'گرانت',
+                'Knight': 'نایت', 'Ferguson': 'فرگوسن', 'Rose': 'رز', 'Stone': 'استون',
+                'Hawkins': 'هاوکینز', 'Dunn': 'دان', 'Perkins': 'پرکینز', 'Hudson': 'هادسون',
+                'Spencer': 'اسپنسر', 'Gardner': 'گاردنر', 'Stephens': 'استیونز', 'Payne': 'پین',
+                'Pierce': 'پیرس', 'Berry': 'بری', 'Matthews': 'متیوز', 'Arnold': 'آرنولد',
+                'Wagner': 'واگنر', 'Willis': 'ویلیس', 'Raymond': 'رایموند', 'Watkins': 'واتکینز',
+                'Olson': 'اولسون', 'Carroll': 'کارول', 'Duncan': 'دانکن', 'Snyder': 'اسنایدر',
+                'Hart': 'هارت', 'Cunningham': 'کانونگهام', 'Bradley': 'بردلی', 'Lane': 'لین',
+                'Andrews': 'اندروز', 'Ruiz': 'رویز', 'Harper': 'هارپر', 'Fox': 'فاکس',
+                'Riley': 'رایلی', 'Armstrong': 'آرمسترانگ', 'Carpenter': 'کارپنتر', 'Weaver': 'ویور',
+                'Greene': 'گرین', 'Lawrence': 'لارنس', 'Elliott': 'الیوت', 'Chavez': 'چاوز',
+                'Sims': 'سیمز', 'Austin': 'آستین', 'Peters': 'پیترز', 'Kelley': 'کلی',
+                'Franklin': 'فرانکلین', 'Lawson': 'لاوسون', 'Fields': 'فیلدز', 'Gutierrez': 'گوتیرز',
+                'Ryan': 'رایان', 'Schmidt': 'اشمیت', 'Carr': 'کار', 'Vasquez': 'وازکز',
+                'Castillo': 'کاستیلو', 'Wheeler': 'ویلر', 'Chapman': 'چپمن', 'Oliver': 'الیور',
+                'Montgomery': 'مانتگومری', 'Richards': 'ریچاردز', 'Williamson': 'ویلیامسون',
+                'Johnston': 'جانستون', 'Banks': 'بنکس', 'Meyer': 'میر', 'Bishop': 'بیشاپ',
+                'Mccoy': 'مک‌کوی', 'Howell': 'هاول', 'Alvarez': 'آلوارز', 'Morrison': 'موریسون',
+                'Hansen': 'هنسن', 'Fernandez': 'فرناندز', 'Garza': 'گارزا', 'Harvey': 'هاروی',
+                'Little': 'لیتل', 'Burton': 'برتون', 'Stanley': 'استنلی', 'Nguyen': 'انگین',
+                'George': 'جورج', 'Jacobs': 'جیکوبز', 'Reid': 'رید', 'Kim': 'کیم',
+                'Fuller': 'فولر', 'Lynch': 'لینچ', 'Dean': 'دین', 'Gilbert': 'گیلبرت',
+                'Garrett': 'گرت', 'Romero': 'رومرو', 'Welch': 'ولچ', 'Larson': 'لارسون',
+                'Frazier': 'فریزیر', 'Burke': 'برک', 'Hanson': 'هانسون', 'Day': 'دی',
+                'Mendoza': 'مندوزا', 'Moreno': 'مورنو', 'Bowman': 'بومن', 'Medina': 'مدینا',
+                'Fowler': 'فالر', 'Brewer': 'برور', 'Hoffman': 'هافمن', 'Carlson': 'کارلسون',
+                'Silva': 'سیلوا', 'Pearson': 'پیرسون', 'Holland': 'هلند', 'Douglas': 'داگلاس',
+                'Fleming': 'فلِمینگ', 'Jensen': 'جنسن', 'Vargas': 'وارگاس', 'Byrd': 'بیرد',
+                'Davidson': 'دیویدسون', 'Hopkins': 'هاپکینز', 'May': 'می', 'Terry': 'تری',
+                'Herrera': 'هررا', 'Wade': 'وید', 'Soto': 'سوتو', 'Walters': 'والترز',
+                'Curtis': 'کورتیس', 'Neal': 'نیل', 'Caldwell': 'کالدول', 'Lowe': 'لو',
+                'Jennings': 'جنینگز', 'Barnett': 'بارنت', 'Graves': 'گریوز', 'Jimenez': 'خیمنز',
+                'Horton': 'هورتون', 'Shelton': 'شلتون', 'Barrett': 'بارت', 'Obrien': 'ابرین',
+                'Castro': 'کاسترو', 'Sutton': 'ساتون', 'Gregory': 'گرگوری', 'Mckinney': 'مک‌کینی',
+                'Lambert': 'لامبرت', 'Watts': 'واتز', 'Bates': 'بیتس', 'Hale': 'هیل',
+                'Rhodes': 'رودز', 'Pena': 'پنا', 'Beck': 'بک', 'Newman': 'نیومن',
+                'Haynes': 'هینز', 'Mcdaniel': 'مک‌دنیل', 'Ibarra': 'ایبارا', 'Zhang': 'ژانگ',
+                'Liu': 'لیو', 'Chen': 'چن', 'Wang': 'وانگ', 'Li': 'لی', 'Yang': 'یانگ',
+                'Huang': 'هوانگ', 'Wu': 'وو', 'Zhou': 'ژو', 'Xu': 'شو', 'Sun': 'سان',
+                'Al-Ghazali': 'الغزالی', 'Al-Farabi': 'الفارابی', 'Avicenna': 'ابن‌سینا',
+                'Ibn-Khaldun': 'ابن‌خلدون', 'Averroes': 'ابن‌رشد', 'Al-Razi': 'رازی',
+                'Al-Biruni': 'بیرونی', 'Al-Kindi': 'کِندی', 'Al-Tusi': 'طوسی',
+                'Al-Bukhari': 'بخاری', 'Al-Muslim': 'مسلم', 'Al-Tabari': 'طبری',
+                'Ibn-Taymiyyah': 'ابن‌تیمیه', 'Ibn-Qayyim': 'ابن‌قیم', 'Al-Nawawi': 'نووی',
+                'Al-Shafi': 'شافعی', 'Al-Maliki': 'مالکی', 'Al-Hanafi': 'حنفی',
+                'Al-Hanbali': 'حنبلی', 'Al-Ashari': 'اشعری', 'Al-Maturidi': 'ماتریدی',
+                'Al-Ghazzali': 'غزالی', 'Ibn-Arabi': 'ابن‌عربی', 'Rumi': 'مولوی',
+                'Saadi': 'سعدی', 'Hafez': 'حافظ', 'Ferdowsi': 'فردوسی', 'Khayyam': 'خیام',
+                'Nizami': 'نظامی', 'Attar': 'عطار', 'Jami': 'جامی', 'Sanai': 'سنایی',
+                'Sohrevardi': 'سهروردی', 'Mulla-Sadra': 'ملاصدرا', 'Sabzevari': 'سبزواری',
+                'Tabatabai': 'طباطبایی', 'Motahhari': 'مطهری', 'Beheshti': 'بهشتی',
+                'Khomeini': 'خمینی', 'Shariati': 'شریعتی', 'Soroush': 'سروش',
+                'Javadi-Amoli': 'جوادی‌آملی', 'Mesbah-Yazdi': 'مصباح‌یزدی', 'Jannati': 'جنتی',
+                'Mohaghegh': 'محقق', 'Damad': 'داماد', 'Fayyaz': 'فیاض',
+                'Rezakhani': 'رضاخانی', 'Emami': 'امامی', 'Katouzian': 'کاتوزیان',
+                'Langaroudi': 'لنگرودی', 'Shams': 'شمس', 'Najafi': 'نجفی',
+                'Madani': 'مدنی', 'Taheri': 'طاهری', 'Hassan': 'حسن', 'Ahmad': 'احمد',
+                'Mohammad': 'محمد', 'Ali': 'علی', 'Hussein': 'حسین', 'Ibrahim': 'ابراهیم',
+                'Yusuf': 'یوسف', 'Omar': 'عمر', 'Abdullah': 'عبدالله', 'Mustafa': 'مصطفی',
+                'Mahmoud': 'محمود', 'Khalil': 'خلیل', 'Ismail': 'اسماعیل', 'Yahya': 'یحیی',
+                'Dawood': 'داوود', 'Sulaiman': 'سلیمان', 'Adam': 'آدم', 'Noah': 'نوح',
+                'Abraham': 'ابراهیم', 'Moses': 'موسی', 'Jesus': 'عیسی', 'David': 'داوود',
+                'Solomon': 'سلیمان', 'Joseph': 'یوسف', 'Jacob': 'یعقوب', 'Isaac': 'اسحاق',
+                'Ishmael': 'اسماعیل', 'Aaron': 'هارون', 'John': 'یوحنا', 'Peter': 'پطرس',
+                'Paul': 'پل', 'Mary': 'مریم', 'Sarah': 'سارا', 'Rebecca': 'رفقا',
+                'Rachel': 'راحیل', 'Leah': 'لیا', 'Miriam': 'مریم', 'Deborah': 'دبورا',
+                'Ruth': 'روت', 'Esther': 'استر', 'Judith': 'یودیت', 'Hannah': 'حنا',
+                'Naomi': 'نعومی', 'Patel': 'پاتل', 'Tran': 'تران', 'Aguilar': 'آگیلار',
+                'Guzman': 'گوزمان', 'Mendez': 'مندز', 'Munoz': 'مونیوز', 'Salazar': 'سالازار'
+            };
+            return name.split(' ').map(word => map[word] || word).join(' ');
+        }
+
+        // ============ 🆕 توابع فرمت APA با تاریخ فارسی ============
+        
+        /**
+         * فرمت APA برای منابع - با تاریخ فارسی
+         * @param {Object} ref - منبع
+         * @returns {string} - فرمت APA
+         */
+        function formatAPA(ref) {
+            const authors = ref.authors.slice(0, 3);
+            let authorsStr;
+            
+            if (authors.length === 1) authorsStr = authors[0];
+            else if (authors.length === 2) authorsStr = `${authors[0]} و ${authors[1]}`;
+            else authorsStr = `${authors[0]} و همکاران`;
+            
+            // ترجمه نام نویسندگان لاتین به فارسی
+            if (ref.language === 'en') {
+                authorsStr = transliterateToPersian(authorsStr);
+            }
+            
+            // 🆕 تبدیل سال به فارسی
+            const yearPersian = formatYearPersian(ref.year, ref.language);
+            
+            const title = ref.title;
+            const journal = ref.journal;
+            
+            let apa;
+            if (journal) {
+                apa = `${authorsStr} (${yearPersian}). ${title}. ${journal}.`;
+            } else {
+                apa = `${authorsStr} (${yearPersian}). ${title}.`;
+            }
+            
+            if (ref.doi) apa += ` https://doi.org/${ref.doi}`;
+            
+            return apa;
+        }
+
+        /**
+         * فرمت استناد درون‌متنی - با تاریخ فارسی
+         * @param {Object} ref - منبع
+         * @returns {string} - استناد درون‌متنی
+         */
+        function formatInTextCitation(ref) {
+            let authorStr = ref.authors[0] || 'منبع';
+            const parts = authorStr.split(' ');
+            const lastName = parts[parts.length - 1];
+            
+            if (ref.language === 'en') {
+                authorStr = transliterateToPersian(lastName);
+            } else {
+                authorStr = lastName;
+            }
+            
+            // 🆕 تبدیل سال به فارسی
+            const yearPersian = formatYearPersian(ref.year, ref.language);
+            
+            return `(${authorStr}، ${yearPersian})`;
+        }
+
+        function buildSearchBox(sectionName, searchResult) {
+            const refs = searchResult.refs;
+            let html = `<div class="search-box">
+                <div class="search-header">
+                    <span class="search-icon">🔍</span>
+                    <span>جستجوی منابع واقعی برای «${sectionName}»</span>
+                </div>
+                <div class="search-progress success">
+                    ✅ <strong>${convertToPersianNumbers(refs.length)} منبع واقعی</strong> از ${convertToPersianNumbers(searchResult.attempts)} تلاش در 4 پایگاه علمی یافت شد
+                </div>`;
+            refs.forEach((ref, i) => {
+                const citations = ref.citations ? ` | 📊 ${convertToPersianNumbers(ref.citations)} استناد` : '';
+                const yearPersian = formatYearPersian(ref.year, ref.language);
+                html += `
+                    <div class="ref-found">
+                        <div class="ref-title">${ref.sourceIcon} ${convertToPersianNumbers(i+1)}. ${escapeHtml(ref.title)}</div>
+                        <div class="ref-authors">✍️ ${escapeHtml(ref.authors.slice(0, 3).join('، '))}${ref.authors.length > 3 ? ' و همکاران' : ''}</div>
+                        <div class="ref-meta">📅 ${yearPersian} | 📰 ${escapeHtml(ref.journal || 'ناشر')}${citations}</div>
+                    </div>`;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+
+        // ============ 🧠 سیستم تفکر استراتژیک ============
+        
+        function getSectionGuideline(sectionName) {
+            if (SECTION_GUIDELINES[sectionName]) return SECTION_GUIDELINES[sectionName];
+            if (sectionName.includes('فصل دوم') || sectionName.includes('مبانی نظری')) {
+                return { minWords: 5000, maxWords: 8000, description: "مبانی نظری جامع", parts: 5 };
+            }
+            if (sectionName.includes('فصل')) {
+                return { minWords: 3000, maxWords: 5000, description: "فصل کامل", parts: 3 };
+            }
+            return { minWords: 600, maxWords: 1000, description: "بخش استاندارد", parts: 1 };
+        }
+
+        function analyzeSection(sectionName) {
+            const guideline = getSectionGuideline(sectionName);
+            const needsRefs = state.sectionsWithRefs.includes(sectionName);
+            
+            return {
+                sectionName, guideline,
+                minWords: guideline.minWords,
+                maxWords: guideline.maxWords,
+                totalParts: guideline.parts,
+                needsRefs,
+                hasContext: state.previousSummary && state.previousSummary.length > 50,
+                description: guideline.description,
+                wordsPerPart: Math.ceil(guideline.maxWords / guideline.parts)
+            };
+        }
+
+        function buildThinkingBox(analysis, refsInfo = null) {
+            let html = `<div class="thinking-box">
+                <div class="thinking-header">
+                    <span class="thinking-icon">🧠</span>
+                    <span>تحلیل استراتژیک «${analysis.sectionName}»</span>
+                </div>
+                <div class="thinking-item">📏 حجم هدف: <strong>${convertToPersianNumbers(analysis.minWords)}-${convertToPersianNumbers(analysis.maxWords)} کلمه</strong></div>
+                <div class="thinking-item">📋 نوع: ${analysis.description}</div>
+                <div class="thinking-item">📝 نگارش در <strong>${convertToPersianNumbers(analysis.totalParts)} پارت</strong></div>
+                <div class="thinking-item">📚 هر پارت حدود <strong>${convertToPersianNumbers(analysis.wordsPerPart)} کلمه</strong></div>`;
+            
+            if (refsInfo !== null) {
+                html += `<div class="thinking-item">🔍 <strong>${convertToPersianNumbers(refsInfo)} منبع واقعی</strong> از 4 پایگاه علمی یافت شد</div>`;
+            }
+            
+            html += `<div class="thinking-item">${analysis.needsRefs ? '✅ رفرنس‌دهی فعال - جستجوی منابع' : '❌ بدون رفرنس - طبق انتخاب کاربر'}</div>
+                <div class="thinking-item">🎓 طبق اصول استاندارد نگارش آکادمیک</div>
+            </div>`;
+            
+            return html;
+        }
+
+        // ============ TYPING SYSTEM ============
+        function calculateTypingDelay(char) {
+            if (!TYPING_CONFIG.enabled) return 0;
+            let delay = TYPING_CONFIG.baseSpeed;
+            if (TYPING_CONFIG.randomness) delay *= (0.7 + Math.random() * 0.6);
+            if (TYPING_CONFIG.pauses) {
+                if ('.!؟?'.includes(char)) delay += TYPING_CONFIG.punctuationPause * 2;
+                else if (',،;:'.includes(char)) delay += TYPING_CONFIG.punctuationPause;
+                else if (char === '\n') delay += TYPING_CONFIG.punctuationPause * 1.5;
+            }
+            if (char === ' ') delay *= 0.7;
+            return Math.max(5, Math.round(delay));
+        }
+
+        function enqueueTyping(text, targetElement) {
+            if (!TYPING_CONFIG.enabled) { targetElement.textContent += text; return; }
+            state.currentTypingElement = targetElement;
+            for (let i = 0; i < text.length; i++) state.typingQueue.push(text[i]);
+            if (!state.isTyping) processTypingQueue();
+        }
+
+        function processTypingQueue() {
+            if (state.typingQueue.length === 0 || state.stopFlag) {
+                state.isTyping = false;
+                if (state.currentTypingElement) {
+                    const cursor = state.currentTypingElement.querySelector('.typing-cursor');
+                    if (cursor) cursor.remove();
+                }
+                document.getElementById('typingIndicator').style.display = 'none';
+                if (state.typingResolve) {
+                    const resolve = state.typingResolve;
+                    state.typingResolve = null;
+                    resolve();
+                }
+                return;
+            }
+            state.isTyping = true;
+            document.getElementById('typingIndicator').style.display = 'inline-block';
+            const char = state.typingQueue.shift();
+            const target = state.currentTypingElement;
+            if (!target) { state.isTyping = false; return; }
+            const existingCursor = target.querySelector('.typing-cursor');
+            if (existingCursor) existingCursor.remove();
+            target.textContent += char;
+            const cursor = document.createElement('span');
+            cursor.className = 'typing-cursor';
+            target.appendChild(cursor);
+            const output = document.getElementById('outputContent');
+            output.scrollTop = output.scrollHeight;
+            typingWorker.postMessage({ action: 'start', delay: calculateTypingDelay(char) });
+        }
+
+        function flushTypingQueue() {
+            typingWorker.postMessage({ action: 'stop' });
+            if (state.typingQueue.length > 0 && state.currentTypingElement) {
+                state.currentTypingElement.textContent += state.typingQueue.join('');
+                state.typingQueue = [];
+            }
+            state.isTyping = false;
+            if (state.currentTypingElement) {
+                const cursor = state.currentTypingElement.querySelector('.typing-cursor');
+                if (cursor) cursor.remove();
+            }
+            document.getElementById('typingIndicator').style.display = 'none';
+            if (state.typingResolve) {
+                const resolve = state.typingResolve;
+                state.typingResolve = null;
+                resolve();
+            }
+        }
+
+        function waitForTypingComplete() {
+            return new Promise(resolve => {
+                if (!TYPING_CONFIG.enabled || state.typingQueue.length === 0) { resolve(); return; }
+                state.typingResolve = resolve;
+            });
+        }
+
+        // ============ 🎯 سیستم انتخاب بخش‌های رفرنس‌دار ============
+        
+        function openRefsSectionsModal() {
+            populateRefsSections();
+            openModal('refsSectionsModal');
+        }
+
+        function populateRefsSections() {
+            const container = document.getElementById('sectionsSelectContainer');
+            container.innerHTML = '';
+            
+            if (state.sections.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;">⚠️ ابتدا نوع سند و ساختار را انتخاب کنید</p>';
+                updateRefSectionsInfo();
+                return;
+            }
+            
+            state.sections.forEach((section, index) => {
+                const hasRef = state.sectionsWithRefs.includes(section);
+                
+                const item = document.createElement('div');
+                item.className = `section-select-item ${hasRef ? 'has-ref' : ''}`;
+                
+                item.innerHTML = `
+                    <input type="checkbox" 
+                           class="ref-section-checkbox" 
+                           value="${escapeHtml(section)}" 
+                           id="ref-section-${index}"
+                           ${hasRef ? 'checked' : ''}>
+                    <label for="ref-section-${index}" class="section-label">
+                        ${convertToPersianNumbers(index + 1)}. ${escapeHtml(section)}
+                    </label>
+                    <span class="section-badge ${hasRef ? 'badge-ref' : 'badge-no-ref'}">
+                        ${hasRef ? '✅ با رفرنس' : '❌ بدون رفرنس'}
+                    </span>
+                `;
+                
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        item.classList.add('has-ref');
+                        item.querySelector('.section-badge').className = 'section-badge badge-ref';
+                        item.querySelector('.section-badge').textContent = '✅ با رفرنس';
+                    } else {
+                        item.classList.remove('has-ref');
+                        item.querySelector('.section-badge').className = 'section-badge badge-no-ref';
+                        item.querySelector('.section-badge').textContent = '❌ بدون رفرنس';
+                    }
+                    updateRefSectionsInfo();
+                });
+                
+                item.querySelector('label').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                });
+                
+                container.appendChild(item);
+            });
+            
+            updateRefSectionsInfo();
+        }
+
+        function updateRefSectionsInfo() {
+            const checked = document.querySelectorAll('.ref-section-checkbox:checked').length;
+            const total = document.querySelectorAll('.ref-section-checkbox').length;
+            document.getElementById('refSectionsInfo').innerHTML = 
+                `📊 <strong>${convertToPersianNumbers(checked)}</strong> از <strong>${convertToPersianNumbers(total)}</strong> بخش برای رفرنس‌دهی انتخاب شده است`;
+            document.getElementById('refSectionsCount').textContent = convertToPersianNumbers(checked);
+        }
+
+        function selectAllRefSections() {
+            document.querySelectorAll('.ref-section-checkbox').forEach(cb => {
+                cb.checked = true;
+                cb.dispatchEvent(new Event('change'));
+            });
+        }
+
+        function deselectAllRefSections() {
+            document.querySelectorAll('.ref-section-checkbox').forEach(cb => {
+                cb.checked = false;
+                cb.dispatchEvent(new Event('change'));
+            });
+        }
+
+        function selectDefaultRefSections() {
+            document.querySelectorAll('.ref-section-checkbox').forEach(cb => {
+                const section = cb.value;
+                cb.checked = DEFAULT_REF_SECTIONS.includes(section);
+                cb.dispatchEvent(new Event('change'));
+            });
+        }
+
+        function applyRefsSections() {
+            const selected = Array.from(document.querySelectorAll('.ref-section-checkbox:checked'))
+                .map(cb => cb.value);
+            
+            state.sectionsWithRefs = selected;
+            localStorage.setItem('writer_ref_sections', JSON.stringify(selected));
+            
+            closeModal('refsSectionsModal');
+            updateSectionsList();
+            updateRefSectionsCount();
+            
+            if (selected.length === 0) {
+                showToast('⚠️ هیچ بخشی برای رفرنس‌دهی انتخاب نشد. همه بخش‌ها بدون منبع نوشته می‌شوند.', 'warning');
+            } else {
+                showToast(`✓ ${convertToPersianNumbers(selected.length)} بخش برای رفرنس‌دهی انتخاب شد`, 'success');
+            }
+        }
+
+        function updateRefSectionsCount() {
+            document.getElementById('refSectionsCount').textContent = convertToPersianNumbers(state.sectionsWithRefs.length);
+        }
+
+        // ============ UI FUNCTIONS ============
+        function updateTypingSpeedLabel() {
+            document.getElementById('typingSpeedLabel').textContent = convertToPersianNumbers(document.getElementById('typingSpeed').value);
+        }
+
+        function saveTypingSettings() {
+            TYPING_CONFIG.enabled = document.getElementById('typingEnabled').checked;
+            TYPING_CONFIG.baseSpeed = parseInt(document.getElementById('typingSpeed').value);
+            TYPING_CONFIG.randomness = document.getElementById('typingRandomness').checked;
+            TYPING_CONFIG.pauses = document.getElementById('typingPauses').checked;
+            localStorage.setItem('typingSettings', JSON.stringify(TYPING_CONFIG));
+            closeModal('typingModal');
+            showToast('✓ ذخیره شد', 'success');
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (!key) { showToast('کلید را وارد کنید', 'error'); return; }
+            if (!key.startsWith('gsk_')) { showToast('کلید نامعتبر (gsk_)', 'error'); return; }
+            state.apiKey = key;
+            localStorage.setItem('groq_api_key', key);
+            closeModal('apiModal');
+            showToast('✓ کلید API ذخیره شد', 'success');
+        }
+
+        function onDocTypeChange() {
+            const docType = document.getElementById('docTypeSelect').value;
+            if (state.structureMode === 'auto') {
+                state.sections = [...OUTLINES[docType]];
+                autoSelectDefaultRefSections();
+                updateSectionsList();
+            }
+            if (docType === 'ساختار دلخواه') {
+                document.getElementById('structureMode').value = 'custom';
+                onStructureModeChange();
+            }
+        }
+
+        function autoSelectDefaultRefSections() {
+            state.sectionsWithRefs = state.sections.filter(s => DEFAULT_REF_SECTIONS.includes(s));
+            updateRefSectionsCount();
+        }
+
+        function onStructureModeChange() {
+            const mode = document.getElementById('structureMode').value;
+            state.structureMode = mode;
+            const btn = document.getElementById('editStructureBtn');
+            if (mode === 'custom') {
+                btn.disabled = false;
+                if (state.customStructure.length === 0) openModal('structureModal');
+                else { 
+                    state.sections = [...state.customStructure]; 
+                    autoSelectDefaultRefSections();
+                    updateSectionsList(); 
+                }
+            } else {
+                btn.disabled = true;
+                state.sections = [...OUTLINES[document.getElementById('docTypeSelect').value]];
+                autoSelectDefaultRefSections();
+                updateSectionsList();
+            }
+        }
+
+        function updateSectionsList() {
+            const list = document.getElementById('sectionsList');
+            list.innerHTML = '';
+            state.sections.forEach((section, i) => {
+                const status = state.sectionStatus[section] || 'pending';
+                const hasRef = state.sectionsWithRefs.includes(section);
+                const item = document.createElement('div');
+                item.className = 'section-item';
+                let checkboxClass = '', statusIcon = '⏸', checkboxContent = '';
+                
+                if (status === 'completed') { checkboxClass = 'checked'; statusIcon = '✅'; checkboxContent = '✓'; }
+                else if (status === 'in-progress') { checkboxClass = 'in-progress'; statusIcon = '⏳'; checkboxContent = '⏳'; }
+                else if (status === 'thinking') { checkboxClass = 'thinking'; statusIcon = '🧠'; checkboxContent = '🧠'; }
+                else if (status === 'searching') { checkboxClass = 'searching'; statusIcon = '🔍'; checkboxContent = '🔍'; }
+                else if (status === 'error') { checkboxClass = 'error'; statusIcon = '❌'; checkboxContent = '✗'; }
+                
+                item.innerHTML = `
+                    <div class="checkbox ${checkboxClass}">${checkboxContent}</div>
+                    <div class="section-name">${convertToPersianNumbers(i + 1)}. ${section}</div>
+                    <span class="${hasRef ? 'ref-badge' : 'no-ref-badge'}">${hasRef ? '📚' : '📄'}</span>
+                    <div class="status">${statusIcon}</div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function updateProgress(current, total) {
+            const percent = Math.round((current / total) * 100);
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressFill').textContent = convertToPersianNumbers(percent) + '%';
+            document.getElementById('progressLabel').textContent = `${convertToPersianNumbers(percent)}٪ | بخش ${convertToPersianNumbers(current)} از ${convertToPersianNumbers(total)}`;
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            if (id === 'structureModal') {
+                const input = document.getElementById('structureInput');
+                if (state.customStructure.length > 0) input.value = state.customStructure.map((s, i) => `${convertToPersianNumbers(i + 1)}- ${s}`).join('\n');
+                updateStructureCounter();
+                input.oninput = updateStructureCounter;
+            }
+            if (id === 'refsModal') {
+                const input = document.getElementById('refsInput');
+                if (state.userReferences.raw_text) input.value = state.userReferences.raw_text;
+                updateRefsCounter();
+                input.oninput = updateRefsCounter;
+            }
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('active'); });
+        });
+
+        function parseCustomStructure(text) {
+            if (!text || !text.trim()) return [];
+            return text.trim().split('\n').map(l => l.trim()).filter(l => l)
+                .map(l => l.replace(/^[\d\-\.\)\(]+[\s\-\.:]+/, '').replace(/^[-•*]\s*/, '').trim());
+        }
+
+        function updateStructureCounter() {
+            const s = parseCustomStructure(document.getElementById('structureInput').value);
+            document.getElementById('structureCounter').textContent = `📊 ${convertToPersianNumbers(s.length)} بخش`;
+        }
+
+        function applyStructure() {
+            const s = parseCustomStructure(document.getElementById('structureInput').value);
+            if (s.length === 0) { showToast('حداقل یک بخش', 'error'); return; }
+            state.customStructure = s;
+            state.sections = [...s];
+            autoSelectDefaultRefSections();
+            updateSectionsList();
+            closeModal('structureModal');
+            showToast(`✓ ${convertToPersianNumbers(s.length)} بخش اعمال شد`, 'success');
+        }
+
+        function parseUserReferences(text) {
+            if (!text || !text.trim()) return { persian: [], english: [] };
+            const persian = [], english = [];
+            let current = null;
+            text.trim().split('\n').forEach(line => {
+                line = line.trim().replace(/^\d+[\.\-\)]\s*/, '').replace(/^[-•*]\s*/, '').trim();
+                if (!line) return;
+                if (/منابع فارسی|فارسی:|منابع داخلی/.test(line)) { current = 'persian'; return; }
+                else if (/منابع انگلیسی|english|منابع خارجی/i.test(line)) { current = 'english'; return; }
+                if (current === 'persian') persian.push(line);
+                else if (current === 'english') english.push(line);
+                else {
+                    const lat = (line.match(/[A-Za-z]/g) || []).length;
+                    const per = (line.match(/[\u0600-\u06FF]/g) || []).length;
+                    if (lat > per) english.push(line); else persian.push(line);
+                }
+            });
+            return { persian, english };
+        }
+
+        function updateRefsCounter() {
+            const p = parseUserReferences(document.getElementById('refsInput').value);
+            document.getElementById('refsCounter').textContent = `📊 ${convertToPersianNumbers(p.persian.length)} فارسی | ${convertToPersianNumbers(p.english.length)} انگلیسی`;
+        }
+
+        function applyReferences() {
+            const text = document.getElementById('refsInput').value;
+            const p = parseUserReferences(text);
+            if (p.persian.length + p.english.length === 0) { showToast('منبعی یافت نشد', 'error'); return; }
+            state.userReferences = { persian: p.persian, english: p.english, raw_text: text };
+            closeModal('refsModal');
+            showToast('✓ منابع کاربر بارگذاری شد', 'success');
+        }
+
+        async function pasteTopic() {
+            try {
+                document.getElementById('topicInput').value = await navigator.clipboard.readText();
+                showToast('✓ پیست شد', 'success');
+            } catch (err) { showToast('خطا', 'error'); }
+        }
+
+        function showToast(message, type = 'success') {
+            const t = document.getElementById('toast');
+            t.textContent = message;
+            t.className = `toast show ${type}`;
+            setTimeout(() => { t.className = 'toast'; }, 3000);
+        }
+
+        function summarizeText(text) {
+            if (!text) return '';
+            return text.substring(text.length - CONFIG.MAX_PREVIOUS_CHARS).trim();
+        }
+
+        // ============ 🎯 ساخت پرامپت هوشمند ============
+        function buildPartPrompt(analysis, partNumber, previousPartContent = '', sectionRefs = []) {
+            const section = analysis.sectionName;
+            const guideline = analysis.guideline;
+            const totalParts = analysis.totalParts;
+            const isFirstPart = partNumber === 1;
+            const isLastPart = partNumber === totalParts;
+            
+            let sectionPrompt = `بخش "${section}" از ${state.docType} با موضوع "${state.topic}".`;
+            sectionPrompt += `\nتوضیح: ${guideline.description}`;
+            sectionPrompt += `\nحجم کل: ${convertToPersianNumbers(guideline.minWords)}-${convertToPersianNumbers(guideline.maxWords)} کلمه`;
+            
+            if (totalParts === 1) {
+                sectionPrompt += `\n\n✍️ کامل در یک پارت (${convertToPersianNumbers(guideline.minWords)}-${convertToPersianNumbers(guideline.maxWords)} کلمه).`;
+            } else {
+                if (isFirstPart) {
+                    sectionPrompt += `\n\n✍️ پارت ${convertToPersianNumbers(partNumber)} از ${convertToPersianNumbers(totalParts)} (مقدمه).`;
+                    sectionPrompt += `\n🎯 شروع قوی، زمینه‌سازی، طرح سوال اصلی`;
+                    sectionPrompt += `\n📊 حجم: حدود ${convertToPersianNumbers(analysis.wordsPerPart)} کلمه`;
+                    sectionPrompt += `\n❌ نتیجه‌گیری نکن.`;
+                } else if (isLastPart) {
+                    sectionPrompt += `\n\n✍️ پارت ${convertToPersianNumbers(partNumber)} از ${convertToPersianNumbers(totalParts)} (پایان).`;
+                    sectionPrompt += `\n🎯 جمع‌بندی، نتیجه‌گیری نهایی`;
+                    sectionPrompt += `\n📊 حجم: حدود ${convertToPersianNumbers(analysis.wordsPerPart)} کلمه`;
+                    sectionPrompt += `\n✅ با جمع‌بندی قوی پایان بده.`;
+                } else {
+                    sectionPrompt += `\n\n✍️ پارت ${convertToPersianNumbers(partNumber)} از ${convertToPersianNumbers(totalParts)} (بدنه).`;
+                    sectionPrompt += `\n🎯 بسط موضوع، تحلیل عمیق`;
+                    sectionPrompt += `\n📊 حجم: حدود ${convertToPersianNumbers(analysis.wordsPerPart)} کلمه`;
+                    sectionPrompt += `\n❌ نتیجه‌گیری نکن.`;
+                }
+            }
+            
+            let referenceRules = "❌ بدون رفرنس. هیچ استنادی در متن نکن.";
+            let refsContext = '';
+            
+            if (analysis.needsRefs && sectionRefs.length > 0) {
+                referenceRules = "✅ فقط از منابع واقعی ارائه شده استفاده کن. ❌ منبع جعلی یا خارج از لیست ممنوع.";
+                
+                refsContext = '\n📚 منابع واقعی یافت شده (الزامی به استفاده):\n';
+                sectionRefs.forEach((ref, i) => {
+                    const citation = formatInTextCitation(ref);
+                    refsContext += `${convertToPersianNumbers(i+1)}. ${formatAPA(ref)}\n`;
+                    refsContext += `   → استناد درون‌متنی: ${citation}\n`;
+                });
+                
+                refsContext += `\n⚠️ ⚠️ ⚠️ دستورالعمل بسیار مهم برای استناد:`;
+                refsContext += `\n1. در <strong>هر پاراگراف</strong> باید حداقل 1 تا 3 استناد درون‌متنی داشته باشی`;
+                refsContext += `\n2. هیچ پاراگرافی نباید بدون استناد باشد`;
+                refsContext += `\n3. از فرمت (نویسنده، سال) استفاده کن - سال‌ها به فارسی`;
+                refsContext += `\n4. نام نویسندگان لاتین را به فارسی بنویس: (Smith, 2020) → (اسمیت، ۲۰۲۰)`;
+                refsContext += `\n5. فقط از منابع لیست بالا استفاده کن`;
+                refsContext += `\n6. در هر پاراگراف از 2-3 منبع مختلف استفاده کن`;
+                refsContext += `\n7. ❌ هیچ پاراگرافی بدون استناد ننویس!`;
+            } else if (analysis.needsRefs && state.userReferences.persian.length + state.userReferences.english.length > 0) {
+                referenceRules = "✅ فقط از منابع کاربر استفاده کن. ❌ منبع جعلی نساز.";
+                refsContext = '\n📚 منابع کاربر:\n';
+                state.userReferences.persian.slice(0, CONFIG.MAX_REFERENCES_PER_LANGUAGE).forEach((r, i) => {
+                    refsContext += `${convertToPersianNumbers(i+1)}. ${r.substring(0,60)}\n`;
+                });
+                state.userReferences.english.slice(0, CONFIG.MAX_REFERENCES_PER_LANGUAGE).forEach((r, i) => {
+                    refsContext += `${convertToPersianNumbers(i+1)}. ${r.substring(0,60)}\n`;
+                });
+            }
+            
+            let contextBlock = '';
+            if (!isFirstPart && previousPartContent) {
+                const prevSnippet = previousPartContent.substring(previousPartContent.length - 500);
+                contextBlock = `\n\n📖 ادامه (پارت قبلی):\n"${prevSnippet}"\n\nادامه بده (بدون تکرار):`;
+            }
+            
+            let prevSummaryBlock = '';
+            if (state.previousSummary && isFirstPart) {
+                prevSummaryBlock = `\n\nخلاصه بخش‌های قبلی: ${state.previousSummary}`;
+            }
+            
+            return `${SYSTEM_PROMPT}
+
+${sectionPrompt}
+
+📋 دستورالعمل:
+- زبان: فارسی آکادمیک روان
+- لحن: علمی و رسمی
+- پاراگراف‌بندی منظم
+- ❌ عنوان ننویس
+- ❌ هیچ عبارت انگلیسی در متن استفاده نکن
+- ✅ رفرنس‌های لاتین را به فارسی ترجمه کن
+- ✅ سال‌ها را به فارسی بنویس (مثلاً 2020 → ۲۰۲۰)
+
+${referenceRules}
+${refsContext}${prevSummaryBlock}${contextBlock}
+
+🎯 پارت ${convertToPersianNumbers(partNumber)} از ${convertToPersianNumbers(totalParts)} را بنویس (مستقیماً شروع کن):`;
+        }
+
+        function cleanOutput(text) {
+            return text.replace(/<think>[\s\S]*?<\/think>/gi, '')
+                      .replace(/<think>[\s\S]*/gi, '')
+                      .replace(/<\/?think>/gi, '')
+                      .trim();
+        }
+
+        async function callGroqAPI(prompt, onChunk, attempt = 1) {
+            if (!state.apiKey) throw new Error('کلید API تنظیم نشده');
+            try {
+                const response = await fetch(CONFIG.API_BASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${state.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: state.model,
+                        messages: [{ role: 'user', content: prompt }],
+                        temperature: CONFIG.TEMPERATURE,
+                        max_tokens: CONFIG.MAX_TOKENS,
+                        stream: true
+                    })
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 429 || response.status === 413) {
+                        if (attempt < CONFIG.RETRY_ATTEMPTS) {
+                            const wait = CONFIG.RETRY_DELAY * attempt;
+                            showToast(`محدودیت API - انتظار ${convertToPersianNumbers(wait/1000)}s`, 'warning');
+                            await sleep(wait);
+                            return callGroqAPI(prompt, onChunk, attempt + 1);
+                        }
+                        throw new Error(`محدودیت API (${convertToPersianNumbers(response.status)})`);
+                    }
+                    const errorText = await response.text();
+                    throw new Error(`خطای API (${convertToPersianNumbers(response.status)}): ${errorText.substring(0,150)}`);
+                }
+                
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let result = '', buffer = '';
+                
+                while (true) {
+                    if (state.stopFlag) break;
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop();
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = line.substring(6);
+                            if (data === '[DONE]') continue;
+                            try {
+                                const json = JSON.parse(data);
+                                const delta = json.choices?.[0]?.delta?.content || '';
+                                if (delta) {
+                                    result += delta;
+                                    if (onChunk) {
+                                        const cleaned = delta.replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/<\/?think>/gi, '');
+                                        if (cleaned) onChunk(cleaned);
+                                    }
+                                }
+                            } catch (e) {}
+                        }
+                    }
+                }
+                return cleanOutput(result);
+            } catch (error) {
+                if ((error.message.includes('429') || error.message.includes('413')) && attempt < CONFIG.RETRY_ATTEMPTS) {
+                    await sleep(CONFIG.RETRY_DELAY * attempt);
+                    return callGroqAPI(prompt, onChunk, attempt + 1);
+                }
+                throw error;
+            }
+        }
+
+        // ============ 🚀 شروع نگارش ============
+        async function startGeneration() {
+            state.topic = document.getElementById('topicInput').value.trim();
+            state.docType = document.getElementById('docTypeSelect').value;
+            state.model = document.getElementById('modelSelect').value;
+            
+            if (!state.topic) { showToast('موضوع را وارد کنید', 'error'); return; }
+            if (!state.apiKey) { showToast('کلید API را تنظیم کنید', 'error'); openModal('apiModal'); return; }
+            if (state.structureMode === 'custom' && state.customStructure.length === 0) { showToast('ساختار خالی', 'error'); return; }
+            if (state.sections.length === 0) { showToast('بخشی تعریف نشده', 'error'); return; }
+            
+            if (state.sectionsWithRefs.length === 0) {
+                const confirm = window.confirm('⚠️ هیچ بخشی برای رفرنس‌دهی انتخاب نشده است.\n\nهمه بخش‌ها بدون منبع نوشته می‌شوند.\n\nآیا می‌خواهید ادامه دهید؟');
+                if (!confirm) return;
+            }
+            
+            state.isRunning = true;
+            state.stopFlag = false;
+            state.currentSectionIndex = 0;
+            state.previousSummary = '';
+            state.generatedContent = {};
+            state.sectionStatus = {};
+            state.sectionPlans = {};
+            state.foundReferences = [];
+            state.sectionReferences = {};
+            
+            document.getElementById('outputContent').innerHTML = '';
+            updateSectionsList();
+            
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('resumeBtn').style.display = 'none';
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('downloadBtn').disabled = true;
+            
+            document.getElementById('progressLabel').textContent = '0٪ | در حال تحلیل...';
+            document.getElementById('progressLabel').style.color = '#f39c12';
+            hideStatus();
+            
+            await runGenerationLoop();
+        }
+
+        async function runGenerationLoop() {
+            const totalSections = state.sections.length;
+            
+            try {
+                while (state.currentSectionIndex < totalSections) {
+                    if (state.stopFlag) break;
+                    
+                    const section = state.sections[state.currentSectionIndex];
+                    
+                    state.sectionStatus[section] = 'thinking';
+                    updateSectionsList();
+                    
+                    const analysis = analyzeSection(section);
+                    state.sectionPlans[section] = analysis;
+                    
+                    const output = document.getElementById('outputContent');
+                    
+                    const sectionWrapper = document.createElement('div');
+                    sectionWrapper.id = `section-wrapper-${state.currentSectionIndex}`;
+                    sectionWrapper.innerHTML = `<div class="section-title">${section}</div>
+                        ${buildThinkingBox(analysis)}
+                        <div class="section-content" id="section-content-${state.currentSectionIndex}"></div>`;
+                    output.appendChild(sectionWrapper);
+                    output.scrollTop = output.scrollHeight;
+                    
+                    await sleep(1000);
+                    if (state.stopFlag) break;
+                    
+                    let sectionRefs = [];
+                    if (analysis.needsRefs) {
+                        state.sectionStatus[section] = 'searching';
+                        updateSectionsList();
+                        
+                        const contentEl = document.getElementById(`section-content-${state.currentSectionIndex}`);
+                        
+                        const progressBox = document.createElement('div');
+                        progressBox.className = 'search-box';
+                        progressBox.innerHTML = `
+                            <div class="search-header">
+                                <span class="search-icon">🔍</span>
+                                <span>جستجوی منابع واقعی برای «${section}»...</span>
+                            </div>
+                            <div id="search-progress-${state.currentSectionIndex}"></div>
+                        `;
+                        contentEl.appendChild(progressBox);
+                        output.scrollTop = output.scrollHeight;
+                        
+                        const progressEl = document.getElementById(`search-progress-${state.currentSectionIndex}`);
+                        
+                        try {
+                            const searchResult = await searchRealReferences(state.topic, section, (info) => {
+                                if (progressEl) {
+                                    const progressItem = document.createElement('div');
+                                    progressItem.className = `search-progress ${info.type}`;
+                                    progressItem.textContent = info.message;
+                                    progressEl.appendChild(progressItem);
+                                    output.scrollTop = output.scrollHeight;
+                                }
+                            });
+                            
+                            sectionRefs = searchResult.refs;
+                            state.sectionReferences[section] = sectionRefs;
+                            
+                            sectionRefs.forEach(ref => {
+                                const key = ref.title.toLowerCase().substring(0, 80);
+                                if (!state.foundReferences.find(r => r.title.toLowerCase().substring(0, 80) === key)) {
+                                    state.foundReferences.push(ref);
+                                }
+                            });
+                            
+                            progressBox.innerHTML = buildSearchBox(section, searchResult);
+                            output.scrollTop = output.scrollHeight;
+                            
+                            if (sectionRefs.length >= CONFIG.MIN_REFERENCES_REQUIRED) {
+                                showToast(`✅ ${convertToPersianNumbers(sectionRefs.length)} منبع واقعی برای "${section}" یافت شد`, 'success');
+                            } else {
+                                showToast(`⚠️ فقط ${convertToPersianNumbers(sectionRefs.length)} منبع یافت شد`, 'warning');
+                            }
+                            
+                        } catch (error) {
+                            console.error('Search error:', error);
+                            progressBox.innerHTML = `
+                                <div class="search-box">
+                                    <div class="search-header">
+                                        <span>⚠️ خطا در جستجوی منابع</span>
+                                    </div>
+                                    <div class="search-progress error">خطا: ${error.message}</div>
+                                </div>`;
+                            showToast(`⚠️ خطا در جستجو: ${error.message}`, 'warning');
+                        }
+                    }
+                    
+                    await sleep(800);
+                    if (state.stopFlag) break;
+                    
+                    state.sectionStatus[section] = 'in-progress';
+                    updateSectionsList();
+                    
+                    const contentEl = document.getElementById(`section-content-${state.currentSectionIndex}`);
+                    let fullSectionContent = '';
+                    
+                    try {
+                        for (let partNum = 1; partNum <= analysis.totalParts; partNum++) {
+                            if (state.stopFlag) break;
+                            
+                            if (analysis.totalParts > 1) {
+                                const partIndicator = document.createElement('div');
+                                partIndicator.className = 'part-indicator';
+                                partIndicator.innerHTML = `📝 پارت ${convertToPersianNumbers(partNum)} از ${convertToPersianNumbers(analysis.totalParts)}`;
+                                contentEl.appendChild(partIndicator);
+                            }
+                            
+                            const previousPartContent = fullSectionContent;
+                            const prompt = buildPartPrompt(analysis, partNum, previousPartContent, sectionRefs);
+                            
+                            const partResult = await callGroqAPI(prompt, (chunk) => {
+                                if (!state.stopFlag) enqueueTyping(chunk, contentEl);
+                            });
+                            
+                            if (state.stopFlag) break;
+                            
+                            await waitForTypingComplete();
+                            
+                            if (!partResult || partResult.trim().length === 0) {
+                                contentEl.appendChild(document.createTextNode('[پارت خالی]'));
+                            } else {
+                                fullSectionContent += (fullSectionContent ? '\n\n' : '') + partResult;
+                            }
+                            
+                            if (partNum < analysis.totalParts && !state.stopFlag) await sleep(800);
+                        }
+                        
+                        if (state.stopFlag) break;
+                        
+                        if (!fullSectionContent || fullSectionContent.trim().length === 0) {
+                            state.sectionStatus[section] = 'error';
+                        } else {
+                            state.generatedContent[section] = fullSectionContent;
+                            state.previousSummary = summarizeText(fullSectionContent);
+                            state.sectionStatus[section] = 'completed';
+                        }
+                        
+                        state.currentSectionIndex++;
+                        updateProgress(state.currentSectionIndex, totalSections);
+                        updateSectionsList();
+                        saveProgress();
+                        
+                        if (state.currentSectionIndex < totalSections && !state.stopFlag) await sleep(CONFIG.SECTION_DELAY);
+                        
+                    } catch (error) {
+                        state.sectionStatus[section] = 'error';
+                        contentEl.appendChild(document.createTextNode(`\n[خطا: ${error.message}]`));
+                        state.currentSectionIndex++;
+                        updateSectionsList();
+                        saveProgress();
+                    }
+                }
+                
+                onGenerationComplete();
+            } catch (error) {
+                showToast(`خطا: ${error.message}`, 'error');
+                onGenerationComplete();
+            }
+        }
+
+        function stopGeneration() {
+            state.stopFlag = true;
+            state.isRunning = false;
+            flushTypingQueue();
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('progressLabel').textContent = `⛔ متوقف شد`;
+            document.getElementById('progressLabel').style.color = '#e74c3c';
+            showToast('متوقف شد - پیشرفت ذخیره شد', 'warning');
+            saveProgress();
+        }
+
+        function onGenerationComplete() {
+            state.isRunning = false;
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('downloadBtn').disabled = false;
+            
+            if (!state.stopFlag) {
+                document.getElementById('progressLabel').textContent = '100٪ | ✔ تکمیل شد';
+                document.getElementById('progressLabel').style.color = '#27ae60';
+                document.getElementById('progressFill').style.width = '100%';
+                document.getElementById('progressFill').textContent = '100%';
+                
+                let totalWords = 0;
+                Object.values(state.generatedContent).forEach(c => { totalWords += c.split(/\s+/).length; });
+                
+                const refsCount = state.foundReferences.length;
+                const refSectionsCount = state.sectionsWithRefs.length;
+                
+                sendNotification(
+                    '✓ نگارش تکمیل شد!',
+                    `${convertToPersianNumbers(state.sections.length)} بخش (${convertToPersianNumbers(refSectionsCount)} با رفرنس) - ${convertToPersianNumbers(totalWords)} کلمه - ${convertToPersianNumbers(refsCount)} منبع واقعی`
+                );
+                
+                showStatus(`✓ تکمیل شد! ${convertToPersianNumbers(state.sections.length)} بخش (${convertToPersianNumbers(refSectionsCount)} با رفرنس) | ${convertToPersianNumbers(totalWords)} کلمه | ${convertToPersianNumbers(refsCount)} منبع واقعی`, 'success');
+                saveProgress();
+            }
+        }
+
+        // ============ 📥 دانلود Word ============
+        async function downloadWord() {
+            if (Object.keys(state.generatedContent).length === 0) { showToast('محتوایی نیست', 'warning'); return; }
+            try {
+                if (typeof docx === 'undefined') throw new Error('کتابخانه docx بارگذاری نشده');
+                const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = docx;
+                const children = [];
+                
+                children.push(new Paragraph({
+                    children: [new TextRun({ text: state.topic, bold: true, size: 32 })],
+                    heading: HeadingLevel.TITLE,
+                    alignment: AlignmentType.CENTER
+                }));
+                children.push(new Paragraph({ children: [new TextRun({ text: `نوع سند: ${state.docType}`, size: 22 })] }));
+                children.push(new Paragraph({ children: [new TextRun({ text: `تاریخ: ${new Date().toLocaleString('fa-IR')}`, size: 22 })] }));
+                
+                let totalWords = 0;
+                Object.values(state.generatedContent).forEach(c => { totalWords += c.split(/\s+/).length; });
+                children.push(new Paragraph({ children: [new TextRun({ text: `تعداد کلمات: ${convertToPersianNumbers(totalWords)}`, size: 22, italics: true })] }));
+                children.push(new Paragraph({ children: [new TextRun({ text: `بخش‌های با رفرنس: ${convertToPersianNumbers(state.sectionsWithRefs.length)} از ${convertToPersianNumbers(state.sections.length)}`, size: 22, italics: true })] }));
+                children.push(new Paragraph({ children: [] }));
+                
+                for (const section of state.sections) {
+                    const content = state.generatedContent[section];
+                    if (!content) continue;
+                    
+                    children.push(new Paragraph({
+                        children: [new TextRun({ text: section, bold: true, size: 28 })],
+                        heading: HeadingLevel.HEADING_1
+                    }));
+                    
+                    content.split('\n').filter(p => p.trim()).forEach(para => {
+                        children.push(new Paragraph({
+                            children: [new TextRun({ text: para, size: 24 })],
+                            spacing: { after: 200 }
+                        }));
+                    });
+                    
+                    children.push(new Paragraph({ children: [] }));
+                }
+                
+                // 📚 افزودن بخش منابع APA با تاریخ فارسی
+                if (state.foundReferences.length > 0) {
+                    children.push(new Paragraph({
+                        children: [new TextRun({ text: 'فهرست منابع', bold: true, size: 32 })],
+                        heading: HeadingLevel.HEADING_1,
+                        alignment: AlignmentType.CENTER
+                    }));
+                    
+                    children.push(new Paragraph({
+                        children: [new TextRun({ text: 'منابع فارسی', bold: true, size: 26, underline: {} })],
+                        spacing: { before: 200, after: 100 }
+                    }));
+                    
+                    const persianRefs = state.foundReferences.filter(r => r.language === 'fa');
+                    const englishRefs = state.foundReferences.filter(r => r.language === 'en');
+                    
+                    if (persianRefs.length > 0) {
+                        persianRefs.forEach(ref => {
+                            children.push(new Paragraph({
+                                children: [new TextRun({ text: formatAPA(ref), size: 22 })],
+                                spacing: { after: 120 },
+                                indent: { right: 400, hanging: 400 }
+                            }));
+                        });
+                    } else {
+                        children.push(new Paragraph({
+                            children: [new TextRun({ text: '(منبع فارسی یافت نشد)', size: 22, italics: true })],
+                            spacing: { after: 120 }
+                        }));
+                    }
+                    
+                    children.push(new Paragraph({
+                        children: [new TextRun({ text: 'منابع انگلیسی', bold: true, size: 26, underline: {} })],
+                        spacing: { before: 300, after: 100 }
+                    }));
+                    
+                    if (englishRefs.length > 0) {
+                        englishRefs.forEach(ref => {
+                            children.push(new Paragraph({
+                                children: [new TextRun({ text: formatAPA(ref), size: 22 })],
+                                spacing: { after: 120 },
+                                indent: { right: 400, hanging: 400 }
+                            }));
+                        });
+                    } else {
+                        children.push(new Paragraph({
+                            children: [new TextRun({ text: '(منبع انگلیسی یافت نشد)', size: 22, italics: true })],
+                            spacing: { after: 120 }
+                        }));
+                    }
+                }
+                
+                const doc = new Document({ sections: [{ properties: {}, children }] });
+                const blob = await Packer.toBlob(doc);
+                
+                const ts = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 16);
+                const safeTopic = state.topic.replace(/[^\w\u0600-\u06FF\s-]/g, '').substring(0, 40);
+                const fileName = `${state.docType}_${safeTopic}_${ts}.docx`;
+                
+                if (window.saveAs) window.saveAs(blob, fileName);
+                else {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                }
+                showToast('✓ دانلود شد', 'success');
+            } catch (error) {
+                showToast(`خطا: ${error.message}`, 'error');
+            }
+        }
+
+        // ============ مدیریت پیشرفت و نوتیفیکیشن ============
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(p => { state.notificationPermission = p; });
+            } else if ('Notification' in window) {
+                state.notificationPermission = Notification.permission;
+            }
+        }
+
+        function sendNotification(title, body) {
+            if (state.notificationPermission === 'granted') {
+                const n = new Notification(title, { body, icon: '🤖', tag: 'pw', requireInteraction: true });
+                n.onclick = function() { window.focus(); n.close(); };
+            }
+        }
+
+        function handleBeforeUnload(e) {
+            if (state.isRunning) {
+                saveProgress();
+                e.preventDefault();
+                return e.returnValue = 'نگارش در حال انجام است.';
+            }
+        }
+
+        function handleVisibilityChange() {
+            if (document.hidden && state.isRunning) saveProgress();
+        }
+
+        function saveProgress() {
+            const progress = {
+                topic: state.topic, docType: state.docType, model: state.model,
+                sections: state.sections,
+                currentSectionIndex: state.currentSectionIndex,
+                generatedContent: state.generatedContent,
+                sectionStatus: state.sectionStatus,
+                sectionPlans: state.sectionPlans,
+                previousSummary: state.previousSummary,
+                structureMode: state.structureMode,
+                customStructure: state.customStructure,
+                userReferences: state.userReferences,
+                sectionsWithRefs: state.sectionsWithRefs,
+                foundReferences: state.foundReferences,
+                sectionReferences: state.sectionReferences,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('writer_progress', JSON.stringify(progress));
+        }
+
+        function checkForUnfinishedWork() {
+            const saved = localStorage.getItem('writer_progress');
+            if (!saved) return;
+            try {
+                const p = JSON.parse(saved);
+                if (p.currentSectionIndex < p.sections.length && Object.keys(p.generatedContent).length > 0) {
+                    document.getElementById('resumeBtn').style.display = 'inline-block';
+                    const completed = Object.keys(p.generatedContent).length;
+                    showStatus(`⚠️ نگارش ناتمام: ${convertToPersianNumbers(completed)} از ${convertToPersianNumbers(p.sections.length)} بخش. موضوع: "${p.topic}"`, 'warning');
+                }
+            } catch (e) {}
+        }
+
+        function showStatus(message, type = 'info') {
+            const banner = document.getElementById('statusBanner');
+            const icon = document.getElementById('statusIcon');
+            const text = document.getElementById('statusText');
+            banner.className = 'status-banner active';
+            if (type === 'success') { banner.classList.add('success'); icon.textContent = '✓'; }
+            else if (type === 'error') { banner.classList.add('error'); icon.textContent = '⛔'; }
+            else { banner.classList.add('info'); icon.textContent = '💡'; }
+            text.textContent = message;
+        }
+
+        function hideStatus() { document.getElementById('statusBanner').className = 'status-banner'; }
+
+        async function resumeGeneration() {
+            const saved = localStorage.getItem('writer_progress');
+            if (!saved) { showToast('نگارش ناتمامی نیست', 'error'); return; }
+            try {
+                const p = JSON.parse(saved);
+                Object.assign(state, {
+                    topic: p.topic, docType: p.docType, model: p.model,
+                    sections: p.sections,
+                    currentSectionIndex: p.currentSectionIndex,
+                    generatedContent: p.generatedContent,
+                    sectionStatus: p.sectionStatus,
+                    sectionPlans: p.sectionPlans || {},
+                    previousSummary: p.previousSummary,
+                    structureMode: p.structureMode,
+                    customStructure: p.customStructure,
+                    userReferences: p.userReferences,
+                    sectionsWithRefs: p.sectionsWithRefs || [],
+                    foundReferences: p.foundReferences || [],
+                    sectionReferences: p.sectionReferences || {}
+                });
+                
+                document.getElementById('topicInput').value = state.topic;
+                document.getElementById('docTypeSelect').value = state.docType;
+                document.getElementById('modelSelect').value = state.model;
+                document.getElementById('structureMode').value = state.structureMode;
+                
+                const output = document.getElementById('outputContent');
+                output.innerHTML = '';
+                for (let i = 0; i < state.currentSectionIndex; i++) {
+                    const section = state.sections[i];
+                    const content = state.generatedContent[section];
+                    if (content) {
+                        output.innerHTML += `<div class="section-title">${section}</div><div class="section-content">${escapeHtml(content)}</div>`;
+                    }
+                }
+                
+                updateSectionsList();
+                updateProgress(state.currentSectionIndex, state.sections.length);
+                updateRefSectionsCount();
+                document.getElementById('resumeBtn').style.display = 'none';
+                hideStatus();
+                showToast('✓ نگارش قبلی بازیابی شد', 'success');
+                
+                state.isRunning = true;
+                state.stopFlag = false;
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('downloadBtn').disabled = true;
+                
+                await runGenerationLoop();
+            } catch (e) {
+                showToast('خطا در بازیابی', 'error');
+            }
+        }
+
+        function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+        // ============ INIT ============
+        window.onload = function() {
+            if (state.apiKey) document.getElementById('apiKeyInput').value = state.apiKey;
+            
+            const savedTyping = localStorage.getItem('typingSettings');
+            if (savedTyping) Object.assign(TYPING_CONFIG, JSON.parse(savedTyping));
+            
+            document.getElementById('typingEnabled').checked = TYPING_CONFIG.enabled;
+            document.getElementById('typingSpeed').value = TYPING_CONFIG.baseSpeed;
+            document.getElementById('typingRandomness').checked = TYPING_CONFIG.randomness;
+            document.getElementById('typingPauses').checked = TYPING_CONFIG.pauses;
+            updateTypingSpeedLabel();
+            
+            const savedRefSections = localStorage.getItem('writer_ref_sections');
+            if (savedRefSections) {
+                try {
+                    state.sectionsWithRefs = JSON.parse(savedRefSections);
+                } catch (e) {
+                    state.sectionsWithRefs = [];
+                }
+            }
+            
+            requestNotificationPermission();
+            checkForUnfinishedWork();
+            
+            window.addEventListener('beforeunload', handleBeforeUnload);
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            
+            onDocTypeChange();
+            updateRefSectionsCount();
+        };
+    </script>
+</body>
+</html>
