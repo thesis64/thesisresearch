@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Persian AI Writer PRO</title>
+<title>Persian AI Writer PRO - با انتخاب فصل‌ها</title>
 <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
 <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Tahoma', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 15px; direction: rtl; }
@@ -19,7 +20,7 @@ header p { color: #7f8c8d; font-size: 0.95em; }
 .status-banner.warning { background: #fff3cd; border-color: #f39c12; }
 .row { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .row label { font-size: 0.9em; color: #2c3e50; font-weight: bold; margin-left: 5px; }
-input[type="text"], select { padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Tahoma', sans-serif; font-size: 0.9em; direction: rtl; }
+input[type="text"], select, input[type="file"] { padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Tahoma', sans-serif; font-size: 0.9em; direction: rtl; }
 input[type="text"]:focus, select:focus { outline: none; border-color: #667eea; }
 .topic-input { flex: 1; min-width: 200px; }
 button { padding: 8px 16px; border: none; border-radius: 8px; font-family: 'Tahoma', sans-serif; font-size: 0.9em; font-weight: bold; cursor: pointer; color: white; transition: all 0.3s; }
@@ -28,6 +29,8 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-start { background: #27ae60; }
 .btn-stop { background: #e74c3c; }
 .btn-download { background: #2980b9; }
+.btn-data { background: #9b59b6; }
+.btn-chapters { background: #e67e22; }
 .btn-structure { background: #8e44ad; }
 .btn-refs { background: #d35400; }
 .btn-refs-sections { background: #16a085; }
@@ -47,18 +50,23 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .section-item .checkbox.in-progress { background: #f39c12; border-color: #f39c12; animation: pulse 1.5s infinite; }
 .section-item .checkbox.error { background: #e74c3c; border-color: #e74c3c; }
 .section-item .checkbox.chapter { background: #3498db; border-color: #3498db; }
+.section-item .checkbox.skipped { background: #95a5a6; border-color: #95a5a6; }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 .section-item .section-name { flex: 1; font-size: 0.9em; color: #2c3e50; }
 .section-item .status { font-size: 1em; width: 25px; text-align: center; }
 .section-item .ref-badge { background: #16a085; color: white; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
 .section-item .no-ref-badge { background: #95a5a6; color: white; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
 .section-item .chapter-badge { background: #3498db; color: white; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
+.section-item .data-badge { background: #9b59b6; color: white; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
+.section-item .skipped-badge { background: #95a5a6; color: white; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
 .output-content { font-family: 'Tahoma', serif; font-size: 1.05em; line-height: 1.9; color: #2c3e50; white-space: pre-wrap; word-wrap: break-word; }
 .section-title { font-size: 1.3em; font-weight: bold; color: #1a1a1a; margin: 20px 0 10px; padding-bottom: 8px; border-bottom: 2px solid #667eea; text-decoration: underline; }
 .section-title.chapter-title { color: #3498db; border-bottom-color: #3498db; font-size: 1.5em; }
 .section-content { margin-bottom: 15px; }
 .thinking-box { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border-right: 4px solid #8b5cf6; padding: 12px 15px; margin: 10px 0; border-radius: 8px; font-size: 0.9em; color: #4c1d95; }
 .thinking-box.chapter-box { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-color: #3b82f6; color: #1e3a8a; }
+.thinking-box.data-box { background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-color: #a855f7; color: #581c87; }
+.thinking-box.skipped-box { background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-color: #9ca3af; color: #4b5563; }
 .thinking-box strong { color: #6d28d9; }
 .thinking-box .thinking-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: bold; }
 .thinking-box .thinking-item { padding: 3px 0; padding-right: 15px; position: relative; }
@@ -76,9 +84,10 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .modal-overlay.active { display: flex; }
 .modal { background: white; border-radius: 15px; padding: 25px; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
 .modal h2 { color: #2c3e50; margin-bottom: 15px; font-size: 1.3em; }
-.modal textarea { width: 100%; min-height: 300px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Tahoma', serif; font-size: 1em; line-height: 1.7; resize: vertical; direction: rtl; }
+.modal textarea { width: 100%; min-height: 200px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Tahoma', serif; font-size: 1em; line-height: 1.7; resize: vertical; direction: rtl; }
 .modal-buttons { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
 .modal-info { background: #e8f5e9; padding: 10px; border-radius: 6px; margin: 10px 0; font-size: 0.9em; color: #2e7d32; }
+.modal-warning { background: #fff3cd; padding: 10px; border-radius: 6px; margin: 10px 0; font-size: 0.9em; color: #856404; }
 .sections-select-container { max-height: 400px; overflow-y: auto; padding: 10px; background: #f8f9fa; border-radius: 8px; margin: 15px 0; }
 .section-select-item { display: flex; align-items: center; padding: 10px; background: white; border-radius: 6px; margin-bottom: 6px; border-right: 3px solid transparent; transition: all 0.2s; }
 .section-select-item:hover { background: #f0f9ff; border-right-color: #667eea; }
@@ -102,31 +111,58 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .guide-step a:hover { text-decoration: underline; }
 .guide-step code { background: #2c3e50; color: #fff; padding: 2px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; }
 .guide-step .warning { background: #f8d7da; border-right: 3px solid #e74c3c; padding: 10px; border-radius: 6px; margin-top: 10px; color: #721c24; }
-.payment-modal { max-width: 600px; }
-.payment-box { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-right: 4px solid #f59e0b; padding: 20px; border-radius: 12px; margin: 20px 0; text-align: center; }
-.payment-box h3 { color: #92400e; margin-bottom: 15px; font-size: 1.3em; }
-.payment-box p { color: #78350f; line-height: 1.8; margin-bottom: 15px; }
-.payment-box .price { font-size: 2em; font-weight: bold; color: #dc2626; margin: 15px 0; }
-.payment-box .price small { font-size: 0.5em; color: #6b7280; }
-.payment-link { display: inline-block; background: #10b981; color: white; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-size: 1.1em; font-weight: bold; margin: 15px 0; transition: all 0.3s; }
-.payment-link:hover { background: #059669; transform: scale(1.05); }
-.payment-features { background: white; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: right; }
-.payment-features ul { list-style: none; padding: 0; }
-.payment-features li { padding: 8px 0; color: #374151; border-bottom: 1px solid #e5e7eb; }
-.payment-features li:last-child { border-bottom: none; }
-.payment-features li::before { content: "✅ "; margin-left: 8px; }
 .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 12px 25px; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 2000; opacity: 0; transition: opacity 0.3s; }
 .toast.show { opacity: 1; }
 .toast.success { background: #27ae60; }
 .toast.error { background: #e74c3c; }
 .toast.warning { background: #f39c12; }
+.chapters-modal { max-width: 700px; }
+.chapter-list { max-height: 400px; overflow-y: auto; padding: 10px; background: #f8f9fa; border-radius: 8px; margin: 15px 0; }
+.chapter-item { display: flex; align-items: center; padding: 12px; background: white; border-radius: 6px; margin-bottom: 8px; border-right: 4px solid #e67e22; cursor: pointer; transition: all 0.2s; }
+.chapter-item:hover { background: #fff7ed; transform: translateX(-3px); }
+.chapter-item.selected { background: #fed7aa; border-right-color: #ea580c; }
+.chapter-item input[type="checkbox"] { width: 22px; height: 22px; margin-left: 12px; cursor: pointer; }
+.chapter-item .chapter-info { flex: 1; }
+.chapter-item .chapter-title { font-weight: bold; color: #2c3e50; font-size: 1em; }
+.chapter-item .chapter-desc { font-size: 0.85em; color: #7f8c8d; margin-top: 3px; }
+.chapter-item .chapter-status { font-size: 0.85em; padding: 4px 10px; border-radius: 4px; background: #e0e0e0; color: #555; }
+.chapter-item.selected .chapter-status { background: #ea580c; color: white; }
+.selection-summary { background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); padding: 15px; border-radius: 8px; margin: 15px 0; border-right: 4px solid #ea580c; }
+.selection-summary h4 { color: #9a3412; margin-bottom: 8px; }
+.selection-summary .summary-text { color: #7c2d12; font-size: 0.95em; }
+.data-modal { max-width: 1000px; }
+.upload-area { border: 3px dashed #9b59b6; border-radius: 12px; padding: 30px; text-align: center; background: #faf5ff; margin: 15px 0; cursor: pointer; transition: all 0.3s; }
+.upload-area:hover { background: #f3e8ff; border-color: #7c3aed; }
+.upload-area.dragover { background: #ede9fe; border-color: #6d28d9; }
+.upload-icon { font-size: 3em; margin-bottom: 10px; }
+.data-preview { max-height: 400px; overflow: auto; background: #f8f9fa; border-radius: 8px; padding: 15px; margin: 15px 0; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+.data-table th, .data-table td { border: 1px solid #e0e0e0; padding: 6px 10px; text-align: right; }
+.data-table th { background: #667eea; color: white; position: sticky; top: 0; }
+.data-table tr:nth-child(even) { background: #f8f9fa; }
+.stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 15px 0; }
+.stat-card { background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); padding: 15px; border-radius: 8px; border-right: 4px solid #9b59b6; }
+.stat-card h4 { color: #581c87; margin-bottom: 8px; font-size: 0.95em; }
+.stat-card .stat-value { font-size: 1.5em; font-weight: bold; color: #7c3aed; }
+.stat-card .stat-label { font-size: 0.8em; color: #6b7280; }
+.form-group { margin: 15px 0; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2c3e50; }
+.form-group select, .form-group input, .form-group textarea { width: 100%; padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 6px; font-family: 'Tahoma', sans-serif; font-size: 0.9em; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+.tab-container { margin: 15px 0; }
+.tab-buttons { display: flex; gap: 5px; border-bottom: 2px solid #e0e0e0; margin-bottom: 15px; flex-wrap: wrap; }
+.tab-btn { padding: 10px 20px; background: transparent; color: #2c3e50; border: none; border-radius: 6px 6px 0 0; cursor: pointer; font-weight: bold; }
+.tab-btn.active { background: #667eea; color: white; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
 </style>
 </head>
 <body>
 <div class="container">
     <header>
         <h1>🤖 Persian AI Writer PRO</h1>
-        <p>ربات نویسنده هوشمند - سرعت بالا + بدون توقف</p>
+        <p>ربات نویسنده هوشمند - با قابلیت انتخاب فصل‌ها</p>
     </header>
 
     <div class="status-banner" id="statusBanner"><span id="statusIcon">✓</span><span id="statusText"></span></div>
@@ -169,8 +205,10 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
         </select>
         
         <button class="btn-structure" id="editStructureBtn" disabled>✎ ویرایش ساختار</button>
-        <button class="btn-refs-sections" id="refsSectionsBtn">🎯 انتخاب بخش‌های رفرنس‌دار (<span id="refSectionsCount">0</span>)</button>
+        <button class="btn-chapters" id="chaptersBtn">📑 انتخاب فصل‌ها (<span id="chaptersCount">0</span>)</button>
+        <button class="btn-refs-sections" id="refsSectionsBtn">🎯 رفرنس‌دار (<span id="refSectionsCount">0</span>)</button>
         <button class="btn-refs" id="refsBtn">📚 منابع کاربر</button>
+        <button class="btn-data" id="dataBtn">📊 داده‌های آماری</button>
         <button class="btn-secondary" id="apiBtn">🔑 تنظیم API</button>
     </div>
 
@@ -189,37 +227,167 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
             <h3>متن تولیدی</h3>
             <div class="output-content" id="outputContent">
                 <p style="color: #95a5a6; text-align: center; padding: 40px;">
-                    ⚡ سرعت بالا - بدون توقف در پس‌زمینه<br>
-                    📖 تشخیص هوشمند فصل‌ها و زیربخش‌ها<br>
-                    🔍 جستجوی منابع واقعی از 4 پایگاه علمی<br>
-                    📚 پشتیبانی کامل از منابع سفارشی
+                    📑 قابلیت جدید: انتخاب فصل‌ها<br>
+                    🎯 فقط فصل‌های انتخاب شده نگارش می‌شوند<br>
+                    📊 تحلیل آماری فصل چهارم<br>
+                    🔍 جستجوی منابع واقعی از 4 پایگاه علمی
                 </p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- مودال پرداخت -->
-<div class="modal-overlay" id="paymentModal">
-    <div class="modal payment-modal">
-        <h2>💳 ادامه نگارش - پرداخت هزینه</h2>
-        <div class="payment-box">
-            <h3>🎓 برای ادامه نگارش، هزینه را پرداخت کنید</h3>
-            <p>شما 2 بخش اول را به صورت رایگان دریافت کرده‌اید.</p>
-            <div class="price">50,000 <small>تومان</small></div>
-            <div class="payment-features">
-                <ul>
-                    <li>ادامه نگارش تمام بخش‌های باقی‌مانده</li>
-                    <li>جستجوی منابع واقعی از 4 پایگاه علمی</li>
-                    <li>استناد درون‌متنی در هر پاراگراف</li>
-                    <li>دانلود فایل Word کامل</li>
-                </ul>
-            </div>
-            <a href="https://ppng.ir/d/FLjD" target="_blank" class="payment-link">💳 پرداخت و ادامه نگارش</a>
+<!-- مودال انتخاب فصل‌ها -->
+<div class="modal-overlay" id="chaptersModal">
+    <div class="modal chapters-modal">
+        <h2>📑 انتخاب فصل‌های مورد نظر برای نگارش</h2>
+        <p style="color: #7f8c8d; margin-bottom: 15px;">
+            💡 فقط فصل‌هایی که تیک می‌زنید نگارش می‌شوند. بقیه فصل‌ها در فایل Word به عنوان سرفصل باقی می‌مانند.
+        </p>
+
+        <div class="quick-actions">
+            <button class="quick-action-btn btn-start" id="selectAllChapters">✓ انتخاب همه فصل‌ها</button>
+            <button class="quick-action-btn btn-stop" id="deselectAllChapters">✗ لغو انتخاب همه</button>
+            <button class="quick-action-btn btn-chapters" id="selectMainChapters">🎯 فقط فصل‌های اصلی (1 تا 5)</button>
+            <button class="quick-action-btn btn-secondary" id="selectOnlyCh4">📊 فقط فصل چهارم</button>
+            <button class="quick-action-btn btn-secondary" id="selectOnlyCh5">📝 فقط فصل پنجم</button>
         </div>
+
+        <div class="chapter-list" id="chapterList"></div>
+
+        <div class="selection-summary" id="selectionSummary">
+            <h4>📊 خلاصه انتخاب</h4>
+            <div class="summary-text" id="summaryText">هیچ فصلی انتخاب نشده است</div>
+        </div>
+
         <div class="modal-buttons">
-            <button class="btn-start" id="confirmPaymentBtn">✓ پرداخت کردم - ادامه نگارش</button>
-            <button class="btn-stop" id="cancelPaymentBtn">✗ لغو و توقف</button>
+            <button class="btn-start" id="applyChaptersBtn">✓ اعمال انتخاب</button>
+            <button class="btn-secondary" id="closeChaptersBtn">✗ لغو</button>
+        </div>
+    </div>
+</div>
+
+<!-- مودال داده‌های آماری -->
+<div class="modal-overlay" id="dataModal">
+    <div class="modal data-modal">
+        <h2>📊 داده‌های آماری برای فصل چهارم</h2>
+        <p style="color: #7f8c8d; margin-bottom: 15px;">
+            💡 داده‌های پژوهش خود را وارد کنید تا فصل چهارم با تحلیل آماری واقعی نوشته شود.
+        </p>
+
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('upload')">📁 آپلود فایل</button>
+                <button class="tab-btn" onclick="switchTab('manual')">✍️ ورود دستی</button>
+                <button class="tab-btn" onclick="switchTab('hypotheses')">🎯 فرضیات</button>
+                <button class="tab-btn" onclick="switchTab('preview')">👁 پیش‌نمایش</button>
+            </div>
+
+            <div class="tab-content active" id="tab-upload">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <h3>فایل Excel یا CSV را اینجا بکشید یا کلیک کنید</h3>
+                    <p style="color: #7f8c8d; margin-top: 10px;">فرمت‌های پشتیبانی شده: .xlsx, .xls, .csv</p>
+                    <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;">
+                </div>
+                <div id="fileInfo" style="display: none; margin: 15px 0;"></div>
+            </div>
+
+            <div class="tab-content" id="tab-manual">
+                <div class="form-group">
+                    <label>داده‌ها (هر ردیف در یک خط، ستون‌ها با تب یا کاما جدا شوند):</label>
+                    <textarea id="manualData" rows="10" placeholder="متغیر1, متغیر2, متغیر3
+25, 30, 1
+28, 32, 1
+22, 28, 2"></textarea>
+                    <button class="btn-secondary" onclick="parseManualData()" style="margin-top: 10px;">🔄 پردازش داده‌ها</button>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-hypotheses">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>نوع پژوهش:</label>
+                        <select id="researchType">
+                            <option value="quantitative">کمی (Quantitative)</option>
+                            <option value="qualitative">کیفی (Qualitative)</option>
+                            <option value="mixed">آمیخته (Mixed)</option>
+                            <option value="descriptive">توصیفی (Descriptive)</option>
+                            <option value="correlational">همبستگی (Correlational)</option>
+                            <option value="experimental">آزمایشی (Experimental)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>روش تحلیل اصلی:</label>
+                        <select id="analysisMethod">
+                            <option value="descriptive">آمار توصیفی</option>
+                            <option value="ttest">آزمون t</option>
+                            <option value="anova">تحلیل واریانس (ANOVA)</option>
+                            <option value="regression">رگرسیون</option>
+                            <option value="correlation">همبستگی</option>
+                            <option value="chi2">کای-دو (Chi-Square)</option>
+                            <option value="sem">مدل‌سازی معادلات ساختاری (SEM)</option>
+                            <option value="factor">تحلیل عاملی</option>
+                            <option value="cluster">خوشه‌بندی</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>فرضیات پژوهش (هر فرضیه در یک خط):</label>
+                    <textarea id="hypotheses" rows="6" placeholder="فرضیه 1: بین متغیر X و Y رابطه معناداری وجود دارد.
+فرضیه 2: میانگین گروه آزمایش از گروه کنترل بیشتر است."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>متغیر مستقل:</label>
+                        <input type="text" id="independentVar" placeholder="مثلاً: روش آموزش">
+                    </div>
+                    <div class="form-group">
+                        <label>متغیر وابسته:</label>
+                        <input type="text" id="dependentVar" placeholder="مثلاً: عملکرد تحصیلی">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>جامعه آماری و حجم نمونه:</label>
+                    <input type="text" id="sampleInfo" placeholder="مثلاً: 200 دانشجو از دانشگاه تهران">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>نرم‌افزار آماری:</label>
+                        <select id="statSoftware">
+                            <option value="spss">SPSS</option>
+                            <option value="amoss">AMOS</option>
+                            <option value="smartpls">SmartPLS</option>
+                            <option value="lisrel">LISREL</option>
+                            <option value="r">R</option>
+                            <option value="python">Python</option>
+                            <option value="excel">Excel</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>سطح معناداری (α):</label>
+                        <select id="significanceLevel">
+                            <option value="0.05">0.05 (5%)</option>
+                            <option value="0.01">0.01 (1%)</option>
+                            <option value="0.001">0.001 (0.1%)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-preview">
+                <div id="statsSummary"></div>
+                <div id="dataPreviewContainer"></div>
+            </div>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="btn-start" id="saveDataBtn">✓ ذخیره و تحلیل</button>
+            <button class="btn-secondary" id="closeDataBtn">✗ لغو</button>
         </div>
     </div>
 </div>
@@ -228,7 +396,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 <div class="modal-overlay" id="refsSectionsModal">
     <div class="modal">
         <h2>🎯 انتخاب بخش‌های دارای رفرنس</h2>
-        <p style="margin-bottom: 10px; color: #7f8c8d;">💡 بخش‌هایی که تیک می‌زنید، منابع واقعی جستجو می‌کنند (در حالت خودکار).</p>
+        <p style="margin-bottom: 10px; color: #7f8c8d;">💡 بخش‌هایی که تیک می‌زنید، منابع واقعی جستجو می‌کنند.</p>
         <div class="quick-actions">
             <button class="quick-action-btn btn-start" id="selectAllRefBtn">✓ انتخاب همه</button>
             <button class="quick-action-btn btn-stop" id="deselectAllRefBtn">✗ لغو انتخاب همه</button>
@@ -248,30 +416,12 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
     <div class="modal">
         <h2>🔑 تنظیم کلید API</h2>
         <div class="guide-steps">
-            <div class="guide-step">
-                <h4><span class="step-number">1</span> ورود به سایت Groq</h4>
-                <p><a href="https://console.groq.com" target="_blank">🌐 https://console.groq.com</a></p>
-            </div>
-            <div class="guide-step">
-                <h4><span class="step-number">2</span> ثبت‌نام یا ورود</h4>
-                <p>با ایمیل یا Google ثبت‌نام کنید. <strong>رایگان</strong>.</p>
-            </div>
-            <div class="guide-step">
-                <h4><span class="step-number">3</span> رفتن به API Keys</h4>
-                <p><a href="https://console.groq.com/keys" target="_blank">🔑 https://console.groq.com/keys</a></p>
-            </div>
-            <div class="guide-step">
-                <h4><span class="step-number">4</span> ساخت کلید جدید</h4>
-                <p>روی <strong>Create API Key</strong> کلیک کنید.</p>
-            </div>
-            <div class="guide-step">
-                <h4><span class="step-number">5</span> کپی کلید</h4>
-                <p>کلید با <code>gsk_</code> شروع می‌شود.</p>
-                <div class="warning">⚠️ فقط یک بار نمایش داده می‌شود!</div>
-            </div>
-            <div class="guide-step">
-                <h4><span class="step-number">6</span> وارد کردن کلید</h4>
-            </div>
+            <div class="guide-step"><h4><span class="step-number">1</span> ورود به سایت Groq</h4><p><a href="https://console.groq.com" target="_blank">🌐 https://console.groq.com</a></p></div>
+            <div class="guide-step"><h4><span class="step-number">2</span> ثبت‌نام یا ورود</h4><p>با ایمیل یا Google ثبت‌نام کنید. <strong>رایگان</strong>.</p></div>
+            <div class="guide-step"><h4><span class="step-number">3</span> رفتن به API Keys</h4><p><a href="https://console.groq.com/keys" target="_blank">🔑 https://console.groq.com/keys</a></p></div>
+            <div class="guide-step"><h4><span class="step-number">4</span> ساخت کلید جدید</h4><p>روی <strong>Create API Key</strong> کلیک کنید.</p></div>
+            <div class="guide-step"><h4><span class="step-number">5</span> کپی کلید</h4><p>کلید با <code>gsk_</code> شروع می‌شود.</p><div class="warning">⚠️ فقط یک بار نمایش داده می‌شود!</div></div>
+            <div class="guide-step"><h4><span class="step-number">6</span> وارد کردن کلید</h4></div>
         </div>
         <input type="text" id="apiKeyInput" class="api-key-input" placeholder="gsk_...">
         <div class="modal-buttons">
@@ -285,18 +435,17 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 <div class="modal-overlay" id="structureModal">
     <div class="modal">
         <h2>✎ ویرایش ساختار دلخواه</h2>
-        <p style="color: #7f8c8d; margin-bottom: 10px;">💡 تیترهای فصل را دقیقاً بنویسید (مثل: فصل اول: کلیات تحقیق). سیستم آنها را فقط به عنوان سرفصل در نظر می‌گیرد.</p>
+        <p style="color: #7f8c8d; margin-bottom: 10px;">💡 تیترهای فصل را دقیقاً بنویسید.</p>
         <textarea id="structureInput" placeholder="فصل اول: کلیات تحقیق
 مقدمه
 بیان مسئله
 اهمیت پژوهش
 فصل دوم: مبانی نظری
 مرور ادبیات
-چارچوب نظری
 فصل سوم: روش‌شناسی
 جامعه و نمونه
-ابزارها
-نتیجه‌گیری"></textarea>
+فصل چهارم: تجزیه و تحلیل داده‌ها
+فصل پنجم: نتیجه‌گیری و پیشنهادها"></textarea>
         <div class="modal-info" id="structureCounter">📊 0 بخش</div>
         <div class="modal-buttons">
             <button class="btn-start" id="applyStructureBtn">✓ اعمال</button>
@@ -309,21 +458,11 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 <div class="modal-overlay" id="refsModal">
     <div class="modal">
         <h2>📚 بارگذاری منابع کاربر</h2>
-        <p style="margin-bottom: 10px; color: #7f8c8d;">💡 در حالت سفارشی، جستجوی منابع انجام نمی‌شود و فقط از این منابع استفاده می‌شود.</p>
-        <p style="margin-bottom: 10px; color: #2e7d32; font-size: 0.9em;">
-            📌 فرمت: هر منبع در یک خط. می‌توانید با "منابع فارسی:" و "منابع انگلیسی:" جدا کنید یا بدون هدر وارد کنید.
-        </p>
         <textarea id="refsInput" placeholder="منابع فارسی:
 1. احمدی (1400). عنوان کتاب.
-2. رضایی (1399). مقاله پژوهشی.
 
 منابع انگلیسی:
-1. Smith (2020). Book Title.
-2. Johnson (2019). Article Title.
-
-یا بدون هدر:
-احمدی (1400). عنوان کتاب.
-Smith (2020). Book Title."></textarea>
+1. Smith (2020). Book Title."></textarea>
         <div class="modal-info" id="refsCounter">📊 0 فارسی | 0 انگلیسی</div>
         <div class="modal-buttons">
             <button class="btn-start" id="applyRefsBtn">✓ اعمال</button>
@@ -349,8 +488,7 @@ const CONFIG = {
     MIN_REFERENCES_REQUIRED: 5,
     MAX_SEARCH_ATTEMPTS: 3,
     REFS_PER_SECTION: 8,
-    SEARCH_TIMEOUT: 20000,
-    PAYMENT_AFTER_SECTION: 2
+    SEARCH_TIMEOUT: 20000
 };
 
 const OUTLINES = {
@@ -402,12 +540,13 @@ const SECTION_WORD_MAP = {
     "روش تحلیل": { min: 500, max: 900 },
     "تحلیل داده": { min: 800, max: 1500 },
     "ملاحظات اخلاقی": { min: 200, max: 400 },
-    "یافته‌ها": { min: 1500, max: 2500 },
-    "تجزیه و تحلیل": { min: 1500, max: 3000 },
+    "یافته‌ها": { min: 2500, max: 4000 },
+    "تجزیه و تحلیل": { min: 3000, max: 5000 },
+    "تجزیه و تحلیل داده‌ها": { min: 3000, max: 5000 },
     "نتایج": { min: 1000, max: 1500 },
-    "آمار توصیفی": { min: 600, max: 1000 },
-    "آزمون فرضیه": { min: 1000, max: 2000 },
-    "آزمون فرضیات": { min: 1000, max: 2000 },
+    "آمار توصیفی": { min: 800, max: 1500 },
+    "آزمون فرضیه": { min: 1500, max: 2500 },
+    "آزمون فرضیات": { min: 1500, max: 2500 },
     "بحث": { min: 1000, max: 2000 },
     "تفسیر": { min: 800, max: 1500 },
     "نتیجه‌گیری": { min: 600, max: 1000 },
@@ -433,7 +572,6 @@ const state = {
     apiKey: localStorage.getItem('groq_api_key') || '',
     isRunning: false,
     stopFlag: false,
-    paymentCompleted: localStorage.getItem('payment_completed') === 'true',
     sections: [],
     sectionNumbers: {},
     currentSectionIndex: 0,
@@ -449,32 +587,129 @@ const state = {
     foundReferences: [],
     sectionReferences: {},
     wakeLock: null,
-    generationAbortController: null
+    generationAbortController: null,
+    selectedChapters: [],
+    allChapters: [],
+    inChapterFour: false,
+    statisticalData: {
+        rawData: null, headers: [], rows: [], statistics: {},
+        researchType: 'quantitative', analysisMethod: 'descriptive',
+        hypotheses: [], independentVar: '', dependentVar: '',
+        sampleInfo: '', statSoftware: 'spss', significanceLevel: '0.05',
+        hasData: false
+    }
 };
 
 // ============ HELPER FUNCTIONS ============
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
 function isChapterHeader(title) {
     if (!title) return false;
     const patterns = [
-        /فصل\s+[\w۰-۹]+/i,
-        /chapter\s+\w+/i,
+        /فصل\s+[\w۰-۹]+/i, /chapter\s+\w+/i,
         /^[\d۰-۹]+\s*[-\.:)\]]\s*فصل/i,
-        /^فصل\s+اول/i,
-        /^فصل\s+دوم/i,
-        /^فصل\s+سوم/i,
-        /^فصل\s+چهارم/i,
-        /^فصل\s+پنجم/i,
-        /^فصل\s+ششم/i,
-        /^فصل\s+هفتم/i,
-        /^فصل\s+هشتم/i,
-        /^فصل\s+نهم/i,
-        /^فصل\s+دهم/i
+        /^فصل\s+اول/i, /^فصل\s+دوم/i, /^فصل\s+سوم/i,
+        /^فصل\s+چهارم/i, /^فصل\s+پنجم/i, /^فصل\s+ششم/i,
+        /^فصل\s+هفتم/i, /^فصل\s+هشتم/i, /^فصل\s+نهم/i, /^فصل\s+دهم/i
     ];
     return patterns.some(p => p.test(title));
+}
+
+function isChapterFour(title) {
+    if (!title) return false;
+    const patterns = [/فصل\s+چهارم/i, /فصل\s+۴/i, /chapter\s+4/i, /تجزیه\s+و\s+تحلیل/i, /یافته‌ها/i, /تحلیل\s+داده/i];
+    return patterns.some(p => p.test(title));
+}
+
+function isChapterFourSubsection(title) {
+    if (!title) return false;
+    const normalizedTitle = title.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+    const ch4Patterns = [
+        /^4\s*[-\.]\s*\d+/,
+        /^4\s*[-\.]\s*\d+\s*[-\.]\s*\d+/,
+        /^4\s*[-\.]\s*\d+\s*[-\.]\s*\d+\s*[-\.]\s*\d+/
+    ];
+    if (ch4Patterns.some(p => p.test(normalizedTitle))) return true;
+    const ch4Keywords = [
+        'مقدمه فصل', 'تحلیل کیفی', 'تحلیل اسناد', 'تحلیل مصاحبه',
+        'کدگذاری باز', 'کدگذاری محوری', 'کدگذاری انتخابی', 'استخراج مؤلفه',
+        'ابعاد آموزشی', 'ابعاد رفتاری', 'ابعاد سازمانی', 'ابعاد مهارتی',
+        'آمار توصیفی', 'ویژگی‌های جمعیت‌شناختی', 'توزیع فراوانی', 'توصیف متغیرها',
+        'آماره‌های توصیفی', 'آمار استنباطی', 'آزمون فرضیه', 'آزمون فرضیات',
+        'نرمال بودن', 'کولموگروف', 'شاپیرو', 'همبستگی', 'رگرسیون', 'آزمون t',
+        'تحلیل واریانس', 'ANOVA', 'فریدمن', 'رتبه‌بندی', 'معادلات ساختاری',
+        'SEM', 'تحلیل عاملی', 'CFA', 'روایی همگرا', 'روایی واگرا', 'پایایی ترکیبی',
+        'برازش مدل', 'تحلیل آمیخته', 'مثلث‌سازی', 'triangulation',
+        'جمع‌بندی یافته‌ها', 'خلاصه یافته‌ها'
+    ];
+    if (ch4Keywords.some(kw => title.includes(kw))) return true;
+    if (state.inChapterFour) {
+        const subPatterns = [
+            /^[الفبپتثجچحخدرزسشصضطظعغفقکگلمنوهی]\s*[-\.\)]/,
+            /^\d+\s*[-\.\)]\s*\d+/,
+            /^۱\s*[-\.\)]/,
+            /^۲\s*[-\.\)]/
+        ];
+        if (subPatterns.some(p => p.test(normalizedTitle))) return true;
+    }
+    return false;
+}
+
+function extractChapterNumber(title) {
+    if (!title) return null;
+    const persianNumbers = { 'اول': 1, 'دوم': 2, 'سوم': 3, 'چهارم': 4, 'پنجم': 5, 'ششم': 6, 'هفتم': 7, 'هشتم': 8, 'نهم': 9, 'دهم': 10 };
+    for (const [word, num] of Object.entries(persianNumbers)) {
+        if (title.includes(`فصل ${word}`) || title.includes(`فصل${word}`)) return num;
+    }
+    const match = title.match(/فصل\s*([\d۰-۹]+)/);
+    if (match) {
+        const num = match[1].replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+        return parseInt(num);
+    }
+    return null;
+}
+
+function isMainChapter(title) {
+    if (!title) return false;
+    return isChapterHeader(title) || title === 'چکیده' || title === 'منابع' || title === 'فهرست منابع';
+}
+
+function extractChapters() {
+    const chapters = [];
+    const seen = new Set();
+    state.sections.forEach(section => {
+        if (isMainChapter(section) && !seen.has(section)) {
+            seen.add(section);
+            const chapterNum = extractChapterNumber(section);
+            chapters.push({
+                title: section,
+                number: chapterNum,
+                isChapter: isChapterHeader(section),
+                description: getChapterDescription(section)
+            });
+        }
+    });
+    chapters.sort((a, b) => {
+        if (a.number && b.number) return a.number - b.number;
+        if (a.number) return -1;
+        if (b.number) return 1;
+        return 0;
+    });
+    state.allChapters = chapters;
+    return chapters;
+}
+
+function getChapterDescription(title) {
+    if (title === 'چکیده') return 'خلاصه پژوهش';
+    if (title === 'منابع' || title === 'فهرست منابع') return 'لیست منابع و مراجع';
+    if (title.includes('اول')) return 'کلیات تحقیق';
+    if (title.includes('دوم')) return 'مبانی نظری و پیشینه';
+    if (title.includes('سوم')) return 'روش‌شناسی';
+    if (title.includes('چهارم')) return 'تجزیه و تحلیل داده‌ها';
+    if (title.includes('پنجم')) return 'نتیجه‌گیری و پیشنهادها';
+    if (title.includes('ششم')) return 'فصل ششم';
+    if (title.includes('هفتم')) return 'فصل هفتم';
+    return 'بخش';
 }
 
 function getWordRangeFromTitle(title) {
@@ -509,20 +744,15 @@ function showStatus(message, type = 'success') {
     const banner = document.getElementById('statusBanner');
     const icon = document.getElementById('statusIcon');
     const text = document.getElementById('statusText');
-    
     banner.className = 'status-banner active';
     if (type === 'error') banner.classList.add('error');
     else if (type === 'warning') banner.classList.add('warning');
-    
     icon.textContent = type === 'error' ? '⛔' : type === 'warning' ? '⚠️' : '✓';
     text.textContent = message;
 }
 
-function hideStatus() {
-    document.getElementById('statusBanner').className = 'status-banner';
-}
+function hideStatus() { document.getElementById('statusBanner').className = 'status-banner'; }
 
-// ============ WAKE LOCK ============
 async function requestWakeLock() {
     if ('wakeLock' in navigator) {
         try {
@@ -531,101 +761,462 @@ async function requestWakeLock() {
                 if (state.isRunning) requestWakeLock();
             });
             return true;
-        } catch (e) {
-            return false;
-        }
+        } catch (e) { return false; }
     }
     return false;
 }
 
 function releaseWakeLock() {
-    if (state.wakeLock) {
-        state.wakeLock.release();
-        state.wakeLock = null;
+    if (state.wakeLock) { state.wakeLock.release(); state.wakeLock = null; }
+}
+
+function populateChaptersModal() {
+    extractChapters();
+    const container = document.getElementById('chapterList');
+    container.innerHTML = '';
+    if (state.allChapters.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;">⚠️ هیچ فصلی در ساختار تعریف نشده است</p>';
+        updateSelectionSummary();
+        return;
+    }
+    state.allChapters.forEach((chapter, idx) => {
+        const isSelected = state.selectedChapters.includes(chapter.title);
+        const item = document.createElement('div');
+        item.className = `chapter-item ${isSelected ? 'selected' : ''}`;
+        item.innerHTML = `
+            <input type="checkbox" class="chapter-checkbox" value="${escapeHtml(chapter.title)}" id="chapter-${idx}" ${isSelected ? 'checked' : ''}>
+            <div class="chapter-info">
+                <div class="chapter-title">${chapter.number ? `فصل ${convertToPersianNumbers(chapter.number)}: ` : ''}${escapeHtml(chapter.title)}</div>
+                <div class="chapter-desc">${escapeHtml(chapter.description)}</div>
+            </div>
+            <div class="chapter-status">${isSelected ? '✓ انتخاب شده' : 'انتخاب نشده'}</div>
+        `;
+        const checkbox = item.querySelector('input');
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                item.classList.add('selected');
+                item.querySelector('.chapter-status').textContent = '✓ انتخاب شده';
+                if (!state.selectedChapters.includes(chapter.title)) {
+                    state.selectedChapters.push(chapter.title);
+                }
+            } else {
+                item.classList.remove('selected');
+                item.querySelector('.chapter-status').textContent = 'انتخاب نشده';
+                state.selectedChapters = state.selectedChapters.filter(c => c !== chapter.title);
+            }
+            updateSelectionSummary();
+        });
+        item.addEventListener('click', function(e) {
+            if (e.target !== checkbox) {
+                checkbox.checked = !checkbox.checked;
+                checkbox.dispatchEvent(new Event('change'));
+            }
+        });
+        container.appendChild(item);
+    });
+    updateSelectionSummary();
+}
+
+function updateSelectionSummary() {
+    const summary = document.getElementById('summaryText');
+    const count = state.selectedChapters.length;
+    const total = state.allChapters.length;
+    if (count === 0) {
+        summary.textContent = '⚠️ هیچ فصلی انتخاب نشده - همه بخش‌ها نگارش می‌شوند';
+    } else if (count === total) {
+        summary.textContent = `✓ همه ${convertToPersianNumbers(total)} فصل انتخاب شده‌اند`;
+    } else {
+        const chapters = state.selectedChapters.map(c => {
+            const num = extractChapterNumber(c);
+            return num ? `فصل ${convertToPersianNumbers(num)}` : c;
+        }).join('، ');
+        summary.textContent = `📑 ${convertToPersianNumbers(count)} فصل انتخاب شده: ${chapters}`;
+    }
+    document.getElementById('chaptersCount').textContent = convertToPersianNumbers(count);
+}
+
+function selectAllChapters() {
+    state.selectedChapters = [...state.allChapters.map(c => c.title)];
+    populateChaptersModal();
+}
+
+function deselectAllChapters() {
+    state.selectedChapters = [];
+    populateChaptersModal();
+}
+
+function selectMainChapters() {
+    state.selectedChapters = state.allChapters
+        .filter(c => c.isChapter && c.number && c.number >= 1 && c.number <= 5)
+        .map(c => c.title);
+    populateChaptersModal();
+}
+
+function selectOnlyChapter(num) {
+    state.selectedChapters = state.allChapters
+        .filter(c => c.number === num)
+        .map(c => c.title);
+    populateChaptersModal();
+}
+
+function applyChaptersSelection() {
+    localStorage.setItem('writer_selected_chapters', JSON.stringify(state.selectedChapters));
+    closeModal('chaptersModal');
+    updateSectionsList();
+    if (state.selectedChapters.length === 0) {
+        showToast('✓ همه بخش‌ها نگارش خواهند شد', 'success');
+    } else {
+        showToast(`✓ ${convertToPersianNumbers(state.selectedChapters.length)} فصل برای نگارش انتخاب شد`, 'success');
     }
 }
 
-// ============ SECTION ANALYSIS ============
+function shouldGenerateSection(sectionTitle) {
+    if (state.selectedChapters.length === 0) return true;
+    if (!isMainChapter(sectionTitle)) {
+        return true;
+    }
+    return state.selectedChapters.includes(sectionTitle);
+}
+
+function calculateDescriptiveStats(values) {
+    const nums = values.filter(v => !isNaN(parseFloat(v))).map(v => parseFloat(v));
+    if (nums.length === 0) return null;
+    const sorted = [...nums].sort((a, b) => a - b);
+    const n = nums.length;
+    const sum = nums.reduce((a, b) => a + b, 0);
+    const mean = sum / n;
+    const median = n % 2 === 0 ? (sorted[n/2 - 1] + sorted[n/2]) / 2 : sorted[Math.floor(n/2)];
+    const freq = {};
+    nums.forEach(v => freq[v] = (freq[v] || 0) + 1);
+    const maxFreq = Math.max(...Object.values(freq));
+    const mode = Object.keys(freq).find(k => freq[k] === maxFreq);
+    const variance = nums.reduce((acc, v) => acc + Math.pow(v - mean, 2), 0) / n;
+    const stdDev = Math.sqrt(variance);
+    return {
+        n, mean, median, mode: parseFloat(mode),
+        stdDev, variance, min: Math.min(...nums), max: Math.max(...nums), sum
+    };
+}
+
+function calculateFrequency(values) {
+    const freq = {};
+    values.forEach(v => {
+        const key = String(v).trim();
+        if (key) freq[key] = (freq[key] || 0) + 1;
+    });
+    const total = values.length;
+    return Object.entries(freq).map(([value, count]) => ({
+        value, count, percentage: ((count / total) * 100).toFixed(2)
+    })).sort((a, b) => b.count - a.count);
+}
+
+function analyzeStatisticalData() {
+    const { headers, rows } = state.statisticalData;
+    if (!headers.length || !rows.length) return;
+    const statistics = {};
+    headers.forEach((header, colIdx) => {
+        const values = rows.map(row => row[colIdx]);
+        const numericValues = values.filter(v => !isNaN(parseFloat(v)) && isFinite(v));
+        const isNumeric = numericValues.length > values.length * 0.7;
+        if (isNumeric) {
+            statistics[header] = { type: 'numeric', descriptive: calculateDescriptiveStats(numericValues) };
+        } else {
+            statistics[header] = { type: 'categorical', frequency: calculateFrequency(values) };
+        }
+    });
+    state.statisticalData.statistics = statistics;
+}
+
+function processFile(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+            if (jsonData.length < 2) {
+                showToast('فایل خالی است', 'error');
+                return;
+            }
+            state.statisticalData.headers = jsonData[0].map(h => String(h).trim());
+            state.statisticalData.rows = jsonData.slice(1).filter(row => row.length > 0);
+            analyzeStatisticalData();
+            const fileInfo = document.getElementById('fileInfo');
+            fileInfo.style.display = 'block';
+            fileInfo.innerHTML = `<div class="modal-info">✅ فایل بارگذاری شد<br>📊 ستون‌ها: ${convertToPersianNumbers(state.statisticalData.headers.length)} | ردیف‌ها: ${convertToPersianNumbers(state.statisticalData.rows.length)}</div>`;
+            showToast(`✓ ${state.statisticalData.rows.length} ردیف بارگذاری شد`, 'success');
+            updateDataPreview();
+        } catch (err) {
+            showToast(`خطا: ${err.message}`, 'error');
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function parseManualData() {
+    const text = document.getElementById('manualData').value.trim();
+    if (!text) { showToast('داده‌ها را وارد کنید', 'error'); return; }
+    const lines = text.split('\n').filter(l => l.trim());
+    if (lines.length < 2) { showToast('حداقل دو خط لازم است', 'error'); return; }
+    const delimiter = lines[0].includes('\t') ? '\t' : ',';
+    state.statisticalData.headers = lines[0].split(delimiter).map(h => h.trim());
+    state.statisticalData.rows = lines.slice(1).map(line => line.split(delimiter).map(cell => cell.trim()));
+    analyzeStatisticalData();
+    updateDataPreview();
+    showToast(`✓ ${state.statisticalData.rows.length} ردیف پردازش شد`, 'success');
+}
+
+function updateDataPreview() {
+    const { headers, rows, statistics } = state.statisticalData;
+    const statsSummary = document.getElementById('statsSummary');
+    let summaryHtml = '<h3 style="margin-bottom: 10px;">📊 خلاصه آماری</h3><div class="stats-summary">';
+    summaryHtml += `<div class="stat-card"><h4>📝 مشاهدات</h4><div class="stat-value">${convertToPersianNumbers(rows.length)}</div></div>`;
+    summaryHtml += `<div class="stat-card"><h4>📋 متغیرها</h4><div class="stat-value">${convertToPersianNumbers(headers.length)}</div></div>`;
+    Object.entries(statistics).forEach(([header, stat]) => {
+        if (stat.type === 'numeric' && stat.descriptive) {
+            const d = stat.descriptive;
+            summaryHtml += `<div class="stat-card"><h4>📈 ${escapeHtml(header)}</h4><div class="stat-value">${d.mean.toFixed(2)}</div><div class="stat-label">میانگین (SD=${d.stdDev.toFixed(2)})</div></div>`;
+        }
+    });
+    summaryHtml += '</div>';
+    statsSummary.innerHTML = summaryHtml;
+    const previewContainer = document.getElementById('dataPreviewContainer');
+    const previewRows = rows.slice(0, 10);
+    let tableHtml = '<h3 style="margin: 15px 0 10px;">👁 پیش‌نمایش (10 ردیف اول)</h3><div class="data-preview"><table class="data-table"><thead><tr><th>ردیف</th>';
+    headers.forEach(h => { tableHtml += `<th>${escapeHtml(h)}</th>`; });
+    tableHtml += '</tr></thead><tbody>';
+    previewRows.forEach((row, i) => {
+        tableHtml += `<tr><td>${convertToPersianNumbers(i + 1)}</td>`;
+        headers.forEach((_, j) => { tableHtml += `<td>${escapeHtml(row[j] || '')}</td>`; });
+        tableHtml += '</tr>';
+    });
+    tableHtml += '</tbody></table></div>';
+    previewContainer.innerHTML = tableHtml;
+}
+
+function buildStatsTableForPrompt() {
+    const { headers, statistics, rows } = state.statisticalData;
+    if (!headers.length || !rows.length) return '';
+    let table = `\n\n═══════════════════════════════════════════\n`;
+    table += `📊 جداول آماری واقعی (از داده‌های شما)\n`;
+    table += `═══════════════════════════════════════════\n\n`;
+    const numericVars = Object.entries(statistics).filter(([_, s]) => s.type === 'numeric' && s.descriptive);
+    if (numericVars.length > 0) {
+        table += `📋 جدول ۱: آمار توصیفی متغیرهای کمی\n`;
+        table += `متغیر | N | میانگین | انحراف معیار | حداقل | حداکثر | میانه\n`;
+        table += `---|---|---|---|---|---|---\n`;
+        numericVars.forEach(([header, stat]) => {
+            const d = stat.descriptive;
+            table += `${header} | ${d.n} | ${d.mean.toFixed(2)} | ${d.stdDev.toFixed(2)} | ${d.min.toFixed(2)} | ${d.max.toFixed(2)} | ${d.median.toFixed(2)}\n`;
+        });
+        table += `\n`;
+    }
+    const categoricalVars = Object.entries(statistics).filter(([_, s]) => s.type === 'categorical');
+    if (categoricalVars.length > 0) {
+        table += `📋 جدول ۲: توزیع فراوانی متغیرهای کیفی\n\n`;
+        categoricalVars.forEach(([header, stat]) => {
+            table += `▸ متغیر: ${header}\n`;
+            table += `مقدار | فراوانی | درصد\n`;
+            table += `---|---|---\n`;
+            stat.frequency.forEach(f => {
+                table += `${f.value} | ${f.count} | ${f.percentage}%\n`;
+            });
+            table += `\n`;
+        });
+    }
+    table += `📊 خلاصه داده‌ها:\n`;
+    table += `• تعداد مشاهدات: ${rows.length}\n`;
+    table += `• تعداد متغیرها: ${headers.length}\n`;
+    table += `• نام متغیرها: ${headers.join('، ')}\n`;
+    return table;
+}
+
+function buildChapterFourSubsectionPrompt(sectionTitle, previousContent) {
+    const { researchType, analysisMethod, hypotheses, independentVar, dependentVar, sampleInfo, statSoftware, significanceLevel } = state.statisticalData;
+    const statsTable = buildStatsTableForPrompt();
+    const researchTypeNames = { 'quantitative': 'کمی', 'qualitative': 'کیفی', 'mixed': 'آمیخته', 'descriptive': 'توصیفی', 'correlational': 'همبستگی', 'experimental': 'آزمایشی' };
+    const analysisMethodNames = { 'descriptive': 'آمار توصیفی', 'ttest': 'آزمون t', 'anova': 'ANOVA', 'regression': 'رگرسیون', 'correlation': 'همبستگی', 'chi2': 'کای-دو', 'sem': 'SEM', 'factor': 'عاملی', 'cluster': 'خوشه‌بندی' };
+    const hypothesesText = hypotheses.length > 0 ? hypotheses.map((h, i) => `${i + 1}. ${h}`).join('\n') : '(مشخص نشده)';
+    let subsectionType = 'general';
+    let specificInstructions = '';
+    if (sectionTitle.includes('مقدمه')) {
+        subsectionType = 'intro';
+        specificInstructions = `📝 این بخش مقدمه فصل چهارم است. در ۱-۲ پاراگراف کوتاه، هدف فصل و ساختار آن را بیان کن.`;
+    } else if (sectionTitle.includes('تحلیل کیفی') || sectionTitle.includes('اسناد') || sectionTitle.includes('مصاحبه') || sectionTitle.includes('کدگذاری')) {
+        subsectionType = 'qualitative';
+        specificInstructions = `📝 این بخش تحلیل کیفی است. بر اساس داده‌های پژوهش، تحلیل کیفی ارائه بده.`;
+    } else if (sectionTitle.includes('آمار توصیفی') || sectionTitle.includes('جمعیت‌شناختی') || sectionTitle.includes('فراوانی')) {
+        subsectionType = 'descriptive';
+        specificInstructions = `📝 این بخش آمار توصیفی است. حتماً از جداول آماری بالا استفاده کن و جداول فراوانی، درصد، میانگین و انحراف معیار را گزارش کن.`;
+    } else if (sectionTitle.includes('آزمون فرضیه') || sectionTitle.includes('آزمون فرضیات') || sectionTitle.includes('استنباطی')) {
+        subsectionType = 'inferential';
+        specificInstructions = `📝 این بخش آزمون فرضیات است. حتماً فرضیات را یکی یکی آزمون کن. برای هر فرضیه: آماره آزمون، df، p-value و نتیجه (تأیید/رد) را گزارش کن.`;
+    } else if (sectionTitle.includes('همبستگی') || sectionTitle.includes('رگرسیون')) {
+        subsectionType = 'correlation';
+        specificInstructions = `📝 این بخش تحلیل همبستگی/رگرسیون است. ضریب همبستگی (r)، ضریب تعیین (R²)، آماره F یا t، و سطح معناداری را گزارش کن.`;
+    } else if (sectionTitle.includes('SEM') || sectionTitle.includes('معادلات ساختاری') || sectionTitle.includes('عاملی')) {
+        subsectionType = 'sem';
+        specificInstructions = `📝 این بخش مدل‌سازی معادلات ساختاری است. شاخص‌های برازش (RMSEA، CFI، GFI، NFI) و بارهای عاملی را گزارش کن.`;
+    } else if (sectionTitle.includes('جمع‌بندی') || sectionTitle.includes('خلاصه')) {
+        subsectionType = 'summary';
+        specificInstructions = `📝 این بخش جمع‌بندی فصل است. یافته‌های اصلی را خلاصه کن و به فصل بعد ارجاع بده.`;
+    }
+    let prompt = `${SYSTEM_PROMPT}
+
+═══════════════════════════════════════════
+📝 فصل چهارم - زیربخش: "${sectionTitle}"
+═══════════════════════════════════════════
+
+🎯 موضوع پژوهش: "${state.topic}"
+
+═══════════════════════════════════════════
+📋 اطلاعات پژوهش
+═══════════════════════════════════════════
+
+🔬 نوع پژوهش: ${researchTypeNames[researchType] || researchType}
+📐 روش تحلیل: ${analysisMethodNames[analysisMethod] || analysisMethod}
+👥 نمونه آماری: ${sampleInfo || 'مشخص نشده'}
+📊 نرم‌افزار: ${statSoftware.toUpperCase()}
+🎯 سطح معناداری: α = ${significanceLevel}
+🎯 متغیر مستقل: ${independentVar || 'مشخص نشده'}
+📈 متغیر وابسته: ${dependentVar || 'مشخص نشده'}
+
+═══════════════════════════════════════════
+🎯 فرضیات پژوهش
+═══════════════════════════════════════════
+
+${hypothesesText}
+
+${statsTable}
+
+═══════════════════════════════════════════
+📝 دستورالعمل مخصوص این زیربخش
+═══════════════════════════════════════════
+
+${specificInstructions}
+
+═══════════════════════════════════════════
+⚠️ قوانین بسیار مهم
+═══════════════════════════════════════════
+
+✅ حتماً از اعداد واقعی جداول بالا استفاده کن
+✅ جداول را به صورت منظم با | و - رسم کن
+✅ تفسیر علمی و آکادمیک بنویس
+✅ نرم‌افزار ${statSoftware.toUpperCase()} را ذکر کن
+✅ اعداد را به فارسی بنویس (مثلاً ۲.۵ نه 2.5)
+
+❌ داده جعلی نساز - فقط از اعداد جداول بالا استفاده کن
+❌ عنوان "${sectionTitle}" را ننویس - فقط متن را شروع کن
+❌ متن عمومی و کلی ننویس - دقیقاً بر اساس داده‌ها تحلیل کن
+
+📊 حجم: ۸۰۰-۱۵۰۰ کلمه`;
+    if (previousContent) {
+        prompt += `\n\n📖 ادامه متن قبلی:\n"${previousContent.substring(previousContent.length - 400)}"\n\nادامه بده:`;
+    }
+    prompt += `\n\n🎯 شروع کن:`;
+    return prompt;
+}
+
 function analyzeSection(sectionName) {
     const needsRefs = state.sectionsWithRefs.includes(sectionName);
     const isChapter = isChapterHeader(sectionName);
-    
-    if (isChapter) {
+    const isChapter4 = isChapterFour(sectionName);
+    const isChapter4Subsection = isChapterFourSubsection(sectionName);
+    if (isChapter4Subsection && state.statisticalData.hasData) {
+        const range = getWordRangeFromTitle(sectionName);
+        const wordsPerPart = 1200;
+        const avgWords = (range.min + range.max) / 2;
+        const totalParts = Math.max(1, Math.ceil(avgWords / wordsPerPart));
         return {
-            sectionName, isChapterHeader: true, needsRefs: false,
-            minWords: 0, maxWords: 0, totalParts: 0, wordsPerPart: 0
+            sectionName, isChapterHeader: false, isChapterFour: false, 
+            isChapterFourSubsection: true,
+            needsRefs: false, minWords: range.min, maxWords: range.max,
+            totalParts, wordsPerPart
         };
     }
-    
+    if (isChapter4 && state.statisticalData.hasData) {
+        const range = getWordRangeFromTitle(sectionName);
+        const wordsPerPart = 1200;
+        const avgWords = (range.min + range.max) / 2;
+        const totalParts = Math.max(1, Math.ceil(avgWords / wordsPerPart));
+        return {
+            sectionName, isChapterHeader: false, isChapterFour: true,
+            isChapterFourSubsection: false,
+            needsRefs: false, minWords: range.min, maxWords: range.max,
+            totalParts, wordsPerPart
+        };
+    }
+    if (isChapter) {
+        return {
+            sectionName, isChapterHeader: true, isChapterFour: false,
+            isChapterFourSubsection: false,
+            needsRefs: false, minWords: 0, maxWords: 0, totalParts: 0, wordsPerPart: 0
+        };
+    }
     const range = getWordRangeFromTitle(sectionName);
     const wordsPerPart = 1000;
     const avgWords = (range.min + range.max) / 2;
     const totalParts = Math.max(1, Math.ceil(avgWords / wordsPerPart));
-    
     return {
-        sectionName, isChapterHeader: false, needsRefs,
-        minWords: range.min, maxWords: range.max,
+        sectionName, isChapterHeader: false, isChapterFour: false,
+        isChapterFourSubsection: false,
+        needsRefs, minWords: range.min, maxWords: range.max,
         totalParts, wordsPerPart
     };
 }
 
-// ============ PROMPT BUILDING ============
 function buildPartPrompt(analysis, partNumber, previousContent, sectionRefs) {
+    if (analysis.isChapterFourSubsection) {
+        return buildChapterFourSubsectionPrompt(analysis.sectionName, previousContent);
+    }
+    if (analysis.isChapterFour) return buildChapterFourPrompt(analysis, partNumber, previousContent);
     const section = analysis.sectionName;
     const isFirst = partNumber === 1;
     const isLast = partNumber === analysis.totalParts;
-    
     let prompt = `${SYSTEM_PROMPT}
 
 📝 بخش: "${section}"
 🎯 موضوع: "${state.topic}"
 📊 حجم کل: ${analysis.minWords}-${analysis.maxWords} کلمه`;
-    
     if (analysis.totalParts === 1) {
         prompt += `\n\n✍️ کامل بنویس.`;
     } else {
         prompt += `\n\n✍️ پارت ${partNumber} از ${analysis.totalParts}`;
-        if (isFirst) prompt += ` (شروع قوی، زمینه‌سازی)`;
-        else if (isLast) prompt += ` (جمع‌بندی و پایان)`;
-        else prompt += ` (بسط و تحلیل عمیق)`;
-        prompt += `\n📊 حجم این پارت: حدود ${analysis.wordsPerPart} کلمه`;
-        if (!isLast) prompt += `\n❌ نتیجه‌گیری نکن. محتوا را ناتمام بگذار.`;
-        else prompt += `\n✅ با جمع‌بندی علمی پایان بده.`;
+        if (isFirst) prompt += ` (شروع)`;
+        else if (isLast) prompt += ` (جمع‌بندی)`;
+        else prompt += ` (بسط)`;
+        prompt += `\n📊 حجم: حدود ${analysis.wordsPerPart} کلمه`;
+        if (!isLast) prompt += `\n❌ نتیجه‌گیری نکن.`;
+        else prompt += `\n✅ جمع‌بندی کن.`;
     }
-    
     let refRule = "❌ بدون رفرنس.";
     let refCtx = '';
     const hasCustomRefs = state.userReferences.persian.length + state.userReferences.english.length > 0;
-    
     if (analysis.needsRefs && sectionRefs.length > 0) {
         refRule = "✅ فقط از منابع واقعی استفاده کن.";
         refCtx = '\n📚 منابع:\n';
         sectionRefs.forEach((r, i) => {
-            refCtx += `${i+1}. ${r.title} (${r.year || 'بدون سال'})`;
-            if (r.authors && r.authors.length > 0) refCtx += ` - ${r.authors.slice(0, 2).join(', ')}`;
+            refCtx += `${i+1}. ${r.title} (${r.year || ''})`;
+            if (r.authors?.length > 0) refCtx += ` - ${r.authors.slice(0, 2).join(', ')}`;
             refCtx += `\n`;
         });
-        refCtx += `\n⚠️ در هر پاراگراف 1-3 استناد بیاور. ❌ هیچ پاراگرافی بدون استناد نباشد.`;
+        refCtx += `\n⚠️ در هر پاراگراف 1-3 استناد.`;
     } else if (analysis.needsRefs && hasCustomRefs) {
         refRule = "✅ فقط از منابع کاربر استفاده کن.";
         refCtx = '\n📚 منابع کاربر:\n';
-        const allRefs = [...state.userReferences.persian, ...state.userReferences.english];
-        allRefs.slice(0, CONFIG.MAX_REFERENCES_PER_LANGUAGE).forEach((r, i) => {
+        [...state.userReferences.persian, ...state.userReferences.english].slice(0, CONFIG.MAX_REFERENCES_PER_LANGUAGE).forEach((r, i) => {
             refCtx += `${i+1}. ${r.substring(0, 100)}\n`;
         });
-        refCtx += `\n⚠️ در هر پاراگراف حداقل 1 استناد بیاور. ❌ منبع جعلی نساز.`;
+        refCtx += `\n⚠️ در هر پاراگراف حداقل 1 استناد.`;
     }
-    
-    const ctx = !isFirst && previousContent ? `\n\n📖 ادامه قبلی:\n"${previousContent.substring(previousContent.length - 400)}"\n\nادامه بده (بدون تکرار):` : '';
-    const prev = state.previousSummary && isFirst ? `\n\n🔍 خلاصه بخش‌های قبل: ${state.previousSummary}` : '';
-    
+    const ctx = !isFirst && previousContent ? `\n\n📖 ادامه قبلی:\n"${previousContent.substring(previousContent.length - 400)}"\n\nادامه بده:` : '';
+    const prev = state.previousSummary && isFirst ? `\n\n🔍 خلاصه قبل: ${state.previousSummary}` : '';
     return `${prompt}
 
 📋 قوانین:
 - فارسی آکادمیک و روان
-- لحن علمی و رسمی
 - ❌ عنوان بخش را ننویس
-- ❌ عبارت انگلیسی ننویس
 - ✅ سال‌ها به فارسی: 2020 → ۲۰۲۰
 
 ${refRule}
@@ -634,14 +1225,96 @@ ${refCtx}${prev}${ctx}
 🎯 شروع کن:`;
 }
 
-// ============ API CALL ============
+function buildChapterFourPrompt(analysis, partNumber, previousContent) {
+    const { researchType, analysisMethod, hypotheses, independentVar, dependentVar, sampleInfo, statSoftware, significanceLevel } = state.statisticalData;
+    const statsTable = buildStatsTableForPrompt();
+    const researchTypeNames = { 'quantitative': 'کمی', 'qualitative': 'کیفی', 'mixed': 'آمیخته', 'descriptive': 'توصیفی', 'correlational': 'همبستگی', 'experimental': 'آزمایشی' };
+    const analysisMethodNames = { 'descriptive': 'آمار توصیفی', 'ttest': 'آزمون t', 'anova': 'ANOVA', 'regression': 'رگرسیون', 'correlation': 'همبستگی', 'chi2': 'کای-دو', 'sem': 'SEM', 'factor': 'عاملی', 'cluster': 'خوشه‌بندی' };
+    const hypothesesText = hypotheses.length > 0 ? hypotheses.map((h, i) => `${i + 1}. ${h}`).join('\n') : '(مشخص نشده)';
+    let partContent = '';
+    if (analysis.totalParts === 1) {
+        partContent = `✍️ کل فصل چهارم را بنویس (مقدمه + آمار توصیفی + آزمون فرضیات + جمع‌بندی)`;
+    } else {
+        partContent = `✍️ پارت ${partNumber} از ${analysis.totalParts}\n`;
+        if (partNumber === 1) {
+            partContent += `📝 محتوای این پارت: مقدمه فصل + آمار توصیفی (جداول فراوانی و درصد)\n`;
+            partContent += `⚠️ در این پارت فقط آمار توصیفی را گزارش کن، نه آزمون فرضیات.`;
+        } else if (partNumber === analysis.totalParts) {
+            partContent += `📝 محتوای این پارت: آزمون فرضیات + جمع‌بندی فصل\n`;
+            partContent += `✅ در این پارت فرضیات را یکی یکی آزمون کن و جمع‌بندی نهایی بنویس.`;
+        } else {
+            partContent += `📝 محتوای این پارت: آمار استنباطی و تحلیل یافته‌ها`;
+        }
+        partContent += `\n📊 حجم: حدود ${analysis.wordsPerPart} کلمه`;
+    }
+    let prompt = `${SYSTEM_PROMPT}
+
+═══════════════════════════════════════════
+📝 فصل چهارم: تجزیه و تحلیل داده‌ها
+═══════════════════════════════════════════
+
+🎯 موضوع پژوهش: "${state.topic}"
+
+═══════════════════════════════════════════
+📋 اطلاعات پژوهش
+═══════════════════════════════════════════
+
+🔬 نوع پژوهش: ${researchTypeNames[researchType] || researchType}
+📐 روش تحلیل: ${analysisMethodNames[analysisMethod] || analysisMethod}
+👥 نمونه آماری: ${sampleInfo || 'مشخص نشده'}
+📊 نرم‌افزار: ${statSoftware.toUpperCase()}
+🎯 سطح معناداری: α = ${significanceLevel}
+🎯 متغیر مستقل: ${independentVar || 'مشخص نشده'}
+📈 متغیر وابسته: ${dependentVar || 'مشخص نشده'}
+
+═══════════════════════════════════════════
+🎯 فرضیات پژوهش
+═══════════════════════════════════════════
+
+${hypothesesText}
+
+${statsTable}
+
+═══════════════════════════════════════════
+⚠️ قوانین بسیار مهم
+═══════════════════════════════════════════
+
+✅ حتماً از اعداد واقعی جداول بالا استفاده کن
+✅ جداول را به صورت منظم با | و - رسم کن
+✅ هر فرضیه را جداگانه آزمون کن (آماره آزمون، df، p-value، نتیجه)
+✅ تفسیر علمی و آکادمیک بنویس
+✅ نرم‌افزار ${statSoftware.toUpperCase()} را ذکر کن
+✅ اعداد را به فارسی بنویس (مثلاً ۲.۵ نه 2.5)
+
+❌ داده جعلی نساز - فقط از اعداد جداول بالا استفاده کن
+❌ فرضیه اضافه نکن - فقط همان فرضیات بالا را آزمون کن
+❌ عنوان "فصل چهارم" را ننویس - فقط متن را شروع کن
+❌ متن عمومی و کلی ننویس - دقیقاً بر اساس داده‌ها تحلیل کن
+
+═══════════════════════════════════════════
+📝 ساختار فصل چهارم
+═══════════════════════════════════════════
+
+1️⃣ مقدمه فصل (۱ پاراگراف کوتاه)
+2️⃣ آمار توصیفی (جداول فراوانی، درصد، میانگین، انحراف معیار)
+3️⃣ آمار استنباطی و آزمون فرضیات (یکی یکی)
+4️⃣ تحلیل و تفسیر یافته‌ها
+5️⃣ جمع‌بندی فصل
+
+📊 حجم کل: ${analysis.minWords}-${analysis.maxWords} کلمه
+${partContent}`;
+    if (previousContent) {
+        prompt += `\n\n📖 ادامه متن قبلی:\n"${previousContent.substring(previousContent.length - 400)}"\n\nادامه بده:`;
+    }
+    prompt += `\n\n🎯 شروع کن:`;
+    return prompt;
+}
+
 async function callGroqAPI(prompt, onChunk, attempt = 1) {
     if (state.stopFlag) throw new Error('متوقف شد');
-    
     try {
         const controller = new AbortController();
         state.generationAbortController = controller;
-        
         const response = await fetch(CONFIG.API_BASE_URL, {
             method: 'POST',
             headers: {
@@ -657,31 +1330,25 @@ async function callGroqAPI(prompt, onChunk, attempt = 1) {
             }),
             signal: controller.signal
         });
-        
         if (!response.ok) {
             if ((response.status === 429 || response.status === 413) && attempt < CONFIG.RETRY_ATTEMPTS) {
                 const wait = CONFIG.RETRY_DELAY * attempt;
-                showToast(`محدودیت API - انتظار ${convertToPersianNumbers(wait/1000)}s`, 'warning');
+                showToast(`محدودیت - انتظار ${convertToPersianNumbers(wait/1000)}s`, 'warning');
                 await sleep(wait);
                 return callGroqAPI(prompt, onChunk, attempt + 1);
             }
             throw new Error(`خطای API (${response.status})`);
         }
-        
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
-        let result = '';
-        let buffer = '';
-        
+        let result = '', buffer = '';
         while (true) {
             if (state.stopFlag) break;
             const { done, value } = await reader.read();
             if (done) break;
-            
             buffer += decoder.decode(value, { stream: true });
             const lines = buffer.split('\n');
             buffer = lines.pop();
-            
             for (const line of lines) {
                 if (line.startsWith('data: ')) {
                     const data = line.substring(6);
@@ -697,7 +1364,6 @@ async function callGroqAPI(prompt, onChunk, attempt = 1) {
                 }
             }
         }
-        
         return result.replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/<\/?think>/gi, '').trim();
     } catch (e) {
         if (e.name === 'AbortError') throw new Error('متوقف شد');
@@ -709,7 +1375,6 @@ async function callGroqAPI(prompt, onChunk, attempt = 1) {
     }
 }
 
-// ============ REFERENCE SEARCH ============
 async function searchCrossRef(query) {
     try {
         const url = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&rows=15&select=DOI,title,author,published-print,published-online,container-title&mailto=persianwriter@example.com`;
@@ -722,13 +1387,10 @@ async function searchCrossRef(query) {
         return (data.message?.items || []).map(item => {
             const authors = (item.author || []).map(a => `${a.given || ''} ${a.family || ''}`.trim()).filter(a => a);
             return {
-                title: (item.title && item.title[0]) || '',
-                authors,
+                title: (item.title && item.title[0]) || '', authors,
                 year: item['published-print']?.['date-parts']?.[0]?.[0] || item['published-online']?.['date-parts']?.[0]?.[0] || null,
                 journal: (item['container-title'] && item['container-title'][0]) || '',
-                doi: item.DOI || '',
-                source: 'CrossRef',
-                language: 'en'
+                doi: item.DOI || '', source: 'CrossRef', language: 'en'
             };
         }).filter(r => r.year && r.authors.length > 0);
     } catch { return []; }
@@ -744,14 +1406,9 @@ async function searchSemanticScholar(query) {
         if (!response.ok) return [];
         const data = await response.json();
         return (data.data || []).map(paper => ({
-            title: paper.title || '',
-            authors: (paper.authors || []).map(a => a.name || '').filter(Boolean),
-            year: paper.year || null,
-            journal: paper.venue || '',
-            doi: paper.externalIds?.DOI || '',
-            source: 'Semantic Scholar',
-            language: 'en',
-            citations: paper.citationCount || 0
+            title: paper.title || '', authors: (paper.authors || []).map(a => a.name || '').filter(Boolean),
+            year: paper.year || null, journal: paper.venue || '', doi: paper.externalIds?.DOI || '',
+            source: 'Semantic Scholar', language: 'en', citations: paper.citationCount || 0
         })).filter(r => r.year && r.authors.length > 0);
     } catch { return []; }
 }
@@ -766,14 +1423,10 @@ async function searchOpenAlex(query) {
         if (!response.ok) return [];
         const data = await response.json();
         return (data.results || []).map(work => ({
-            title: work.title || '',
-            authors: (work.authorships || []).map(a => a.author?.display_name || '').filter(Boolean),
-            year: work.publication_year || null,
-            journal: work.primary_location?.source?.display_name || '',
+            title: work.title || '', authors: (work.authorships || []).map(a => a.author?.display_name || '').filter(Boolean),
+            year: work.publication_year || null, journal: work.primary_location?.source?.display_name || '',
             doi: work.doi ? work.doi.replace('https://doi.org/', '') : '',
-            source: 'OpenAlex',
-            language: 'en',
-            citations: work.cited_by_count || 0
+            source: 'OpenAlex', language: 'en', citations: work.cited_by_count || 0
         })).filter(r => r.year && r.authors.length > 0);
     } catch { return []; }
 }
@@ -789,13 +1442,10 @@ async function searchCORE(query) {
         if (!response.ok) return [];
         const data = await response.json();
         return (data.results || []).map(item => ({
-            title: item.title || '',
-            authors: (item.authors || []).map(a => a.name || '').filter(Boolean),
+            title: item.title || '', authors: (item.authors || []).map(a => a.name || '').filter(Boolean),
             year: item.year || (item.publishedDate ? item.publishedDate.substring(0, 4) : null),
-            journal: item.publisher || item.journalTitle || '',
-            doi: item.doi || '',
-            source: 'CORE',
-            language: 'en'
+            journal: item.publisher || item.journalTitle || '', doi: item.doi || '',
+            source: 'CORE', language: 'en'
         })).filter(r => r.year && r.authors.length > 0);
     } catch { return []; }
 }
@@ -803,29 +1453,19 @@ async function searchCORE(query) {
 async function searchRealReferences(topic, sectionName, onProgress) {
     const topicEn = topic.replace(/[\u0600-\u06FF]+/g, '').replace(/[^\w\s]/g, ' ').trim();
     const queries = [topicEn, topicEn + ' research', topicEn + ' study'].filter(q => q && q.length >= 3);
-    
-    let allRefs = [];
-    let attempts = 0;
-    
+    let allRefs = [], attempts = 0;
     for (const query of queries) {
         if (state.stopFlag) break;
         if (attempts >= CONFIG.MAX_SEARCH_ATTEMPTS || allRefs.length >= CONFIG.REFS_PER_SECTION) break;
-        
         attempts++;
         if (onProgress) onProgress(`🔍 تلاش ${convertToPersianNumbers(attempts)}: "${query.substring(0, 40)}..."`);
-        
         const [crossref, semantic, openalex, core] = await Promise.all([
-            searchCrossRef(query),
-            searchSemanticScholar(query),
-            searchOpenAlex(query),
-            searchCORE(query)
+            searchCrossRef(query), searchSemanticScholar(query), searchOpenAlex(query), searchCORE(query)
         ]);
-        
         if (onProgress) {
             const total = crossref.length + semantic.length + openalex.length + core.length;
             onProgress(`📊 نتایج: ${convertToPersianNumbers(total)} منبع`);
         }
-        
         const seen = new Set();
         const combined = [...crossref, ...semantic, ...openalex, ...core].filter(ref => {
             const key = ref.title.toLowerCase().replace(/[^\w\s]/g, '').substring(0, 80);
@@ -833,52 +1473,51 @@ async function searchRealReferences(topic, sectionName, onProgress) {
             seen.add(key);
             return true;
         });
-        
         allRefs = [...allRefs, ...combined];
-        
-        if (onProgress) onProgress(`✅ مجموع یکتا: ${convertToPersianNumbers(allRefs.length)}`);
-        
+        if (onProgress) onProgress(`✅ مجموع: ${convertToPersianNumbers(allRefs.length)}`);
         if (allRefs.length >= CONFIG.REFS_PER_SECTION) break;
         await sleep(300);
     }
-    
     allRefs.sort((a, b) => (b.citations || 0) - (a.citations || 0));
-    
-    return {
-        refs: allRefs.slice(0, CONFIG.REFS_PER_SECTION),
-        totalFound: allRefs.length,
-        attempts
-    };
+    return { refs: allRefs.slice(0, CONFIG.REFS_PER_SECTION), totalFound: allRefs.length, attempts };
 }
 
-// ============ UI UPDATES ============
 function updateSectionsList() {
     const list = document.getElementById('sectionsList');
     list.innerHTML = '';
-    
     state.sections.forEach((section, i) => {
         const hasRef = state.sectionsWithRefs.includes(section);
         const isChapter = isChapterHeader(section);
-        
+        const isChapter4 = isChapterFour(section);
+        const isChapter4Subsection = isChapterFourSubsection(section);
+        const shouldGenerate = shouldGenerateSection(section);
         const num = state.sectionNumbers[section];
         const displayName = num ? `${num}- ${section}` : `${convertToPersianNumbers(i + 1)}. ${section}`;
-        
         let badgeClass = 'no-ref-badge';
         let badgeText = '📄';
-        if (isChapter) {
+        if (!shouldGenerate) {
+            badgeClass = 'skipped-badge';
+            badgeText = '⏭';
+        } else if (isChapter4Subsection && state.statisticalData.hasData) {
+            badgeClass = 'data-badge';
+            badgeText = '📊';
+        } else if (isChapter4 && state.statisticalData.hasData) {
+            badgeClass = 'data-badge';
+            badgeText = '📊';
+        } else if (isChapter) {
             badgeClass = 'chapter-badge';
             badgeText = '📖';
         } else if (hasRef) {
             badgeClass = 'ref-badge';
             badgeText = '📚';
         }
-        
         const item = document.createElement('div');
         item.className = 'section-item';
         item.id = `section-item-${i}`;
+        const nameStyle = shouldGenerate ? '' : 'style="opacity: 0.5; text-decoration: line-through;"';
         item.innerHTML = `
             <div class="checkbox" id="checkbox-${i}"></div>
-            <div class="section-name">${escapeHtml(displayName)}</div>
+            <div class="section-name" ${nameStyle}>${escapeHtml(displayName)}</div>
             <span class="${badgeClass}">${badgeText}</span>
             <div class="status" id="status-${i}">⏸</div>
         `;
@@ -889,36 +1528,15 @@ function updateSectionsList() {
 function updateSectionStatus(index, status) {
     const checkbox = document.getElementById(`checkbox-${index}`);
     const statusEl = document.getElementById(`status-${index}`);
-    
     if (!checkbox || !statusEl) return;
-    
     checkbox.className = 'checkbox';
-    
-    if (status === 'thinking') {
-        checkbox.classList.add('in-progress');
-        checkbox.textContent = '🧠';
-        statusEl.textContent = '🧠';
-    } else if (status === 'in-progress') {
-        checkbox.classList.add('in-progress');
-        checkbox.textContent = '⏳';
-        statusEl.textContent = '⏳';
-    } else if (status === 'searching') {
-        checkbox.classList.add('in-progress');
-        checkbox.textContent = '🔍';
-        statusEl.textContent = '🔍';
-    } else if (status === 'completed') {
-        checkbox.classList.add('checked');
-        checkbox.textContent = '✓';
-        statusEl.textContent = '✅';
-    } else if (status === 'chapter') {
-        checkbox.classList.add('chapter');
-        checkbox.textContent = '📖';
-        statusEl.textContent = '📖';
-    } else if (status === 'error') {
-        checkbox.classList.add('error');
-        checkbox.textContent = '✗';
-        statusEl.textContent = '❌';
-    }
+    if (status === 'thinking') { checkbox.classList.add('in-progress'); checkbox.textContent = '🧠'; statusEl.textContent = '🧠'; }
+    else if (status === 'in-progress') { checkbox.classList.add('in-progress'); checkbox.textContent = '⏳'; statusEl.textContent = '⏳'; }
+    else if (status === 'searching') { checkbox.classList.add('in-progress'); checkbox.textContent = '🔍'; statusEl.textContent = '🔍'; }
+    else if (status === 'completed') { checkbox.classList.add('checked'); checkbox.textContent = '✓'; statusEl.textContent = '✅'; }
+    else if (status === 'chapter') { checkbox.classList.add('chapter'); checkbox.textContent = '📖'; statusEl.textContent = '📖'; }
+    else if (status === 'skipped') { checkbox.classList.add('skipped'); checkbox.textContent = '⏭'; statusEl.textContent = '⏭'; }
+    else if (status === 'error') { checkbox.classList.add('error'); checkbox.textContent = '✗'; statusEl.textContent = '❌'; }
 }
 
 function updateProgress(current, total) {
@@ -932,41 +1550,63 @@ function updateRefSectionsCount() {
     document.getElementById('refSectionsCount').textContent = convertToPersianNumbers(state.sectionsWithRefs.length);
 }
 
-// ============ GENERATION LOOP ============
 async function runGenerationLoop() {
     const total = state.sections.length;
-    
     try {
         while (state.currentSectionIndex < total) {
             if (state.stopFlag) break;
-            
-            if (!state.paymentCompleted && state.currentSectionIndex >= CONFIG.PAYMENT_AFTER_SECTION) {
-                showPaymentModal();
-                return;
-            }
-            
             const section = state.sections[state.currentSectionIndex];
+            const shouldGenerate = shouldGenerateSection(section);
+            if (isChapterFour(section)) {
+                state.inChapterFour = true;
+            } else if (isChapterHeader(section) && !isChapterFour(section)) {
+                state.inChapterFour = false;
+            }
+            if (!shouldGenerate) {
+                updateSectionStatus(state.currentSectionIndex, 'skipped');
+                const output = document.getElementById('outputContent');
+                const num = state.sectionNumbers[section];
+                const displayTitle = num ? `${num}- ${section}` : section;
+                const wrapper = document.createElement('div');
+                wrapper.id = `sec-${state.currentSectionIndex}`;
+                wrapper.innerHTML = `<div class="section-title">${escapeHtml(displayTitle)}</div>
+                    <div class="thinking-box skipped-box">
+                        <div class="thinking-header"><span>⏭</span><span>این بخش انتخاب نشده - رد شد</span></div>
+                    </div>`;
+                output.appendChild(wrapper);
+                output.scrollTop = output.scrollHeight;
+                state.currentSectionIndex++;
+                updateProgress(state.currentSectionIndex, total);
+                await sleep(100);
+                continue;
+            }
             updateSectionStatus(state.currentSectionIndex, 'thinking');
-            
             const analysis = analyzeSection(section);
-            
             const output = document.getElementById('outputContent');
             const num = state.sectionNumbers[section];
             const displayTitle = num ? `${num}- ${section}` : section;
-            
             const wrapper = document.createElement('div');
             wrapper.id = `sec-${state.currentSectionIndex}`;
-            
             let titleClass = 'section-title';
             if (analysis.isChapterHeader) titleClass += ' chapter-title';
-            
             wrapper.innerHTML = `<div class="${titleClass}">${escapeHtml(displayTitle)}</div>`;
-            
             if (analysis.isChapterHeader) {
                 const chapterBox = document.createElement('div');
                 chapterBox.className = 'thinking-box chapter-box';
-                chapterBox.innerHTML = `<div class="thinking-header"><span>📖</span><span>سرفصل فصل - محتوا برای زیربخش‌های بعدی</span></div>`;
+                chapterBox.innerHTML = `<div class="thinking-header"><span>📖</span><span>سرفصل فصل</span></div>`;
                 wrapper.appendChild(chapterBox);
+            } else if (analysis.isChapterFour || analysis.isChapterFourSubsection) {
+                const dataBox = document.createElement('div');
+                dataBox.className = 'thinking-box data-box';
+                dataBox.innerHTML = `
+                    <div class="thinking-header"><span>📊</span><span>تحلیل آماری فصل چهارم</span></div>
+                    <div class="thinking-item">🔬 نوع: ${state.statisticalData.researchType}</div>
+                    <div class="thinking-item">📐 روش: ${state.statisticalData.analysisMethod}</div>
+                    <div class="thinking-item">📝 فرضیات: ${convertToPersianNumbers(state.statisticalData.hypotheses.length)}</div>
+                    <div class="thinking-item">📊 مشاهدات: ${convertToPersianNumbers(state.statisticalData.rows.length)}</div>
+                    <div class="thinking-item">📏 حجم: ${convertToPersianNumbers(analysis.minWords)}-${convertToPersianNumbers(analysis.maxWords)} کلمه</div>
+                `;
+                wrapper.appendChild(dataBox);
             } else {
                 const thinkingBox = document.createElement('div');
                 thinkingBox.className = 'thinking-box';
@@ -974,16 +1614,13 @@ async function runGenerationLoop() {
                     <div class="thinking-header"><span>🧠</span><span>تحلیل «${escapeHtml(section)}»</span></div>
                     <div class="thinking-item">📏 حجم: ${convertToPersianNumbers(analysis.minWords)}-${convertToPersianNumbers(analysis.maxWords)} کلمه</div>
                     <div class="thinking-item">📝 پارت‌ها: ${convertToPersianNumbers(analysis.totalParts)}</div>
-                    <div class="thinking-item">${analysis.needsRefs ? '✅ رفرنس‌دهی فعال' : '❌ بدون رفرنس'}</div>
+                    <div class="thinking-item">${analysis.needsRefs ? '✅ رفرنس فعال' : '❌ بدون رفرنس'}</div>
                 `;
                 wrapper.appendChild(thinkingBox);
             }
-            
             output.appendChild(wrapper);
             output.scrollTop = output.scrollHeight;
-            
             await sleep(200);
-            
             if (analysis.isChapterHeader) {
                 updateSectionStatus(state.currentSectionIndex, 'chapter');
                 state.currentSectionIndex++;
@@ -991,29 +1628,22 @@ async function runGenerationLoop() {
                 await sleep(100);
                 continue;
             }
-            
             updateSectionStatus(state.currentSectionIndex, 'in-progress');
-            
             const contentEl = document.createElement('div');
             contentEl.className = 'section-content';
             contentEl.id = `content-${state.currentSectionIndex}`;
             wrapper.appendChild(contentEl);
-            
             let sectionRefs = [];
             const hasCustom = state.userReferences.persian.length + state.userReferences.english.length > 0;
-            const shouldSearch = analysis.needsRefs && !hasCustom;
-            
+            const shouldSearch = analysis.needsRefs && !hasCustom && !analysis.isChapterFour && !analysis.isChapterFourSubsection;
             if (shouldSearch) {
                 updateSectionStatus(state.currentSectionIndex, 'searching');
-                
                 const progressBox = document.createElement('div');
                 progressBox.className = 'search-box';
                 progressBox.innerHTML = `<div class="search-header"><span>🔍</span><span>جستجوی منابع...</span></div><div id="sp-${state.currentSectionIndex}"></div>`;
                 contentEl.appendChild(progressBox);
                 output.scrollTop = output.scrollHeight;
-                
                 const progressEl = document.getElementById(`sp-${state.currentSectionIndex}`);
-                
                 try {
                     const result = await searchRealReferences(state.topic, section, (msg) => {
                         if (progressEl) {
@@ -1023,7 +1653,6 @@ async function runGenerationLoop() {
                             progressEl.appendChild(item);
                         }
                     });
-                    
                     sectionRefs = result.refs;
                     state.sectionReferences[section] = result.refs;
                     result.refs.forEach(r => {
@@ -1031,67 +1660,62 @@ async function runGenerationLoop() {
                             state.foundReferences.push(r);
                         }
                     });
-                    
                     let html = `<div class="search-progress success">✅ <strong>${convertToPersianNumbers(result.refs.length)} منبع</strong> یافت شد</div>`;
                     result.refs.forEach((ref, i) => {
                         html += `<div class="ref-found">
                             <div class="ref-title">📚 ${convertToPersianNumbers(i+1)}. ${escapeHtml(ref.title)}</div>
                             <div class="ref-authors">✍️ ${escapeHtml(ref.authors.slice(0, 3).join('، '))}</div>
-                            <div class="ref-meta">📅 ${ref.year || 'بدون سال'} | 📰 ${escapeHtml(ref.journal || 'ناشر')}</div>
+                            <div class="ref-meta">📅 ${ref.year || ''} | 📰 ${escapeHtml(ref.journal || '')}</div>
                         </div>`;
                     });
                     progressBox.innerHTML = html;
                     output.scrollTop = output.scrollHeight;
                     showToast(`✅ ${convertToPersianNumbers(result.refs.length)} منبع یافت شد`, 'success');
                 } catch (e) {
-                    progressBox.innerHTML = `<div class="search-progress success">⚠️ خطا در جستجو: ${e.message}</div>`;
+                    progressBox.innerHTML = `<div class="search-progress success">⚠️ خطا: ${e.message}</div>`;
                 }
+            } else if (analysis.isChapterFour || analysis.isChapterFourSubsection) {
+                const infoBox = document.createElement('div');
+                infoBox.className = 'search-box';
+                infoBox.style.background = 'linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%)';
+                infoBox.style.borderRightColor = '#a855f7';
+                infoBox.innerHTML = `<div class="search-progress success">📊 تحلیل با ${convertToPersianNumbers(state.statisticalData.rows.length)} مشاهده و ${convertToPersianNumbers(state.statisticalData.hypotheses.length)} فرضیه</div>`;
+                contentEl.appendChild(infoBox);
             } else if (analysis.needsRefs && hasCustom) {
                 const infoBox = document.createElement('div');
                 infoBox.className = 'search-box';
-                infoBox.innerHTML = `<div class="search-progress success">✅ استفاده از منابع کاربر (${convertToPersianNumbers(state.userReferences.persian.length)} فارسی، ${convertToPersianNumbers(state.userReferences.english.length)} انگلیسی)</div>`;
+                infoBox.innerHTML = `<div class="search-progress success">✅ منابع کاربر (${convertToPersianNumbers(state.userReferences.persian.length)} فارسی، ${convertToPersianNumbers(state.userReferences.english.length)} انگلیسی)</div>`;
                 contentEl.appendChild(infoBox);
             }
-            
             await sleep(200);
-            
             let fullContent = '';
-            
             try {
                 for (let p = 1; p <= analysis.totalParts; p++) {
                     if (state.stopFlag) break;
-                    
                     if (p === 1 || p % 3 === 0) requestWakeLock();
-                    
                     if (analysis.totalParts > 1) {
                         const partIndicator = document.createElement('div');
                         partIndicator.className = 'part-indicator';
                         partIndicator.textContent = `📝 پارت ${convertToPersianNumbers(p)} از ${convertToPersianNumbers(analysis.totalParts)}`;
                         contentEl.appendChild(partIndicator);
                     }
-                    
                     const prompt = buildPartPrompt(analysis, p, fullContent, sectionRefs);
-                    
                     const result = await callGroqAPI(prompt, (chunk) => {
                         if (!state.stopFlag) {
                             contentEl.textContent += chunk;
                             output.scrollTop = output.scrollHeight;
                         }
                     });
-                    
                     if (state.stopFlag) break;
-                    
                     if (result && result.trim()) {
                         fullContent += (fullContent ? '\n\n' : '') + result;
                     } else {
                         contentEl.appendChild(document.createTextNode('[خالی]'));
                     }
-                    
                     if (p < analysis.totalParts && !state.stopFlag) {
                         await sleep(CONFIG.PART_DELAY);
                     }
                 }
-                
                 if (!fullContent || !fullContent.trim()) {
                     updateSectionStatus(state.currentSectionIndex, 'error');
                 } else {
@@ -1099,11 +1723,9 @@ async function runGenerationLoop() {
                     state.previousSummary = fullContent.substring(fullContent.length - CONFIG.MAX_PREVIOUS_CHARS).trim();
                     updateSectionStatus(state.currentSectionIndex, 'completed');
                 }
-                
                 state.currentSectionIndex++;
                 updateProgress(state.currentSectionIndex, total);
                 saveProgress();
-                
                 if (state.currentSectionIndex < total && !state.stopFlag) {
                     await sleep(CONFIG.SECTION_DELAY);
                 }
@@ -1115,7 +1737,6 @@ async function runGenerationLoop() {
                 saveProgress();
             }
         }
-        
         onGenerationComplete();
     } catch (e) {
         showToast(`خطا: ${e.message}`, 'error');
@@ -1123,21 +1744,22 @@ async function runGenerationLoop() {
     }
 }
 
-// ============ START/STOP ============
 async function startGeneration() {
     state.topic = document.getElementById('topicInput').value.trim();
     state.docType = document.getElementById('docTypeSelect').value;
     state.model = document.getElementById('modelSelect').value;
-    
     if (!state.topic) { showToast('موضوع را وارد کنید', 'error'); return; }
     if (!state.apiKey) { showToast('کلید API را تنظیم کنید', 'error'); openModal('apiModal'); return; }
     if (state.structureMode === 'custom' && state.customStructure.length === 0) { showToast('ساختار خالی', 'error'); return; }
     if (state.sections.length === 0) { showToast('بخشی تعریف نشده', 'error'); return; }
-    
+    const hasChapter4 = state.sections.some(s => isChapterFour(s) || isChapterFourSubsection(s));
+    if (hasChapter4 && !state.statisticalData.hasData && shouldGenerateSection(state.sections.find(s => isChapterFour(s) || isChapterFourSubsection(s)))) {
+        const proceed = confirm('⚠️ فصل چهارم در ساختار شما وجود دارد و انتخاب شده اما داده آماری وارد نکرده‌اید.\n\nآیا ادامه می‌دهید؟');
+        if (!proceed) return;
+    }
     if (state.sectionsWithRefs.length === 0) {
         if (!confirm('⚠️ هیچ بخشی برای رفرنس انتخاب نشده. ادامه می‌دهید؟')) return;
     }
-    
     state.isRunning = true;
     state.stopFlag = false;
     state.currentSectionIndex = 0;
@@ -1145,32 +1767,25 @@ async function startGeneration() {
     state.generatedContent = {};
     state.foundReferences = [];
     state.sectionReferences = {};
-    
+    state.inChapterFour = false;
     await requestWakeLock();
-    
     document.getElementById('outputContent').innerHTML = '';
     updateSectionsList();
-    
     document.getElementById('startBtn').disabled = true;
     document.getElementById('stopBtn').disabled = false;
     document.getElementById('downloadBtn').disabled = true;
-    
     document.getElementById('progressLabel').textContent = '0٪ | در حال شروع...';
     hideStatus();
-    
     await runGenerationLoop();
 }
 
 function stopGeneration() {
     state.stopFlag = true;
     state.isRunning = false;
-    
     if (state.generationAbortController) {
         state.generationAbortController.abort();
     }
-    
     releaseWakeLock();
-    
     document.getElementById('stopBtn').disabled = true;
     document.getElementById('startBtn').disabled = false;
     document.getElementById('progressLabel').textContent = '⛔ متوقف شد';
@@ -1181,113 +1796,91 @@ function stopGeneration() {
 function onGenerationComplete() {
     state.isRunning = false;
     releaseWakeLock();
-    
     document.getElementById('startBtn').disabled = false;
     document.getElementById('stopBtn').disabled = true;
     document.getElementById('downloadBtn').disabled = false;
-    
     if (!state.stopFlag) {
         document.getElementById('progressLabel').textContent = '100٪ | ✔ تکمیل شد';
         document.getElementById('progressFill').style.width = '100%';
         document.getElementById('progressFill').textContent = '100%';
-        
         let totalWords = 0;
         Object.values(state.generatedContent).forEach(c => {
             totalWords += c.split(/\s+/).length;
         });
-        
         showStatus(`✓ تکمیل شد! ${convertToPersianNumbers(state.sections.length)} بخش | ${convertToPersianNumbers(totalWords)} کلمه`, 'success');
         showToast('✓ نگارش تکمیل شد!', 'success');
         saveProgress();
     }
 }
 
-// ============ PAYMENT ============
-function showPaymentModal() {
-    openModal('paymentModal');
-    document.getElementById('progressLabel').textContent = `⏸️ منتظر پرداخت`;
-}
-
-function confirmPayment() {
-    state.paymentCompleted = true;
-    localStorage.setItem('payment_completed', 'true');
-    closeModal('paymentModal');
-    showToast('✓ پرداخت تأیید شد', 'success');
-    runGenerationLoop();
-}
-
-function cancelPayment() {
-    closeModal('paymentModal');
-    stopGeneration();
-}
-
-// ============ DOWNLOAD ============
 async function downloadWord() {
     if (Object.keys(state.generatedContent).length === 0) {
         showToast('محتوایی نیست', 'warning');
         return;
     }
-    
     try {
         if (typeof docx === 'undefined') throw new Error('کتابخانه docx بارگذاری نشده');
-        
         const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = docx;
         const children = [];
-        
         children.push(new Paragraph({
             children: [new TextRun({ text: state.topic, bold: true, size: 32 })],
             heading: HeadingLevel.TITLE,
             alignment: AlignmentType.CENTER
         }));
-        
         children.push(new Paragraph({
             children: [new TextRun({ text: `نوع: ${state.docType}`, size: 22 })]
         }));
-        
         let totalWords = 0;
         Object.values(state.generatedContent).forEach(c => {
             totalWords += c.split(/\s+/).length;
         });
-        
         children.push(new Paragraph({
             children: [new TextRun({ text: `کلمات: ${convertToPersianNumbers(totalWords)}`, size: 22, italics: true })]
         }));
-        
+        if (state.selectedChapters.length > 0) {
+            children.push(new Paragraph({
+                children: [new TextRun({ text: `فصل‌های نگارش شده: ${state.selectedChapters.join('، ')}`, size: 22, italics: true })]
+            }));
+        }
         children.push(new Paragraph({ children: [] }));
-        
-        for (const section of state.sections) {
+        const orderedSections = [...state.sections];
+        for (const section of orderedSections) {
             const content = state.generatedContent[section];
-            if (!content) continue;
-            
             const num = state.sectionNumbers[section];
             const displayTitle = num ? `${num}- ${section}` : section;
-            
-            children.push(new Paragraph({
-                children: [new TextRun({ text: displayTitle, bold: true, size: 28 })],
-                heading: HeadingLevel.HEADING_1
-            }));
-            
-            content.split('\n').filter(p => p.trim()).forEach(para => {
+            if (content) {
                 children.push(new Paragraph({
-                    children: [new TextRun({ text: para, size: 24 })],
+                    children: [new TextRun({ text: displayTitle, bold: true, size: 28 })],
+                    heading: HeadingLevel.HEADING_1
+                }));
+                content.split('\n').filter(p => p.trim()).forEach(para => {
+                    children.push(new Paragraph({
+                        children: [new TextRun({ text: para, size: 24 })],
+                        spacing: { after: 200 }
+                    }));
+                });
+                children.push(new Paragraph({ children: [] }));
+            } else {
+                children.push(new Paragraph({
+                    children: [new TextRun({ text: displayTitle, bold: true, size: 28, italics: true })],
+                    heading: HeadingLevel.HEADING_1
+                }));
+                children.push(new Paragraph({
+                    children: [new TextRun({ text: '(این بخش نگارش نشده است)', size: 20, italics: true, color: '999999' })],
                     spacing: { after: 200 }
                 }));
-            });
-            
-            children.push(new Paragraph({ children: [] }));
+                children.push(new Paragraph({ children: [] }));
+            }
         }
-        
         if (state.foundReferences.length > 0) {
             children.push(new Paragraph({
                 children: [new TextRun({ text: 'منابع', bold: true, size: 32 })],
                 heading: HeadingLevel.HEADING_1,
                 alignment: AlignmentType.CENTER
             }));
-            
             state.foundReferences.forEach(ref => {
-                let text = `${ref.authors.slice(0, 2).join('، ')} (${ref.year || 'بدون سال'}). ${ref.title}.`;
+                let text = `${ref.authors.slice(0, 2).join('، ')} (${ref.year || ''}). ${ref.title}.`;
                 if (ref.journal) text += ` ${ref.journal}.`;
-                
                 children.push(new Paragraph({
                     children: [new TextRun({ text, size: 22 })],
                     spacing: { after: 120 },
@@ -1295,13 +1888,11 @@ async function downloadWord() {
                 }));
             });
         }
-        
         const doc = new Document({ sections: [{ properties: {}, children }] });
         const blob = await Packer.toBlob(doc);
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 16);
         const safeTopic = state.topic.replace(/[^\w\u0600-\u06FF\s-]/g, '').substring(0, 30);
         const fileName = `${state.docType}_${safeTopic}_${timestamp}.docx`;
-        
         if (window.saveAs) window.saveAs(blob, fileName);
         else {
             const url = URL.createObjectURL(blob);
@@ -1313,23 +1904,23 @@ async function downloadWord() {
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
         }
-        
         showToast('✓ دانلود شد', 'success');
     } catch (e) {
         showToast(`خطا: ${e.message}`, 'error');
     }
 }
 
-// ============ MODAL MANAGEMENT ============
-function openModal(id) {
-    document.getElementById(id).classList.add('active');
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+    if (tabName === 'preview') updateDataPreview();
 }
 
-function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
-}
-
-// ============ SECTION PARSING ============
 function extractSectionNumber(text) {
     const match = text.match(/^([\d۰-۹]+|[الفبپتثجچحخدرزسشصضطظعغفقکگلمنوهی])\s*[-\.:)\]]\s*(.+)$/);
     if (match) return { number: match[1], title: match[2].trim() };
@@ -1338,10 +1929,7 @@ function extractSectionNumber(text) {
 
 function parseCustomStructure(text) {
     if (!text || !text.trim()) return { titles: [], numbers: {} };
-    
-    const titles = [];
-    const numbers = {};
-    
+    const titles = [], numbers = {};
     text.trim().split('\n').map(l => l.trim()).filter(Boolean).forEach(line => {
         const { number, title } = extractSectionNumber(line);
         if (title) {
@@ -1349,7 +1937,6 @@ function parseCustomStructure(text) {
             if (number) numbers[title] = number;
         }
     });
-    
     return { titles, numbers };
 }
 
@@ -1358,54 +1945,28 @@ function updateStructureCounter() {
     document.getElementById('structureCounter').textContent = `📊 ${convertToPersianNumbers(titles.length)} بخش`;
 }
 
-// ============ 🆕 REFERENCES PARSING - بهبودیافته ============
 function parseUserReferences(text) {
     if (!text || !text.trim()) return { persian: [], english: [] };
-    
-    const persian = [];
-    const english = [];
+    const persian = [], english = [];
     let current = null;
-    
     const lines = text.trim().split('\n');
-    
     for (let line of lines) {
         line = line.trim();
         if (!line) continue;
-        
-        // حذف شماره‌های اول خط
         line = line.replace(/^\d+[\.\-\)\s]+/, '').replace(/^[-•*]\s*/, '').trim();
         if (!line) continue;
-        
-        // تشخیص هدر
-        if (/منابع فارسی|منابع ایرانی|فارسی:|منابع داخلی/i.test(line)) {
-            current = 'persian';
-            continue;
-        }
-        if (/منابع انگلیسی|منابع لاتین|english:|منابع خارجی/i.test(line)) {
-            current = 'english';
-            continue;
-        }
-        
-        // تشخیص زبان بر اساس محتوا
+        if (/منابع فارسی|منابع ایرانی|فارسی:|منابع داخلی/i.test(line)) { current = 'persian'; continue; }
+        if (/منابع انگلیسی|منابع لاتین|english:|منابع خارجی/i.test(line)) { current = 'english'; continue; }
         const latinCount = (line.match(/[A-Za-z]/g) || []).length;
         const persianCount = (line.match(/[\u0600-\u06FF]/g) || []).length;
-        
-        if (current === 'persian') {
-            persian.push(line);
-        } else if (current === 'english') {
-            english.push(line);
-        } else {
-            // بدون هدر - تشخیص خودکار
-            if (latinCount > persianCount && latinCount > 3) {
-                english.push(line);
-            } else if (persianCount > 0) {
-                persian.push(line);
-            } else if (latinCount > 0) {
-                english.push(line);
-            }
+        if (current === 'persian') persian.push(line);
+        else if (current === 'english') english.push(line);
+        else {
+            if (latinCount > persianCount && latinCount > 3) english.push(line);
+            else if (persianCount > 0) persian.push(line);
+            else if (latinCount > 0) english.push(line);
         }
     }
-    
     return { persian, english };
 }
 
@@ -1423,14 +1984,12 @@ function autoSelectDefaultRefSections() {
 function onDocTypeChange() {
     const docType = document.getElementById('docTypeSelect').value;
     const structureMode = document.getElementById('structureMode').value;
-    
     if (structureMode === 'auto') {
         state.sections = [...OUTLINES[docType]];
         state.sectionNumbers = {};
         autoSelectDefaultRefSections();
         updateSectionsList();
     }
-    
     if (docType === 'ساختار دلخواه') {
         document.getElementById('structureMode').value = 'custom';
         onStructureModeChange();
@@ -1440,7 +1999,6 @@ function onDocTypeChange() {
 function onStructureModeChange() {
     const mode = document.getElementById('structureMode').value;
     state.structureMode = mode;
-    
     if (mode === 'custom') {
         document.getElementById('editStructureBtn').disabled = false;
         if (state.customStructure.length === 0) {
@@ -1463,36 +2021,25 @@ function onStructureModeChange() {
 function populateRefsSections() {
     const container = document.getElementById('sectionsSelectContainer');
     container.innerHTML = '';
-    
     if (state.sections.length === 0) {
         container.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;">⚠️ ابتدا ساختار را تنظیم کنید</p>';
         updateRefSectionsInfo();
         return;
     }
-    
     state.sections.forEach((section, i) => {
         const hasRef = state.sectionsWithRefs.includes(section);
         const isChapter = isChapterHeader(section);
-        
         const item = document.createElement('div');
         item.className = `section-select-item ${hasRef ? 'has-ref' : ''} ${isChapter ? 'is-chapter' : ''}`;
-        
         let badgeClass = 'badge-no-ref';
         let badgeText = '❌ بدون';
-        if (isChapter) {
-            badgeClass = 'badge-chapter';
-            badgeText = '📖 سرفصل';
-        } else if (hasRef) {
-            badgeClass = 'badge-ref';
-            badgeText = '✅ با رفرنس';
-        }
-        
+        if (isChapter) { badgeClass = 'badge-chapter'; badgeText = '📖 سرفصل'; }
+        else if (hasRef) { badgeClass = 'badge-ref'; badgeText = '✅ با رفرنس'; }
         item.innerHTML = `
             <input type="checkbox" class="ref-section-checkbox" value="${escapeHtml(section)}" id="ref-${i}" ${hasRef ? 'checked' : ''} ${isChapter ? 'disabled' : ''}>
             <label for="ref-${i}" class="section-label">${convertToPersianNumbers(i + 1)}. ${escapeHtml(section)}</label>
             <span class="section-badge ${badgeClass}">${badgeText}</span>
         `;
-        
         const checkbox = item.querySelector('input');
         checkbox.addEventListener('change', function() {
             if (this.checked) {
@@ -1506,7 +2053,6 @@ function populateRefsSections() {
             }
             updateRefSectionsInfo();
         });
-        
         const label = item.querySelector('label');
         label.addEventListener('click', function(e) {
             e.preventDefault();
@@ -1515,10 +2061,8 @@ function populateRefsSections() {
                 checkbox.dispatchEvent(new Event('change'));
             }
         });
-        
         container.appendChild(item);
     });
-    
     updateRefSectionsInfo();
 }
 
@@ -1555,7 +2099,6 @@ function applyRefsSections() {
     closeModal('refsSectionsModal');
     updateSectionsList();
     updateRefSectionsCount();
-    
     if (state.sectionsWithRefs.length > 0) {
         showToast(`✓ ${convertToPersianNumbers(state.sectionsWithRefs.length)} بخش انتخاب شد`, 'success');
     } else {
@@ -1563,15 +2106,11 @@ function applyRefsSections() {
     }
 }
 
-// ============ PROGRESS MANAGEMENT ============
 function saveProgress() {
     try {
         const progress = {
-            topic: state.topic,
-            docType: state.docType,
-            model: state.model,
-            sections: state.sections,
-            sectionNumbers: state.sectionNumbers,
+            topic: state.topic, docType: state.docType, model: state.model,
+            sections: state.sections, sectionNumbers: state.sectionNumbers,
             currentSectionIndex: state.currentSectionIndex,
             generatedContent: state.generatedContent,
             previousSummary: state.previousSummary,
@@ -1579,45 +2118,36 @@ function saveProgress() {
             customStructure: state.customStructure,
             userReferences: state.userReferences,
             sectionsWithRefs: state.sectionsWithRefs,
+            selectedChapters: state.selectedChapters,
             foundReferences: state.foundReferences,
             sectionReferences: state.sectionReferences,
-            paymentCompleted: state.paymentCompleted,
             timestamp: Date.now()
         };
         localStorage.setItem('writer_progress', JSON.stringify(progress));
-    } catch (e) {
-        console.error('Save error:', e);
-    }
+    } catch (e) { console.error('Save error:', e); }
 }
 
-// ============ EVENT LISTENERS ============
 document.addEventListener('DOMContentLoaded', function() {
-    if (state.apiKey) {
-        document.getElementById('apiKeyInput').value = state.apiKey;
-    }
-    
+    if (state.apiKey) document.getElementById('apiKeyInput').value = state.apiKey;
     const savedRefSections = localStorage.getItem('writer_ref_sections');
     if (savedRefSections) {
         try { state.sectionsWithRefs = JSON.parse(savedRefSections); } catch (e) {}
     }
-    
-    // Event listeners
+    const savedChapters = localStorage.getItem('writer_selected_chapters');
+    if (savedChapters) {
+        try { state.selectedChapters = JSON.parse(savedChapters); } catch (e) {}
+    }
     document.getElementById('startBtn').addEventListener('click', startGeneration);
     document.getElementById('stopBtn').addEventListener('click', stopGeneration);
     document.getElementById('downloadBtn').addEventListener('click', downloadWord);
-    
     document.getElementById('pasteBtn').addEventListener('click', async function() {
         try {
             document.getElementById('topicInput').value = await navigator.clipboard.readText();
             showToast('✓ پیست شد', 'success');
-        } catch (e) {
-            showToast('خطا', 'error');
-        }
+        } catch (e) { showToast('خطا', 'error'); }
     });
-    
     document.getElementById('docTypeSelect').addEventListener('change', onDocTypeChange);
     document.getElementById('structureMode').addEventListener('change', onStructureModeChange);
-    
     document.getElementById('editStructureBtn').addEventListener('click', function() {
         const input = document.getElementById('structureInput');
         if (state.customStructure.length > 0) {
@@ -1629,28 +2159,26 @@ document.addEventListener('DOMContentLoaded', function() {
         updateStructureCounter();
         openModal('structureModal');
     });
-    
+    document.getElementById('chaptersBtn').addEventListener('click', function() {
+        populateChaptersModal();
+        openModal('chaptersModal');
+    });
     document.getElementById('refsSectionsBtn').addEventListener('click', function() {
         populateRefsSections();
         openModal('refsSectionsModal');
     });
-    
     document.getElementById('refsBtn').addEventListener('click', function() {
         const input = document.getElementById('refsInput');
-        if (state.userReferences.raw_text) {
-            input.value = state.userReferences.raw_text;
-        }
+        if (state.userReferences.raw_text) input.value = state.userReferences.raw_text;
         updateRefsCounter();
         openModal('refsModal');
     });
-    
+    document.getElementById('dataBtn').addEventListener('click', function() {
+        openModal('dataModal');
+    });
     document.getElementById('apiBtn').addEventListener('click', function() {
         openModal('apiModal');
     });
-    
-    document.getElementById('confirmPaymentBtn').addEventListener('click', confirmPayment);
-    document.getElementById('cancelPaymentBtn').addEventListener('click', cancelPayment);
-    
     document.getElementById('selectAllRefBtn').addEventListener('click', selectAllRefSections);
     document.getElementById('deselectAllRefBtn').addEventListener('click', deselectAllRefSections);
     document.getElementById('selectDefaultRefBtn').addEventListener('click', selectDefaultRefSections);
@@ -1658,7 +2186,15 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('closeRefsSectionsBtn').addEventListener('click', function() {
         closeModal('refsSectionsModal');
     });
-    
+    document.getElementById('selectAllChapters').addEventListener('click', selectAllChapters);
+    document.getElementById('deselectAllChapters').addEventListener('click', deselectAllChapters);
+    document.getElementById('selectMainChapters').addEventListener('click', selectMainChapters);
+    document.getElementById('selectOnlyCh4').addEventListener('click', () => selectOnlyChapter(4));
+    document.getElementById('selectOnlyCh5').addEventListener('click', () => selectOnlyChapter(5));
+    document.getElementById('applyChaptersBtn').addEventListener('click', applyChaptersSelection);
+    document.getElementById('closeChaptersBtn').addEventListener('click', function() {
+        closeModal('chaptersModal');
+    });
     document.getElementById('saveApiKeyBtn').addEventListener('click', function() {
         const key = document.getElementById('apiKeyInput').value.trim();
         if (!key || !key.startsWith('gsk_')) {
@@ -1670,11 +2206,9 @@ document.addEventListener('DOMContentLoaded', function() {
         closeModal('apiModal');
         showToast('✓ ذخیره شد', 'success');
     });
-    
     document.getElementById('closeApiBtn').addEventListener('click', function() {
         closeModal('apiModal');
     });
-    
     document.getElementById('applyStructureBtn').addEventListener('click', function() {
         const { titles, numbers } = parseCustomStructure(document.getElementById('structureInput').value);
         if (titles.length === 0) {
@@ -1689,50 +2223,76 @@ document.addEventListener('DOMContentLoaded', function() {
         closeModal('structureModal');
         showToast(`✓ ${convertToPersianNumbers(titles.length)} بخش اعمال شد`, 'success');
     });
-    
     document.getElementById('closeStructureBtn').addEventListener('click', function() {
         closeModal('structureModal');
     });
-    
     document.getElementById('structureInput').addEventListener('input', updateStructureCounter);
-    
-    // 🆕 اصلاح مشکل منابع سفارشی
     document.getElementById('applyRefsBtn').addEventListener('click', function() {
         const text = document.getElementById('refsInput').value;
         const parsed = parseUserReferences(text);
-        
-        console.log('Parsed references:', parsed);
-        
         if (parsed.persian.length === 0 && parsed.english.length === 0) {
-            showToast('منبعی یافت نشد. لطفاً فرمت را بررسی کنید.', 'error');
+            showToast('منبعی یافت نشد', 'error');
             return;
         }
-        
         state.userReferences = { ...parsed, raw_text: text };
         closeModal('refsModal');
-        showToast(`✓ ${convertToPersianNumbers(parsed.persian.length)} فارسی و ${convertToPersianNumbers(parsed.english.length)} انگلیسی بارگذاری شد`, 'success');
+        showToast(`✓ ${convertToPersianNumbers(parsed.persian.length)} فارسی و ${convertToPersianNumbers(parsed.english.length)} انگلیسی`, 'success');
     });
-    
     document.getElementById('closeRefsBtn').addEventListener('click', function() {
         closeModal('refsModal');
     });
-    
     document.getElementById('refsInput').addEventListener('input', updateRefsCounter);
-    
-    // Close modal on overlay click
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) processFile(file);
+    });
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) processFile(file);
+    });
+    document.getElementById('saveDataBtn').addEventListener('click', function() {
+        state.statisticalData.researchType = document.getElementById('researchType').value;
+        state.statisticalData.analysisMethod = document.getElementById('analysisMethod').value;
+        state.statisticalData.independentVar = document.getElementById('independentVar').value;
+        state.statisticalData.dependentVar = document.getElementById('dependentVar').value;
+        state.statisticalData.sampleInfo = document.getElementById('sampleInfo').value;
+        state.statisticalData.statSoftware = document.getElementById('statSoftware').value;
+        state.statisticalData.significanceLevel = document.getElementById('significanceLevel').value;
+        const hypText = document.getElementById('hypotheses').value.trim();
+        state.statisticalData.hypotheses = hypText ? hypText.split('\n').map(h => h.trim()).filter(Boolean) : [];
+        if (state.statisticalData.rows.length > 0) {
+            state.statisticalData.hasData = true;
+            localStorage.setItem('writer_statistical_data', JSON.stringify(state.statisticalData));
+            closeModal('dataModal');
+            showToast(`✓ داده‌ها ذخیره شد (${convertToPersianNumbers(state.statisticalData.rows.length)} مشاهده)`, 'success');
+            updateSectionsList();
+        } else {
+            showToast('⚠️ ابتدا داده‌ها را آپلود یا وارد کنید', 'warning');
+        }
+    });
+    document.getElementById('closeDataBtn').addEventListener('click', function() {
+        closeModal('dataModal');
+    });
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', function(e) {
             if (e.target === overlay) overlay.classList.remove('active');
         });
     });
-    
-    // 🆔 Wake Lock on visibility change
     document.addEventListener('visibilitychange', function() {
-        if (!document.hidden && state.isRunning) {
-            requestWakeLock();
-        }
+        if (!document.hidden && state.isRunning) requestWakeLock();
     });
-    
     window.addEventListener('beforeunload', function(e) {
         if (state.isRunning) {
             saveProgress();
@@ -1740,10 +2300,31 @@ document.addEventListener('DOMContentLoaded', function() {
             e.returnValue = 'در حال نگارش...';
         }
     });
-    
-    // Initial setup
+    const savedStatData = localStorage.getItem('writer_statistical_data');
+    if (savedStatData) {
+        try {
+            const data = JSON.parse(savedStatData);
+            Object.assign(state.statisticalData, data);
+            document.getElementById('researchType').value = data.researchType || 'quantitative';
+            document.getElementById('analysisMethod').value = data.analysisMethod || 'descriptive';
+            document.getElementById('independentVar').value = data.independentVar || '';
+            document.getElementById('dependentVar').value = data.dependentVar || '';
+            document.getElementById('sampleInfo').value = data.sampleInfo || '';
+            document.getElementById('statSoftware').value = data.statSoftware || 'spss';
+            document.getElementById('significanceLevel').value = data.significanceLevel || '0.05';
+            if (data.hypotheses && data.hypotheses.length > 0) {
+                document.getElementById('hypotheses').value = data.hypotheses.join('\n');
+            }
+            if (data.hasData) {
+                showToast(`✓ داده‌های قبلی بازیابی شد (${convertToPersianNumbers(data.rows.length)} مشاهده)`, 'success');
+            }
+        } catch (e) {
+            console.error('Error loading stat data:', e);
+        }
+    }
     onDocTypeChange();
     updateRefSectionsCount();
+    document.getElementById('chaptersCount').textContent = convertToPersianNumbers(state.selectedChapters.length);
 });
 </script>
 </body>
