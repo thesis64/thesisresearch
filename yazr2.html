@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Persian AI Writer PRO - با انتخاب فصل‌ها</title>
+<title> AI Writer  - پایان نامه نویس آنلاین</title>
 <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
 <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -20,7 +20,7 @@ header p { color: #7f8c8d; font-size: 0.95em; }
 .status-banner.warning { background: #fff3cd; border-color: #f39c12; }
 .row { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .row label { font-size: 0.9em; color: #2c3e50; font-weight: bold; margin-left: 5px; }
-input[type="text"], select, input[type="file"] { padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Tahoma', sans-serif; font-size: 0.9em; direction: rtl; }
+input[type="text"], input[type="number"], select, input[type="file"] { padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Tahoma', sans-serif; font-size: 0.9em; direction: rtl; }
 input[type="text"]:focus, select:focus { outline: none; border-color: #667eea; }
 .topic-input { flex: 1; min-width: 200px; }
 button { padding: 8px 16px; border: none; border-radius: 8px; font-family: 'Tahoma', sans-serif; font-size: 0.9em; font-weight: bold; cursor: pointer; color: white; transition: all 0.3s; }
@@ -35,6 +35,9 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-refs { background: #d35400; }
 .btn-refs-sections { background: #16a085; }
 .btn-secondary { background: #95a5a6; }
+.btn-add { background: #3498db; }
+.btn-delete { background: #e74c3c; }
+.btn-edit { background: #f39c12; }
 .progress-section { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); margin-bottom: 12px; }
 .progress-section h3 { color: #2c3e50; margin-bottom: 10px; font-size: 1em; }
 .progress-bar { width: 100%; height: 25px; background: #ecf0f1; border-radius: 12px; overflow: hidden; margin-bottom: 8px; }
@@ -130,7 +133,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .selection-summary { background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); padding: 15px; border-radius: 8px; margin: 15px 0; border-right: 4px solid #ea580c; }
 .selection-summary h4 { color: #9a3412; margin-bottom: 8px; }
 .selection-summary .summary-text { color: #7c2d12; font-size: 0.95em; }
-.data-modal { max-width: 1000px; }
+.data-modal { max-width: 1100px; }
 .upload-area { border: 3px dashed #9b59b6; border-radius: 12px; padding: 30px; text-align: center; background: #faf5ff; margin: 15px 0; cursor: pointer; transition: all 0.3s; }
 .upload-area:hover { background: #f3e8ff; border-color: #7c3aed; }
 .upload-area.dragover { background: #ede9fe; border-color: #6d28d9; }
@@ -156,13 +159,34 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .tab-btn.active { background: #667eea; color: white; }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
+
+/* 🆕 استایل‌های فرضیه‌ها */
+.hypotheses-list { max-height: 400px; overflow-y: auto; background: #f8f9fa; border-radius: 8px; padding: 15px; margin: 15px 0; }
+.hypothesis-item { background: white; border-right: 4px solid #3498db; padding: 12px; border-radius: 6px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+.hypothesis-item .hypothesis-number { background: #3498db; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+.hypothesis-item .hypothesis-content { flex: 1; }
+.hypothesis-item .hypothesis-title { font-weight: bold; color: #2c3e50; margin-bottom: 4px; }
+.hypothesis-item .hypothesis-details { font-size: 0.85em; color: #7f8c8d; }
+.hypothesis-item .hypothesis-actions { display: flex; gap: 5px; }
+.hypothesis-item .hypothesis-actions button { padding: 4px 10px; font-size: 0.8em; }
+.hypothesis-form { background: #e8f4fd; border: 2px solid #3498db; border-radius: 8px; padding: 15px; margin: 15px 0; }
+.hypothesis-form h4 { color: #2980b9; margin-bottom: 12px; }
+.hypothesis-count { background: #3498db; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; margin-right: 8px; }
+.empty-hypotheses { text-align: center; color: #7f8c8d; padding: 30px; font-style: italic; }
+.test-type-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; color: white; margin-right: 5px; }
+.test-type-correlation { background: #16a085; }
+.test-type-ttest { background: #e67e22; }
+.test-type-regression { background: #9b59b6; }
+.test-type-anova { background: #e74c3c; }
+.test-type-sem { background: #3498db; }
+.test-type-descriptive { background: #95a5a6; }
 </style>
 </head>
 <body>
 <div class="container">
     <header>
-        <h1>🤖 Persian AI Writer PRO</h1>
-        <p>ربات نویسنده هوشمند - با قابلیت انتخاب فصل‌ها</p>
+        <h1>🤖  AI Writer </h1>
+        <p>پایان نامه نویس آنلاین</p>
     </header>
 
     <div class="status-banner" id="statusBanner"><span id="statusIcon">✓</span><span id="statusText"></span></div>
@@ -174,10 +198,9 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
         
         <label>مدل:</label>
         <select id="modelSelect">
-            <option value="qwen/qwen3-32b">Qwen 3 32B</option>
             <option value="llama-3.3-70b-versatile">Llama 3.3 70B</option>
+            <option value="qwen/qwen3-32b">Qwen 3 32B</option>
             <option value="openai/gpt-oss-120b">GPT OSS 120B</option>
-            <option value="openai/gpt-oss-20b">GPT OSS 20B</option>
             <option value="qwen/qwen3.6-27b">Qwen 3.6 27B</option>
             <option value="meta-llama/llama-4-scout-17b-16e-instruct">Llama 4 Scout</option>
         </select>
@@ -227,10 +250,11 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
             <h3>متن تولیدی</h3>
             <div class="output-content" id="outputContent">
                 <p style="color: #95a5a6; text-align: center; padding: 40px;">
-                    📑 قابلیت جدید: انتخاب فصل‌ها<br>
-                    🎯 فقط فصل‌های انتخاب شده نگارش می‌شوند<br>
-                    📊 تحلیل آماری فصل چهارم<br>
-                    🔍 جستجوی منابع واقعی از 4 پایگاه علمی
+                    🎯 نسخه نهایی با سیستم فرضیه‌سازی<br>
+                    📊 تحلیل آماری پیشرفته فصل چهارم<br>
+                    🔍 جستجوی منابع واقعی از 4 پایگاه علمی<br>
+                    📈 گزارش پایایی و روایی<br>
+                    ✅ جلوگیری از تکرار متن
                 </p>
             </div>
         </div>
@@ -267,19 +291,20 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
     </div>
 </div>
 
-<!-- مودال داده‌های آماری -->
+<!-- مودال داده‌های آماری - نسخه بهبودیافته -->
 <div class="modal-overlay" id="dataModal">
     <div class="modal data-modal">
-        <h2>📊 داده‌های آماری برای فصل چهارم</h2>
+        <h2>📊 داده‌های آماری و فرضیه‌ها برای فصل چهارم</h2>
         <p style="color: #7f8c8d; margin-bottom: 15px;">
-            💡 داده‌های پژوهش خود را وارد کنید تا فصل چهارم با تحلیل آماری واقعی نوشته شود.
+            💡 داده‌های پژوهش و فرضیه‌های خود را وارد کنید تا فصل چهارم با تحلیل آماری واقعی نوشته شود.
         </p>
 
         <div class="tab-container">
             <div class="tab-buttons">
                 <button class="tab-btn active" onclick="switchTab('upload')">📁 آپلود فایل</button>
                 <button class="tab-btn" onclick="switchTab('manual')">✍️ ورود دستی</button>
-                <button class="tab-btn" onclick="switchTab('hypotheses')">🎯 فرضیات</button>
+                <button class="tab-btn" onclick="switchTab('hypotheses')">🎯 فرضیات <span class="hypothesis-count" id="hypothesisCount">0</span></button>
+                <button class="tab-btn" onclick="switchTab('settings')">⚙️ تنظیمات</button>
                 <button class="tab-btn" onclick="switchTab('preview')">👁 پیش‌نمایش</button>
             </div>
 
@@ -304,7 +329,68 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
                 </div>
             </div>
 
+            <!-- 🆕 تب فرضیه‌ها - بهبودیافته -->
             <div class="tab-content" id="tab-hypotheses">
+                <div class="modal-info">
+                    <strong>💡 راهنما:</strong> فرضیه‌های پژوهش خود را به صورت ساختاریافته تعریف کنید. هر فرضیه شامل عنوان، نوع آزمون آماری، متغیر مستقل و متغیر وابسته خواهد بود.
+                </div>
+
+                <!-- فرم تعریف فرضیه جدید -->
+                <div class="hypothesis-form" id="hypothesisForm">
+                    <h4>➕ تعریف فرضیه جدید</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>عنوان فرضیه:</label>
+                            <input type="text" id="hypothesisTitle" placeholder="مثلاً: رابطه بین ویژگی‌های فناورانه و نیاز به متناسب‌سازی">
+                        </div>
+                        <div class="form-group">
+                            <label>نوع آزمون آماری:</label>
+                            <select id="hypothesisTestType">
+                                <option value="correlation">همبستگی پیرسون</option>
+                                <option value="regression">رگرسیون خطی</option>
+                                <option value="ttest">آزمون t مستقل</option>
+                                <option value="anova">تحلیل واریانس (ANOVA)</option>
+                                <option value="sem">مدل معادلات ساختاری (SEM)</option>
+                                <option value="descriptive">آمار توصیفی</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>متغیر مستقل:</label>
+                            <input type="text" id="hypothesisIV" placeholder="مثلاً: ویژگی‌های فناورانه نسل زد">
+                        </div>
+                        <div class="form-group">
+                            <label>متغیر وابسته:</label>
+                            <input type="text" id="hypothesisDV" placeholder="مثلاً: نیاز به متناسب‌سازی محتوا">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>توضیح فرضیه (اختیاری):</label>
+                        <textarea id="hypothesisDescription" rows="2" placeholder="توضیح کوتاه درباره فرضیه..."></textarea>
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="btn-add" id="addHypothesisBtn">➕ افزودن فرضیه</button>
+                        <button class="btn-secondary" id="clearHypothesisFormBtn">🗑 پاک کردن فرم</button>
+                    </div>
+                </div>
+
+                <!-- لیست فرضیه‌ها -->
+                <h4 style="margin: 15px 0 10px;">📋 لیست فرضیه‌های تعریف شده:</h4>
+                <div class="hypotheses-list" id="hypothesesList">
+                    <div class="empty-hypotheses">
+                        هنوز فرضیه‌ای تعریف نشده است. از فرم بالا برای افزودن فرضیه استفاده کنید.
+                    </div>
+                </div>
+
+                <div class="modal-buttons" style="margin-top: 15px;">
+                    <button class="btn-secondary" id="loadSampleHypothesesBtn">📥 بارگذاری فرضیه‌های نمونه</button>
+                    <button class="btn-stop" id="clearAllHypothesesBtn">🗑 حذف همه فرضیه‌ها</button>
+                </div>
+            </div>
+
+            <!-- 🆕 تب تنظیمات -->
+            <div class="tab-content" id="tab-settings">
                 <div class="form-row">
                     <div class="form-group">
                         <label>نوع پژوهش:</label>
@@ -333,29 +419,11 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>فرضیات پژوهش (هر فرضیه در یک خط):</label>
-                    <textarea id="hypotheses" rows="6" placeholder="فرضیه 1: بین متغیر X و Y رابطه معناداری وجود دارد.
-فرضیه 2: میانگین گروه آزمایش از گروه کنترل بیشتر است."></textarea>
-                </div>
-
                 <div class="form-row">
                     <div class="form-group">
-                        <label>متغیر مستقل:</label>
-                        <input type="text" id="independentVar" placeholder="مثلاً: روش آموزش">
+                        <label>جامعه آماری و حجم نمونه:</label>
+                        <input type="text" id="sampleInfo" placeholder="مثلاً: 200 دانشجو از دانشگاه تهران">
                     </div>
-                    <div class="form-group">
-                        <label>متغیر وابسته:</label>
-                        <input type="text" id="dependentVar" placeholder="مثلاً: عملکرد تحصیلی">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>جامعه آماری و حجم نمونه:</label>
-                    <input type="text" id="sampleInfo" placeholder="مثلاً: 200 دانشجو از دانشگاه تهران">
-                </div>
-
-                <div class="form-row">
                     <div class="form-group">
                         <label>نرم‌افزار آماری:</label>
                         <select id="statSoftware">
@@ -368,6 +436,9 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
                             <option value="excel">Excel</option>
                         </select>
                     </div>
+                </div>
+
+                <div class="form-row">
                     <div class="form-group">
                         <label>سطح معناداری (α):</label>
                         <select id="significanceLevel">
@@ -376,6 +447,35 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
                             <option value="0.001">0.001 (0.1%)</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label>روش نمونه‌گیری:</label>
+                        <select id="samplingMethod">
+                            <option value="random">تصادفی ساده</option>
+                            <option value="stratified">طبقه‌ای</option>
+                            <option value="cluster">خوشه‌ای</option>
+                            <option value="convenience">در دسترس</option>
+                            <option value="purposive">هدفمند</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="includeReliability" checked>
+                        📈 گزارش پایایی (آلفای کرونباخ)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="includeValidity" checked>
+                        📊 گزارش روایی (KMO، Bartlett، AVE)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="includeNormality" checked>
+                        📉 آزمون نرمال بودن (کلموگروف-اسمیرنف، شاپیرو-ویلک)
+                    </label>
                 </div>
             </div>
 
@@ -478,13 +578,13 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 const CONFIG = {
     API_BASE_URL: "https://api.groq.com/openai/v1/chat/completions",
     TEMPERATURE: 0.4,
-    MAX_TOKENS: 2500,
+    MAX_TOKENS: 2000,
     MAX_PREVIOUS_CHARS: 200,
     MAX_REFERENCES_PER_LANGUAGE: 8,
-    RETRY_ATTEMPTS: 3,
-    RETRY_DELAY: 5000,
-    SECTION_DELAY: 300,
-    PART_DELAY: 100,
+    RETRY_ATTEMPTS: 6,
+    RETRY_DELAY: 10000,
+    SECTION_DELAY: 5000,
+    PART_DELAY: 2000,
     MIN_REFERENCES_REQUIRED: 5,
     MAX_SEARCH_ATTEMPTS: 3,
     REFS_PER_SECTION: 8,
@@ -562,10 +662,13 @@ const SECTION_WORD_MAP = {
     "تحلیل": { min: 1000, max: 2000 },
     "نوآوری": { min: 400, max: 800 },
     "بهره‌وران": { min: 200, max: 400 },
-    "زمان‌بندی": { min: 150, max: 300 }
+    "زمان‌بندی": { min: 150, max: 300 },
+    "پایایی": { min: 400, max: 800 },
+    "روایی": { min: 400, max: 800 },
+    "نرمال": { min: 400, max: 800 }
 };
 
-const SYSTEM_PROMPT = `نویسنده دانشگاهی حرفه‌ای. فقط متن نهایی. بدون think. علمی، آکادمیک، روان. ❌ عنوان ننویس.`;
+const SYSTEM_PROMPT = `نویسنده دانشگاهی حرفه‌ای. فقط متن نهایی. علمی، آکادمیک، روان. ❌ عنوان ننویس. ❌ تکرار نکن.`;
 
 // ============ STATE ============
 const state = {
@@ -594,9 +697,12 @@ const state = {
     statisticalData: {
         rawData: null, headers: [], rows: [], statistics: {},
         researchType: 'quantitative', analysisMethod: 'descriptive',
-        hypotheses: [], independentVar: '', dependentVar: '',
         sampleInfo: '', statSoftware: 'spss', significanceLevel: '0.05',
-        hasData: false
+        samplingMethod: 'random',
+        includeReliability: true, includeValidity: true, includeNormality: true,
+        hasData: false,
+        // 🆕 فرضیه‌های ساختاریافته
+        hypotheses: []
     }
 };
 
@@ -640,7 +746,8 @@ function isChapterFourSubsection(title) {
         'تحلیل واریانس', 'ANOVA', 'فریدمن', 'رتبه‌بندی', 'معادلات ساختاری',
         'SEM', 'تحلیل عاملی', 'CFA', 'روایی همگرا', 'روایی واگرا', 'پایایی ترکیبی',
         'برازش مدل', 'تحلیل آمیخته', 'مثلث‌سازی', 'triangulation',
-        'جمع‌بندی یافته‌ها', 'خلاصه یافته‌ها'
+        'جمع‌بندی یافته‌ها', 'خلاصه یافته‌ها', 'پایایی', 'روایی',
+        'آلفای کرونباخ', 'KMO', 'Bartlett', 'AVE', 'CR'
     ];
     if (ch4Keywords.some(kw => title.includes(kw))) return true;
     if (state.inChapterFour) {
@@ -770,6 +877,7 @@ function releaseWakeLock() {
     if (state.wakeLock) { state.wakeLock.release(); state.wakeLock = null; }
 }
 
+// ============ CHAPTERS SELECTION ============
 function populateChaptersModal() {
     extractChapters();
     const container = document.getElementById('chapterList');
@@ -878,6 +986,7 @@ function shouldGenerateSection(sectionTitle) {
     return state.selectedChapters.includes(sectionTitle);
 }
 
+// ============ STATISTICAL ANALYSIS ============
 function calculateDescriptiveStats(values) {
     const nums = values.filter(v => !isNaN(parseFloat(v))).map(v => parseFloat(v));
     if (nums.length === 0) return null;
@@ -973,6 +1082,7 @@ function updateDataPreview() {
     let summaryHtml = '<h3 style="margin-bottom: 10px;">📊 خلاصه آماری</h3><div class="stats-summary">';
     summaryHtml += `<div class="stat-card"><h4>📝 مشاهدات</h4><div class="stat-value">${convertToPersianNumbers(rows.length)}</div></div>`;
     summaryHtml += `<div class="stat-card"><h4>📋 متغیرها</h4><div class="stat-value">${convertToPersianNumbers(headers.length)}</div></div>`;
+    summaryHtml += `<div class="stat-card"><h4>🎯 فرضیه‌ها</h4><div class="stat-value">${convertToPersianNumbers(state.statisticalData.hypotheses.length)}</div></div>`;
     Object.entries(statistics).forEach(([header, stat]) => {
         if (stat.type === 'numeric' && stat.descriptive) {
             const d = stat.descriptive;
@@ -995,73 +1105,343 @@ function updateDataPreview() {
     previewContainer.innerHTML = tableHtml;
 }
 
+// ============ 🆕 HYPOTHESES MANAGEMENT ============
+function getTestTypeBadge(testType) {
+    const badges = {
+        'correlation': { class: 'test-type-correlation', text: 'همبستگی' },
+        'regression': { class: 'test-type-regression', text: 'رگرسیون' },
+        'ttest': { class: 'test-type-ttest', text: 'آزمون t' },
+        'anova': { class: 'test-type-anova', text: 'ANOVA' },
+        'sem': { class: 'test-type-sem', text: 'SEM' },
+        'descriptive': { class: 'test-type-descriptive', text: 'توصیفی' }
+    };
+    return badges[testType] || badges['descriptive'];
+}
+
+function renderHypothesesList() {
+    const list = document.getElementById('hypothesesList');
+    const hypotheses = state.statisticalData.hypotheses;
+    
+    if (hypotheses.length === 0) {
+        list.innerHTML = '<div class="empty-hypotheses">هنوز فرضیه‌ای تعریف نشده است. از فرم بالا برای افزودن فرضیه استفاده کنید.</div>';
+        document.getElementById('hypothesisCount').textContent = '0';
+        return;
+    }
+    
+    document.getElementById('hypothesisCount').textContent = hypotheses.length;
+    
+    list.innerHTML = hypotheses.map((h, idx) => {
+        const badge = getTestTypeBadge(h.testType);
+        return `
+            <div class="hypothesis-item">
+                <div class="hypothesis-number">${convertToPersianNumbers(idx + 1)}</div>
+                <div class="hypothesis-content">
+                    <div class="hypothesis-title">${escapeHtml(h.title)}</div>
+                    <div class="hypothesis-details">
+                        <span class="test-type-badge ${badge.class}">${badge.text}</span>
+                        <strong>متغیر مستقل:</strong> ${escapeHtml(h.independentVar || 'نامشخص')} |
+                        <strong>متغیر وابسته:</strong> ${escapeHtml(h.dependentVar || 'نامشخص')}
+                        ${h.description ? `<br><em>${escapeHtml(h.description)}</em>` : ''}
+                    </div>
+                </div>
+                <div class="hypothesis-actions">
+                    <button class="btn-edit" onclick="editHypothesis(${idx})">✎</button>
+                    <button class="btn-delete" onclick="deleteHypothesis(${idx})">🗑</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function addHypothesis() {
+    const title = document.getElementById('hypothesisTitle').value.trim();
+    const testType = document.getElementById('hypothesisTestType').value;
+    const independentVar = document.getElementById('hypothesisIV').value.trim();
+    const dependentVar = document.getElementById('hypothesisDV').value.trim();
+    const description = document.getElementById('hypothesisDescription').value.trim();
+    
+    if (!title) {
+        showToast('عنوان فرضیه را وارد کنید', 'error');
+        return;
+    }
+    
+    state.statisticalData.hypotheses.push({
+        title, testType, independentVar, dependentVar, description,
+        id: Date.now()
+    });
+    
+    clearHypothesisForm();
+    renderHypothesesList();
+    showToast(`✓ فرضیه "${title}" اضافه شد`, 'success');
+}
+
+function editHypothesis(idx) {
+    const h = state.statisticalData.hypotheses[idx];
+    document.getElementById('hypothesisTitle').value = h.title;
+    document.getElementById('hypothesisTestType').value = h.testType;
+    document.getElementById('hypothesisIV').value = h.independentVar;
+    document.getElementById('hypothesisDV').value = h.dependentVar;
+    document.getElementById('hypothesisDescription').value = h.description || '';
+    
+    state.statisticalData.hypotheses.splice(idx, 1);
+    renderHypothesesList();
+    showToast('فرضیه برای ویرایش در فرم قرار گرفت', 'warning');
+}
+
+function deleteHypothesis(idx) {
+    const h = state.statisticalData.hypotheses[idx];
+    if (confirm(`آیا از حذف فرضیه "${h.title}" مطمئن هستید؟`)) {
+        state.statisticalData.hypotheses.splice(idx, 1);
+        renderHypothesesList();
+        showToast('فرضیه حذف شد', 'success');
+    }
+}
+
+function clearHypothesisForm() {
+    document.getElementById('hypothesisTitle').value = '';
+    document.getElementById('hypothesisTestType').value = 'correlation';
+    document.getElementById('hypothesisIV').value = '';
+    document.getElementById('hypothesisDV').value = '';
+    document.getElementById('hypothesisDescription').value = '';
+}
+
+function clearAllHypotheses() {
+    if (state.statisticalData.hypotheses.length === 0) {
+        showToast('هیچ فرضیه‌ای برای حذف وجود ندارد', 'warning');
+        return;
+    }
+    if (confirm(`آیا از حذف همه ${state.statisticalData.hypotheses.length} فرضیه مطمئن هستید؟`)) {
+        state.statisticalData.hypotheses = [];
+        renderHypothesesList();
+        showToast('همه فرضیه‌ها حذف شدند', 'success');
+    }
+}
+
+function loadSampleHypotheses() {
+    const samples = [
+        {
+            title: 'رابطه بین ویژگی‌های فناورانه نسل زد با نیاز به متناسب‌سازی محتوای آموزشی',
+            testType: 'correlation',
+            independentVar: 'ویژگی‌های فناورانه نسل زد',
+            dependentVar: 'نیاز به متناسب‌سازی محتوای آموزشی',
+            description: 'فرضیه اول: بین ویژگی‌های فناورانه و نیاز به تغییر محتوا رابطه معناداری وجود دارد.'
+        },
+        {
+            title: 'رابطه بین سبک یادگیری نسل زد با نیاز به متناسب‌سازی روش‌های تدریس',
+            testType: 'correlation',
+            independentVar: 'سبک یادگیری نسل زد',
+            dependentVar: 'نیاز به متناسب‌سازی روش‌های تدریس',
+            description: 'فرضیه دوم: بین سبک یادگیری و نیاز به تغییر روش تدریس رابطه معناداری وجود دارد.'
+        },
+        {
+            title: 'رابطه بین ارزش‌ها و انگیزه‌های نسل زد با نیاز به متناسب‌سازی رویکردهای تربیتی',
+            testType: 'regression',
+            independentVar: 'ارزش‌ها و انگیزه‌های نسل زد',
+            dependentVar: 'نیاز به متناسب‌سازی رویکردهای تربیتی',
+            description: 'فرضیه سوم: ارزش‌ها و انگیزه‌ها پیش‌بینی‌کننده نیاز به تغییر رویکردهای تربیتی هستند.'
+        },
+        {
+            title: 'رابطه بین مهارت‌های دیجیتال نسل زد با نیاز به متناسب‌سازی زیرساخت‌های فناوری آموزشی',
+            testType: 'correlation',
+            independentVar: 'مهارت‌های دیجیتال نسل زد',
+            dependentVar: 'نیاز به متناسب‌سازی زیرساخت‌های فناوری',
+            description: 'فرضیه چهارم: بین مهارت دیجیتال و نیاز به زیرساخت فناوری رابطه معناداری وجود دارد.'
+        },
+        {
+            title: 'تفاوت معنادار بین دیدگاه‌های افسران جوان، فرماندهان و اساتید درباره نیاز به متناسب‌سازی',
+            testType: 'anova',
+            independentVar: 'گروه شغلی (افسر جوان، فرمانده، استاد)',
+            dependentVar: 'میزان نیاز به متناسب‌سازی',
+            description: 'فرضیه پنجم: بین دیدگاه گروه‌های مختلف تفاوت معناداری وجود دارد.'
+        }
+    ];
+    
+    if (state.statisticalData.hypotheses.length > 0) {
+        if (!confirm('فرضیه‌های فعلی با نمونه جایگزین خواهند شد. ادامه می‌دهید؟')) return;
+    }
+    
+    state.statisticalData.hypotheses = samples.map(s => ({ ...s, id: Date.now() + Math.random() }));
+    renderHypothesesList();
+    showToast(`✓ ${samples.length} فرضیه نمونه بارگذاری شد`, 'success');
+}
+
+// ============ 🆕 IMPROVED STATS TABLE FOR PROMPT ============
 function buildStatsTableForPrompt() {
     const { headers, statistics, rows } = state.statisticalData;
     if (!headers.length || !rows.length) return '';
+    
     let table = `\n\n═══════════════════════════════════════════\n`;
     table += `📊 جداول آماری واقعی (از داده‌های شما)\n`;
     table += `═══════════════════════════════════════════\n\n`;
+    
     const numericVars = Object.entries(statistics).filter(([_, s]) => s.type === 'numeric' && s.descriptive);
     if (numericVars.length > 0) {
         table += `📋 جدول ۱: آمار توصیفی متغیرهای کمی\n`;
-        table += `متغیر | N | میانگین | انحراف معیار | حداقل | حداکثر | میانه\n`;
-        table += `---|---|---|---|---|---|---\n`;
+        table += `متغیر\tN\tمیانگین\tانحراف معیار\tحداقل\tحداکثر\tمیانه\n`;
         numericVars.forEach(([header, stat]) => {
             const d = stat.descriptive;
-            table += `${header} | ${d.n} | ${d.mean.toFixed(2)} | ${d.stdDev.toFixed(2)} | ${d.min.toFixed(2)} | ${d.max.toFixed(2)} | ${d.median.toFixed(2)}\n`;
+            table += `${header}\t${d.n}\t${d.mean.toFixed(2)}\t${d.stdDev.toFixed(2)}\t${d.min.toFixed(2)}\t${d.max.toFixed(2)}\t${d.median.toFixed(2)}\n`;
         });
         table += `\n`;
     }
+    
     const categoricalVars = Object.entries(statistics).filter(([_, s]) => s.type === 'categorical');
     if (categoricalVars.length > 0) {
         table += `📋 جدول ۲: توزیع فراوانی متغیرهای کیفی\n\n`;
         categoricalVars.forEach(([header, stat]) => {
             table += `▸ متغیر: ${header}\n`;
-            table += `مقدار | فراوانی | درصد\n`;
-            table += `---|---|---\n`;
+            table += `مقدار\tفراوانی\tدرصد\n`;
             stat.frequency.forEach(f => {
-                table += `${f.value} | ${f.count} | ${f.percentage}%\n`;
+                table += `${f.value}\t${f.count}\t${f.percentage}%\n`;
             });
             table += `\n`;
         });
     }
+    
     table += `📊 خلاصه داده‌ها:\n`;
     table += `• تعداد مشاهدات: ${rows.length}\n`;
     table += `• تعداد متغیرها: ${headers.length}\n`;
     table += `• نام متغیرها: ${headers.join('، ')}\n`;
+    
     return table;
 }
 
+// ============ 🆕 BUILD HYPOTHESES TEXT FOR PROMPT ============
+function buildHypothesesTextForPrompt() {
+    const hypotheses = state.statisticalData.hypotheses;
+    if (hypotheses.length === 0) return '(فرضیه‌ای تعریف نشده است)';
+    
+    const testTypeNames = {
+        'correlation': 'همبستگی پیرسون',
+        'regression': 'رگرسیون خطی',
+        'ttest': 'آزمون t مستقل',
+        'anova': 'تحلیل واریانس یک‌طرفه',
+        'sem': 'مدل معادلات ساختاری',
+        'descriptive': 'آمار توصیفی'
+    };
+    
+    let text = `\n\n═══════════════════════════════════════════\n`;
+    text += `🎯 فرضیه‌های پژوهش (${hypotheses.length} فرضیه)\n`;
+    text += `═══════════════════════════════════════════\n\n`;
+    
+    hypotheses.forEach((h, idx) => {
+        text += `فرضیه ${idx + 1}: ${h.title}\n`;
+        text += `  📐 نوع آزمون: ${testTypeNames[h.testType] || h.testType}\n`;
+        text += `  📊 متغیر مستقل: ${h.independentVar || 'نامشخص'}\n`;
+        text += `  📈 متغیر وابسته: ${h.dependentVar || 'نامشخص'}\n`;
+        if (h.description) {
+            text += `  📝 توضیح: ${h.description}\n`;
+        }
+        text += `\n`;
+    });
+    
+    return text;
+}
+
+// ============ 🆕 IMPROVED CHAPTER FOUR PROMPT ============
 function buildChapterFourSubsectionPrompt(sectionTitle, previousContent) {
-    const { researchType, analysisMethod, hypotheses, independentVar, dependentVar, sampleInfo, statSoftware, significanceLevel } = state.statisticalData;
+    const { researchType, analysisMethod, sampleInfo, statSoftware, significanceLevel, samplingMethod, includeReliability, includeValidity, includeNormality } = state.statisticalData;
     const statsTable = buildStatsTableForPrompt();
+    const hypothesesText = buildHypothesesTextForPrompt();
+    
     const researchTypeNames = { 'quantitative': 'کمی', 'qualitative': 'کیفی', 'mixed': 'آمیخته', 'descriptive': 'توصیفی', 'correlational': 'همبستگی', 'experimental': 'آزمایشی' };
     const analysisMethodNames = { 'descriptive': 'آمار توصیفی', 'ttest': 'آزمون t', 'anova': 'ANOVA', 'regression': 'رگرسیون', 'correlation': 'همبستگی', 'chi2': 'کای-دو', 'sem': 'SEM', 'factor': 'عاملی', 'cluster': 'خوشه‌بندی' };
-    const hypothesesText = hypotheses.length > 0 ? hypotheses.map((h, i) => `${i + 1}. ${h}`).join('\n') : '(مشخص نشده)';
+    
     let subsectionType = 'general';
     let specificInstructions = '';
+    
     if (sectionTitle.includes('مقدمه')) {
         subsectionType = 'intro';
-        specificInstructions = `📝 این بخش مقدمه فصل چهارم است. در ۱-۲ پاراگراف کوتاه، هدف فصل و ساختار آن را بیان کن.`;
+        specificInstructions = `📝 این بخش مقدمه فصل چهارم است.
+✅ در ۲-۳ پاراگراف کوتاه، هدف فصل و ساختار آن را بیان کن.
+✅ ساختار فصل را به صورت خلاصه معرفی کن.
+❌ از تکرار مطالب فصل‌های قبلی خودداری کن.`;
     } else if (sectionTitle.includes('تحلیل کیفی') || sectionTitle.includes('اسناد') || sectionTitle.includes('مصاحبه') || sectionTitle.includes('کدگذاری')) {
         subsectionType = 'qualitative';
-        specificInstructions = `📝 این بخش تحلیل کیفی است. بر اساس داده‌های پژوهش، تحلیل کیفی ارائه بده.`;
+        specificInstructions = `📝 این بخش تحلیل کیفی است.
+✅ بر اساس داده‌های پژوهش، تحلیل کیفی ارائه بده.
+✅ از کدگذاری باز، محوری و انتخابی استفاده کن.
+✅ مفاهیم و مقولات اصلی را استخراج کن.
+❌ از تکرار جملات خودداری کن.`;
     } else if (sectionTitle.includes('آمار توصیفی') || sectionTitle.includes('جمعیت‌شناختی') || sectionTitle.includes('فراوانی')) {
         subsectionType = 'descriptive';
-        specificInstructions = `📝 این بخش آمار توصیفی است. حتماً از جداول آماری بالا استفاده کن و جداول فراوانی، درصد، میانگین و انحراف معیار را گزارش کن.`;
+        specificInstructions = `📝 این بخش آمار توصیفی است.
+✅ حتماً از اعداد واقعی جداول بالا استفاده کن.
+✅ جداول فراوانی، درصد، میانگین و انحراف معیار را گزارش کن.
+✅ جداول را با استفاده از Tab یا فرمت منظم نمایش بده.
+✅ تفسیر علمی از اعداد ارائه بده.
+❌ داده جعلی نساز.
+❌ جملات را تکرار نکن.`;
     } else if (sectionTitle.includes('آزمون فرضیه') || sectionTitle.includes('آزمون فرضیات') || sectionTitle.includes('استنباطی')) {
         subsectionType = 'inferential';
-        specificInstructions = `📝 این بخش آزمون فرضیات است. حتماً فرضیات را یکی یکی آزمون کن. برای هر فرضیه: آماره آزمون، df، p-value و نتیجه (تأیید/رد) را گزارش کن.`;
+        specificInstructions = `📝 این بخش آزمون فرضیات است.
+✅ فرضیه‌های تعریف شده را یکی یکی آزمون کن.
+✅ برای هر فرضیه این موارد را گزارش کن:
+   - نام آزمون (مثلاً همبستگی پیرسون، رگرسیون، t-test)
+   - آماره آزمون (t-value، F-value، r، R²)
+   - درجه آزادی (df)
+   - سطح معناداری (p-value)
+   - نتیجه (تأیید یا رد فرضیه)
+✅ مثال: "آزمون همبستگی پیرسون نشان داد که بین متغیر X و Y رابطه معناداری وجود دارد (r=0.45, p=0.003 < 0.05). بنابراین فرضیه اول تأیید می‌شود."
+✅ از نرم‌افزار ${statSoftware.toUpperCase()} استفاده کن.
+❌ فرضیه اضافه نکن.
+❌ جملات را تکرار نکن.`;
     } else if (sectionTitle.includes('همبستگی') || sectionTitle.includes('رگرسیون')) {
         subsectionType = 'correlation';
-        specificInstructions = `📝 این بخش تحلیل همبستگی/رگرسیون است. ضریب همبستگی (r)، ضریب تعیین (R²)، آماره F یا t، و سطح معناداری را گزارش کن.`;
+        specificInstructions = `📝 این بخش تحلیل همبستگی/رگرسیون است.
+✅ ضریب همبستگی (r)، ضریب تعیین (R²)، آماره F یا t، و سطح معناداری را گزارش کن.
+✅ جدول ماتریس همبستگی را ارائه بده.
+✅ تفسیر علمی از ضرایب ارائه بده.
+❌ جملات را تکرار نکن.`;
     } else if (sectionTitle.includes('SEM') || sectionTitle.includes('معادلات ساختاری') || sectionTitle.includes('عاملی')) {
         subsectionType = 'sem';
-        specificInstructions = `📝 این بخش مدل‌سازی معادلات ساختاری است. شاخص‌های برازش (RMSEA، CFI، GFI، NFI) و بارهای عاملی را گزارش کن.`;
+        specificInstructions = `📝 این بخش مدل‌سازی معادلات ساختاری است.
+✅ شاخص‌های برازش (RMSEA، CFI، GFI، NFI، AGFI) را گزارش کن.
+✅ بارهای عاملی (Factor Loadings) را ارائه بده.
+✅ مسیرهای علی بین متغیرها را تحلیل کن.
+✅ مدل نهایی را ترسیم و تفسیر کن.
+❌ جملات را تکرار نکن.`;
+    } else if (sectionTitle.includes('پایایی') || sectionTitle.includes('آلفا')) {
+        subsectionType = 'reliability';
+        specificInstructions = `📝 این بخش بررسی پایایی است.
+✅ آلفای کرونباخ را برای هر متغیر گزارش کن (باید بالای ۰.۷ باشد).
+✅ پایایی ترکیبی (CR) را محاسبه کن.
+✅ تفسیر علمی از مقادیر ارائه بده.
+✅ جدول پایایی را ارائه بده.
+❌ جملات را تکرار نکن.`;
+    } else if (sectionTitle.includes('روایی') || sectionTitle.includes('KMO') || sectionTitle.includes('AVE')) {
+        subsectionType = 'validity';
+        specificInstructions = `📝 این بخش بررسی روایی است.
+✅ شاخص KMO (باید بالای ۰.۶ باشد) را گزارش کن.
+✅ آزمون Bartlett's Test را ارائه بده.
+✅ AVE (روایی همگرا) را محاسبه کن (باید بالای ۰.۵ باشد).
+✅ روایی واگرا را بررسی کن.
+✅ جدول روایی را ارائه بده.
+❌ جملات را تکرار نکن.`;
+    } else if (sectionTitle.includes('نرمال') || sectionTitle.includes('کلموگروف') || sectionTitle.includes('شاپیرو')) {
+        subsectionType = 'normality';
+        specificInstructions = `📝 این بخش آزمون نرمال بودن است.
+✅ نتایج آزمون کلموگروف-اسمیرنف را گزارش کن.
+✅ نتایج آزمون شاپیرو-ویلک را گزارش کن.
+✅ برای هر متغیر، آماره آزمون و p-value را ارائه بده.
+✅ تفسیر کن که آیا داده‌ها نرمال هستند یا خیر.
+❌ جملات را تکرار نکن.`;
     } else if (sectionTitle.includes('جمع‌بندی') || sectionTitle.includes('خلاصه')) {
         subsectionType = 'summary';
-        specificInstructions = `📝 این بخش جمع‌بندی فصل است. یافته‌های اصلی را خلاصه کن و به فصل بعد ارجاع بده.`;
+        specificInstructions = `📝 این بخش جمع‌بندی فصل است.
+✅ یافته‌های اصلی را خلاصه کن.
+✅ به فرضیه‌های تأیید/رد شده اشاره کن.
+✅ به فصل بعد ارجاع بده.
+❌ مطالب قبلی را تکرار نکن.`;
+    } else {
+        specificInstructions = `📝 این بخش از فصل چهارم است.
+✅ تحلیل علمی و آکادمیک ارائه بده.
+✅ از اعداد واقعی داده‌ها استفاده کن.
+✅ تفسیر علمی ارائه بده.
+❌ جملات و مفاهیم را تکرار نکن.
+❌ داده جعلی نساز.`;
     }
+    
     let prompt = `${SYSTEM_PROMPT}
 
 ═══════════════════════════════════════════
@@ -1077,14 +1457,12 @@ function buildChapterFourSubsectionPrompt(sectionTitle, previousContent) {
 🔬 نوع پژوهش: ${researchTypeNames[researchType] || researchType}
 📐 روش تحلیل: ${analysisMethodNames[analysisMethod] || analysisMethod}
 👥 نمونه آماری: ${sampleInfo || 'مشخص نشده'}
+📊 روش نمونه‌گیری: ${samplingMethod}
 📊 نرم‌افزار: ${statSoftware.toUpperCase()}
 🎯 سطح معناداری: α = ${significanceLevel}
-🎯 متغیر مستقل: ${independentVar || 'مشخص نشده'}
-📈 متغیر وابسته: ${dependentVar || 'مشخص نشده'}
-
-═══════════════════════════════════════════
-🎯 فرضیات پژوهش
-═══════════════════════════════════════════
+📈 گزارش پایایی: ${includeReliability ? 'بله' : 'خیر'}
+📊 گزارش روایی: ${includeValidity ? 'بله' : 'خیر'}
+📉 آزمون نرمال بودن: ${includeNormality ? 'بله' : 'خیر'}
 
 ${hypothesesText}
 
@@ -1097,23 +1475,29 @@ ${statsTable}
 ${specificInstructions}
 
 ═══════════════════════════════════════════
-⚠️ قوانین بسیار مهم
+⚠️ قوانین بسیار مهم (حتماً رعایت کن)
 ═══════════════════════════════════════════
 
 ✅ حتماً از اعداد واقعی جداول بالا استفاده کن
-✅ جداول را به صورت منظم با | و - رسم کن
+✅ جداول را با Tab یا فرمت منظم رسم کن
 ✅ تفسیر علمی و آکادمیک بنویس
 ✅ نرم‌افزار ${statSoftware.toUpperCase()} را ذکر کن
 ✅ اعداد را به فارسی بنویس (مثلاً ۲.۵ نه 2.5)
+✅ هر پاراگراف باید اطلاعات جدیدی ارائه دهد
+✅ از تکرار جملات و مفاهیم خودداری کن
 
 ❌ داده جعلی نساز - فقط از اعداد جداول بالا استفاده کن
 ❌ عنوان "${sectionTitle}" را ننویس - فقط متن را شروع کن
 ❌ متن عمومی و کلی ننویس - دقیقاً بر اساس داده‌ها تحلیل کن
+❌ جملات قبلی را تکرار نکن
+❌ از عبارات کلیشه‌ای مانند "این داده‌ها می‌توانند به‌عنوان پایه‌ای..." استفاده نکن
 
 📊 حجم: ۸۰۰-۱۵۰۰ کلمه`;
+    
     if (previousContent) {
-        prompt += `\n\n📖 ادامه متن قبلی:\n"${previousContent.substring(previousContent.length - 400)}"\n\nادامه بده:`;
+        prompt += `\n\n📖 ادامه متن قبلی:\n"${previousContent.substring(previousContent.length - 400)}"\n\n⚠️ مهم: از تکرار محتوای قبلی خودداری کن و متن جدید بنویس.\n\nادامه بده:`;
     }
+    
     prompt += `\n\n🎯 شروع کن:`;
     return prompt;
 }
@@ -1123,6 +1507,7 @@ function analyzeSection(sectionName) {
     const isChapter = isChapterHeader(sectionName);
     const isChapter4 = isChapterFour(sectionName);
     const isChapter4Subsection = isChapterFourSubsection(sectionName);
+    
     if (isChapter4Subsection && state.statisticalData.hasData) {
         const range = getWordRangeFromTitle(sectionName);
         const wordsPerPart = 1200;
@@ -1171,14 +1556,17 @@ function buildPartPrompt(analysis, partNumber, previousContent, sectionRefs) {
         return buildChapterFourSubsectionPrompt(analysis.sectionName, previousContent);
     }
     if (analysis.isChapterFour) return buildChapterFourPrompt(analysis, partNumber, previousContent);
+    
     const section = analysis.sectionName;
     const isFirst = partNumber === 1;
     const isLast = partNumber === analysis.totalParts;
+    
     let prompt = `${SYSTEM_PROMPT}
 
 📝 بخش: "${section}"
 🎯 موضوع: "${state.topic}"
 📊 حجم کل: ${analysis.minWords}-${analysis.maxWords} کلمه`;
+    
     if (analysis.totalParts === 1) {
         prompt += `\n\n✍️ کامل بنویس.`;
     } else {
@@ -1190,9 +1578,11 @@ function buildPartPrompt(analysis, partNumber, previousContent, sectionRefs) {
         if (!isLast) prompt += `\n❌ نتیجه‌گیری نکن.`;
         else prompt += `\n✅ جمع‌بندی کن.`;
     }
+    
     let refRule = "❌ بدون رفرنس.";
     let refCtx = '';
     const hasCustomRefs = state.userReferences.persian.length + state.userReferences.english.length > 0;
+    
     if (analysis.needsRefs && sectionRefs.length > 0) {
         refRule = "✅ فقط از منابع واقعی استفاده کن.";
         refCtx = '\n📚 منابع:\n';
@@ -1210,14 +1600,17 @@ function buildPartPrompt(analysis, partNumber, previousContent, sectionRefs) {
         });
         refCtx += `\n⚠️ در هر پاراگراف حداقل 1 استناد.`;
     }
-    const ctx = !isFirst && previousContent ? `\n\n📖 ادامه قبلی:\n"${previousContent.substring(previousContent.length - 400)}"\n\nادامه بده:` : '';
+    
+    const ctx = !isFirst && previousContent ? `\n\n📖 ادامه قبلی:\n"${previousContent.substring(previousContent.length - 400)}"\n\n⚠️ از تکرار محتوای قبلی خودداری کن.\n\nادامه بده:` : '';
     const prev = state.previousSummary && isFirst ? `\n\n🔍 خلاصه قبل: ${state.previousSummary}` : '';
+    
     return `${prompt}
 
 📋 قوانین:
 - فارسی آکادمیک و روان
 - ❌ عنوان بخش را ننویس
 - ✅ سال‌ها به فارسی: 2020 → ۲۰۲۰
+- ❌ جملات را تکرار نکن
 
 ${refRule}
 ${refCtx}${prev}${ctx}
@@ -1226,11 +1619,13 @@ ${refCtx}${prev}${ctx}
 }
 
 function buildChapterFourPrompt(analysis, partNumber, previousContent) {
-    const { researchType, analysisMethod, hypotheses, independentVar, dependentVar, sampleInfo, statSoftware, significanceLevel } = state.statisticalData;
+    const { researchType, analysisMethod, sampleInfo, statSoftware, significanceLevel, samplingMethod, includeReliability, includeValidity, includeNormality } = state.statisticalData;
     const statsTable = buildStatsTableForPrompt();
+    const hypothesesText = buildHypothesesTextForPrompt();
+    
     const researchTypeNames = { 'quantitative': 'کمی', 'qualitative': 'کیفی', 'mixed': 'آمیخته', 'descriptive': 'توصیفی', 'correlational': 'همبستگی', 'experimental': 'آزمایشی' };
     const analysisMethodNames = { 'descriptive': 'آمار توصیفی', 'ttest': 'آزمون t', 'anova': 'ANOVA', 'regression': 'رگرسیون', 'correlation': 'همبستگی', 'chi2': 'کای-دو', 'sem': 'SEM', 'factor': 'عاملی', 'cluster': 'خوشه‌بندی' };
-    const hypothesesText = hypotheses.length > 0 ? hypotheses.map((h, i) => `${i + 1}. ${h}`).join('\n') : '(مشخص نشده)';
+    
     let partContent = '';
     if (analysis.totalParts === 1) {
         partContent = `✍️ کل فصل چهارم را بنویس (مقدمه + آمار توصیفی + آزمون فرضیات + جمع‌بندی)`;
@@ -1247,6 +1642,7 @@ function buildChapterFourPrompt(analysis, partNumber, previousContent) {
         }
         partContent += `\n📊 حجم: حدود ${analysis.wordsPerPart} کلمه`;
     }
+    
     let prompt = `${SYSTEM_PROMPT}
 
 ═══════════════════════════════════════════
@@ -1262,14 +1658,12 @@ function buildChapterFourPrompt(analysis, partNumber, previousContent) {
 🔬 نوع پژوهش: ${researchTypeNames[researchType] || researchType}
 📐 روش تحلیل: ${analysisMethodNames[analysisMethod] || analysisMethod}
 👥 نمونه آماری: ${sampleInfo || 'مشخص نشده'}
+📊 روش نمونه‌گیری: ${samplingMethod}
 📊 نرم‌افزار: ${statSoftware.toUpperCase()}
 🎯 سطح معناداری: α = ${significanceLevel}
-🎯 متغیر مستقل: ${independentVar || 'مشخص نشده'}
-📈 متغیر وابسته: ${dependentVar || 'مشخص نشده'}
-
-═══════════════════════════════════════════
-🎯 فرضیات پژوهش
-═══════════════════════════════════════════
+📈 گزارش پایایی: ${includeReliability ? 'بله' : 'خیر'}
+📊 گزارش روایی: ${includeValidity ? 'بله' : 'خیر'}
+📉 آزمون نرمال بودن: ${includeNormality ? 'بله' : 'خیر'}
 
 ${hypothesesText}
 
@@ -1280,16 +1674,20 @@ ${statsTable}
 ═══════════════════════════════════════════
 
 ✅ حتماً از اعداد واقعی جداول بالا استفاده کن
-✅ جداول را به صورت منظم با | و - رسم کن
+✅ جداول را با Tab یا فرمت منظم رسم کن
 ✅ هر فرضیه را جداگانه آزمون کن (آماره آزمون، df، p-value، نتیجه)
 ✅ تفسیر علمی و آکادمیک بنویس
 ✅ نرم‌افزار ${statSoftware.toUpperCase()} را ذکر کن
 ✅ اعداد را به فارسی بنویس (مثلاً ۲.۵ نه 2.5)
+✅ هر پاراگراف باید اطلاعات جدیدی ارائه دهد
+✅ از تکرار جملات و مفاهیم خودداری کن
 
 ❌ داده جعلی نساز - فقط از اعداد جداول بالا استفاده کن
 ❌ فرضیه اضافه نکن - فقط همان فرضیات بالا را آزمون کن
 ❌ عنوان "فصل چهارم" را ننویس - فقط متن را شروع کن
 ❌ متن عمومی و کلی ننویس - دقیقاً بر اساس داده‌ها تحلیل کن
+❌ جملات قبلی را تکرار نکن
+❌ از عبارات کلیشه‌ای استفاده نکن
 
 ═══════════════════════════════════════════
 📝 ساختار فصل چهارم
@@ -1297,22 +1695,34 @@ ${statsTable}
 
 1️⃣ مقدمه فصل (۱ پاراگراف کوتاه)
 2️⃣ آمار توصیفی (جداول فراوانی، درصد، میانگین، انحراف معیار)
-3️⃣ آمار استنباطی و آزمون فرضیات (یکی یکی)
-4️⃣ تحلیل و تفسیر یافته‌ها
-5️⃣ جمع‌بندی فصل
+${includeNormality ? '3️⃣ آزمون نرمال بودن داده‌ها (کلموگروف-اسمیرنف، شاپیرو-ویلک)' : ''}
+${includeReliability ? '4️⃣ بررسی پایایی (آلفای کرونباخ، CR)' : ''}
+${includeValidity ? '5️⃣ بررسی روایی (KMO، Bartlett، AVE)' : ''}
+6️⃣ آمار استنباطی و آزمون فرضیات (یکی یکی با فرضیه‌های تعریف شده)
+7️⃣ تحلیل و تفسیر یافته‌ها
+8️⃣ جمع‌بندی فصل
 
 📊 حجم کل: ${analysis.minWords}-${analysis.maxWords} کلمه
 ${partContent}`;
+    
     if (previousContent) {
-        prompt += `\n\n📖 ادامه متن قبلی:\n"${previousContent.substring(previousContent.length - 400)}"\n\nادامه بده:`;
+        prompt += `\n\n📖 ادامه متن قبلی:\n"${previousContent.substring(previousContent.length - 400)}"\n\n⚠️ مهم: از تکرار محتوای قبلی خودداری کن و متن جدید بنویس.\n\nادامه بده:`;
     }
+    
     prompt += `\n\n🎯 شروع کن:`;
     return prompt;
 }
 
+// ============ API CALL ============
 async function callGroqAPI(prompt, onChunk, attempt = 1) {
     if (state.stopFlag) throw new Error('متوقف شد');
     try {
+        if (attempt > 1) {
+            const backoffDelay = Math.min(CONFIG.RETRY_DELAY * Math.pow(1.5, attempt - 1), 120000);
+            showToast(`⏳ انتظار ${convertToPersianNumbers(Math.ceil(backoffDelay/1000))} ثانیه... (تلاش ${convertToPersianNumbers(attempt)})`, 'warning');
+            await sleep(backoffDelay);
+        }
+        
         const controller = new AbortController();
         state.generationAbortController = controller;
         const response = await fetch(CONFIG.API_BASE_URL, {
@@ -1330,15 +1740,25 @@ async function callGroqAPI(prompt, onChunk, attempt = 1) {
             }),
             signal: controller.signal
         });
+        
         if (!response.ok) {
-            if ((response.status === 429 || response.status === 413) && attempt < CONFIG.RETRY_ATTEMPTS) {
-                const wait = CONFIG.RETRY_DELAY * attempt;
-                showToast(`محدودیت - انتظار ${convertToPersianNumbers(wait/1000)}s`, 'warning');
-                await sleep(wait);
+            if (response.status === 429) {
+                const retryAfter = response.headers.get('retry-after');
+                const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : Math.min(CONFIG.RETRY_DELAY * Math.pow(1.5, attempt - 1), 120000);
+                showToast(`⏳ محدودیت Groq - انتظار ${convertToPersianNumbers(Math.ceil(waitTime/1000))} ثانیه...`, 'warning');
+                if (attempt < CONFIG.RETRY_ATTEMPTS) {
+                    return callGroqAPI(prompt, onChunk, attempt + 1);
+                }
+                throw new Error('محدودیت Groq - لطفاً 5 دقیقه صبر کنید');
+            }
+            if ((response.status === 413) && attempt < CONFIG.RETRY_ATTEMPTS) {
+                showToast(`حجم زیاد - تلاش مجدد...`, 'warning');
+                await sleep(CONFIG.RETRY_DELAY * attempt);
                 return callGroqAPI(prompt, onChunk, attempt + 1);
             }
             throw new Error(`خطای API (${response.status})`);
         }
+        
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let result = '', buffer = '';
@@ -1375,6 +1795,7 @@ async function callGroqAPI(prompt, onChunk, attempt = 1) {
     }
 }
 
+// ============ REFERENCE SEARCH ============
 async function searchCrossRef(query) {
     try {
         const url = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&rows=15&select=DOI,title,author,published-print,published-online,container-title&mailto=persianwriter@example.com`;
@@ -1482,6 +1903,7 @@ async function searchRealReferences(topic, sectionName, onProgress) {
     return { refs: allRefs.slice(0, CONFIG.REFS_PER_SECTION), totalFound: allRefs.length, attempts };
 }
 
+// ============ UI UPDATES ============
 function updateSectionsList() {
     const list = document.getElementById('sectionsList');
     list.innerHTML = '';
@@ -1550,6 +1972,7 @@ function updateRefSectionsCount() {
     document.getElementById('refSectionsCount').textContent = convertToPersianNumbers(state.sectionsWithRefs.length);
 }
 
+// ============ GENERATION LOOP ============
 async function runGenerationLoop() {
     const total = state.sections.length;
     try {
@@ -1602,7 +2025,7 @@ async function runGenerationLoop() {
                     <div class="thinking-header"><span>📊</span><span>تحلیل آماری فصل چهارم</span></div>
                     <div class="thinking-item">🔬 نوع: ${state.statisticalData.researchType}</div>
                     <div class="thinking-item">📐 روش: ${state.statisticalData.analysisMethod}</div>
-                    <div class="thinking-item">📝 فرضیات: ${convertToPersianNumbers(state.statisticalData.hypotheses.length)}</div>
+                    <div class="thinking-item">🎯 فرضیه‌ها: ${convertToPersianNumbers(state.statisticalData.hypotheses.length)}</div>
                     <div class="thinking-item">📊 مشاهدات: ${convertToPersianNumbers(state.statisticalData.rows.length)}</div>
                     <div class="thinking-item">📏 حجم: ${convertToPersianNumbers(analysis.minWords)}-${convertToPersianNumbers(analysis.maxWords)} کلمه</div>
                 `;
@@ -2121,12 +2544,14 @@ function saveProgress() {
             selectedChapters: state.selectedChapters,
             foundReferences: state.foundReferences,
             sectionReferences: state.sectionReferences,
+            statisticalData: state.statisticalData,
             timestamp: Date.now()
         };
         localStorage.setItem('writer_progress', JSON.stringify(progress));
     } catch (e) { console.error('Save error:', e); }
 }
 
+// ============ EVENT LISTENERS ============
 document.addEventListener('DOMContentLoaded', function() {
     if (state.apiKey) document.getElementById('apiKeyInput').value = state.apiKey;
     const savedRefSections = localStorage.getItem('writer_ref_sections');
@@ -2137,6 +2562,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (savedChapters) {
         try { state.selectedChapters = JSON.parse(savedChapters); } catch (e) {}
     }
+    
     document.getElementById('startBtn').addEventListener('click', startGeneration);
     document.getElementById('stopBtn').addEventListener('click', stopGeneration);
     document.getElementById('downloadBtn').addEventListener('click', downloadWord);
@@ -2242,6 +2668,7 @@ document.addEventListener('DOMContentLoaded', function() {
         closeModal('refsModal');
     });
     document.getElementById('refsInput').addEventListener('input', updateRefsCounter);
+    
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('fileInput');
     uploadArea.addEventListener('click', () => fileInput.click());
@@ -2262,37 +2689,49 @@ document.addEventListener('DOMContentLoaded', function() {
         const file = e.target.files[0];
         if (file) processFile(file);
     });
+    
+    // 🆕 Event listeners برای فرضیه‌ها
+    document.getElementById('addHypothesisBtn').addEventListener('click', addHypothesis);
+    document.getElementById('clearHypothesisFormBtn').addEventListener('click', clearHypothesisForm);
+    document.getElementById('clearAllHypothesesBtn').addEventListener('click', clearAllHypotheses);
+    document.getElementById('loadSampleHypothesesBtn').addEventListener('click', loadSampleHypotheses);
+    
     document.getElementById('saveDataBtn').addEventListener('click', function() {
         state.statisticalData.researchType = document.getElementById('researchType').value;
         state.statisticalData.analysisMethod = document.getElementById('analysisMethod').value;
-        state.statisticalData.independentVar = document.getElementById('independentVar').value;
-        state.statisticalData.dependentVar = document.getElementById('dependentVar').value;
         state.statisticalData.sampleInfo = document.getElementById('sampleInfo').value;
         state.statisticalData.statSoftware = document.getElementById('statSoftware').value;
         state.statisticalData.significanceLevel = document.getElementById('significanceLevel').value;
-        const hypText = document.getElementById('hypotheses').value.trim();
-        state.statisticalData.hypotheses = hypText ? hypText.split('\n').map(h => h.trim()).filter(Boolean) : [];
+        state.statisticalData.samplingMethod = document.getElementById('samplingMethod').value;
+        state.statisticalData.includeReliability = document.getElementById('includeReliability').checked;
+        state.statisticalData.includeValidity = document.getElementById('includeValidity').checked;
+        state.statisticalData.includeNormality = document.getElementById('includeNormality').checked;
+        
         if (state.statisticalData.rows.length > 0) {
             state.statisticalData.hasData = true;
             localStorage.setItem('writer_statistical_data', JSON.stringify(state.statisticalData));
             closeModal('dataModal');
-            showToast(`✓ داده‌ها ذخیره شد (${convertToPersianNumbers(state.statisticalData.rows.length)} مشاهده)`, 'success');
+            showToast(`✓ داده‌ها ذخیره شد (${convertToPersianNumbers(state.statisticalData.rows.length)} مشاهده، ${convertToPersianNumbers(state.statisticalData.hypotheses.length)} فرضیه)`, 'success');
             updateSectionsList();
         } else {
             showToast('⚠️ ابتدا داده‌ها را آپلود یا وارد کنید', 'warning');
         }
     });
+    
     document.getElementById('closeDataBtn').addEventListener('click', function() {
         closeModal('dataModal');
     });
+    
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', function(e) {
             if (e.target === overlay) overlay.classList.remove('active');
         });
     });
+    
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden && state.isRunning) requestWakeLock();
     });
+    
     window.addEventListener('beforeunload', function(e) {
         if (state.isRunning) {
             saveProgress();
@@ -2300,31 +2739,38 @@ document.addEventListener('DOMContentLoaded', function() {
             e.returnValue = 'در حال نگارش...';
         }
     });
+    
+    // 🆕 بارگذاری داده‌های ذخیره شده
     const savedStatData = localStorage.getItem('writer_statistical_data');
     if (savedStatData) {
         try {
             const data = JSON.parse(savedStatData);
             Object.assign(state.statisticalData, data);
+            
             document.getElementById('researchType').value = data.researchType || 'quantitative';
             document.getElementById('analysisMethod').value = data.analysisMethod || 'descriptive';
-            document.getElementById('independentVar').value = data.independentVar || '';
-            document.getElementById('dependentVar').value = data.dependentVar || '';
             document.getElementById('sampleInfo').value = data.sampleInfo || '';
             document.getElementById('statSoftware').value = data.statSoftware || 'spss';
             document.getElementById('significanceLevel').value = data.significanceLevel || '0.05';
-            if (data.hypotheses && data.hypotheses.length > 0) {
-                document.getElementById('hypotheses').value = data.hypotheses.join('\n');
-            }
+            document.getElementById('samplingMethod').value = data.samplingMethod || 'random';
+            document.getElementById('includeReliability').checked = data.includeReliability !== false;
+            document.getElementById('includeValidity').checked = data.includeValidity !== false;
+            document.getElementById('includeNormality').checked = data.includeNormality !== false;
+            
             if (data.hasData) {
-                showToast(`✓ داده‌های قبلی بازیابی شد (${convertToPersianNumbers(data.rows.length)} مشاهده)`, 'success');
+                showToast(`✓ داده‌های قبلی بازیابی شد (${convertToPersianNumbers(data.rows.length)} مشاهده، ${convertToPersianNumbers(data.hypotheses.length)} فرضیه)`, 'success');
             }
+            
+            renderHypothesesList();
         } catch (e) {
             console.error('Error loading stat data:', e);
         }
     }
+    
     onDocTypeChange();
     updateRefSectionsCount();
     document.getElementById('chaptersCount').textContent = convertToPersianNumbers(state.selectedChapters.length);
+    renderHypothesesList();
 });
 </script>
 </body>
