@@ -63,32 +63,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .section-item .chapter-badge { background: #3498db; color: white; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
 .section-item .data-badge { background: #9b59b6; color: white; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
 .section-item .skipped-badge { background: #95a5a6; color: white; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
-
-/* ============ 🆕 غیرقابل کپی کردن ============ */
-.output-content, .output-content *, .section-title, .section-content, .thinking-box, .search-box, .ref-found, .part-indicator {
-    -webkit-user-select: none !important; -moz-user-select: none !important;
-    -ms-user-select: none !important; user-select: none !important;
-    -webkit-touch-callout: none !important;
-}
-
-/* ============ 🆕 قفل دانلود پایان‌نامه ============ */
-.output-panel.thesis-locked::before {
-    content: "🔒 برای دانلود فایل پایان‌نامه، ابتدا پرداخت کنید - روی دکمه دانلود کلیک کنید";
-    position: sticky; top: 0; display: block;
-    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-    color: #991b1b; padding: 12px 20px; border-radius: 8px;
-    font-weight: bold; font-size: 0.95em; text-align: center;
-    z-index: 10; margin-bottom: 15px; border: 2px solid #dc2626;
-    animation: pulse-lock 2s infinite;
-}
-@keyframes pulse-lock { 0%, 100% { opacity: 1; } 50% { opacity: 0.75; } }
-
-.download-btn-locked {
-    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
-    cursor: pointer !important; opacity: 1 !important;
-}
-.download-btn-locked::after { content: " 🔒"; }
-
 .output-content { font-family: 'Tahoma', serif; font-size: 1.05em; line-height: 1.9; color: #2c3e50; white-space: pre-wrap; word-wrap: break-word; }
 .section-title { font-size: 1.3em; font-weight: bold; color: #1a1a1a; margin: 20px 0 10px; padding-bottom: 8px; border-bottom: 2px solid #667eea; text-decoration: underline; }
 .section-title.chapter-title { color: #3498db; border-bottom-color: #3498db; font-size: 1.5em; }
@@ -204,8 +178,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .test-type-anova { background: #e74c3c; }
 .test-type-sem { background: #3498db; }
 .test-type-descriptive { background: #95a5a6; }
-
-/* ============ 🆕 مودال پرداخت ============ */
 .payment-modal { max-width: 700px; }
 .payment-box { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-right: 4px solid #f59e0b; padding: 25px; border-radius: 12px; margin: 20px 0; text-align: center; }
 .payment-box h3 { color: #92400e; margin-bottom: 15px; font-size: 1.4em; }
@@ -229,6 +201,15 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .payment-waiting::before { content: "⏳ "; font-size: 1.5em; }
 .payment-close-btn { background: #e74c3c; color: white; padding: 10px 25px; border-radius: 8px; border: none; font-size: 1em; font-weight: bold; cursor: pointer; margin-top: 15px; }
 .payment-close-btn:hover { background: #c0392b; }
+.output-panel.thesis-locked::before { content: "🔒 برای دانلود فایل پایان‌نامه، ابتدا پرداخت کنید - روی دکمه دانلود کلیک کنید"; position: sticky; top: 0; display: block; background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #991b1b; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 0.95em; text-align: center; z-index: 10; margin-bottom: 15px; border: 2px solid #dc2626; animation: pulse-lock 2s infinite; }
+@keyframes pulse-lock { 0%, 100% { opacity: 1; } 50% { opacity: 0.75; } }
+.download-btn-locked { background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important; cursor: pointer !important; opacity: 1 !important; }
+.download-btn-locked::after { content: " 🔒"; }
+.output-content, .output-content *, .section-title, .section-content, .thinking-box, .search-box, .ref-found, .part-indicator {
+    -webkit-user-select: none !important; -moz-user-select: none !important;
+    -ms-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+}
 </style>
 </head>
 <body>
@@ -523,7 +504,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 <a href="https://ppng.ir/d/FLjD" target="_blank" class="payment-link" id="paymentLink">💳 پرداخت و دانلود فایل</a>
 <p style="color: #6b7280; margin-top: 10px; font-size: 0.9em;">🔒 پرداخت امن | ✅ تضمین بازگشت وجه</p>
 </div>
-<div class="payment-waiting">⏳ پس از پرداخت موفق، به صورت خودکار به سایت بازگردید و دانلود فعال می‌شود...</div>
+<div class="payment-waiting">⏳ پس از پرداخت موفق، به صورت خودکار به پوشه فایل‌ها بازگردید و فایل خود را دانلود کنید...</div>
 <div style="text-align: center; margin-top: 20px;">
 <button class="payment-close-btn" id="closePaymentModalBtn">✗ بستن</button>
 </div>
@@ -611,6 +592,14 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 <div class="toast" id="toast"></div>
 
 <script>
+// ============ 🆕 تنظیمات GitHub (هاردکد - بدون UI) ============
+const GITHUB_CONFIG = {
+    TOKEN: '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', // ⚠️ توکن خود را اینجا قرار دهید
+    OWNER: 'thesis64',
+    REPO: 'thesisresearch',
+    BRANCH: 'main'
+};
+
 // ============ CONFIG ============
 const CONFIG = {
     API_BASE_URL: "https://api.groq.com/openai/v1/chat/completions",
@@ -664,7 +653,7 @@ const SYSTEM_PROMPT = `نویسنده دانشگاهی حرفه‌ای. فقط �
 const state = {
     apiKey: localStorage.getItem('groq_api_key') || '',
     isRunning: false, stopFlag: false,
-    paymentCompleted: false,  // 🆕 فقط برای پایان‌نامه
+    paymentCompleted: false,
     sections: [], sectionNumbers: {}, currentSectionIndex: 0, previousSummary: '',
     topic: '', docType: '', model: '', generatedContent: {},
     structureMode: 'auto', customStructure: [],
@@ -672,7 +661,7 @@ const state = {
     sectionsWithRefs: [], foundReferences: [], sectionReferences: {},
     wakeLock: null, generationAbortController: null,
     selectedChapters: [], allChapters: [], inChapterFour: false,
-    lastGeneratedFileName: '',  // 🆕 نام آخرین فایل
+    lastGeneratedFileName: '',
     statisticalData: {
         rawData: null, headers: [], rows: [], statistics: {},
         researchType: 'quantitative', analysisMethod: 'descriptive',
@@ -809,8 +798,8 @@ async function requestWakeLock() {
 }
 function releaseWakeLock() { if (state.wakeLock) { state.wakeLock.release(); state.wakeLock = null; } }
 
-// ============ 🆕 سیستم پوشه فایل‌ها (مشترک با files.html) ============
-const FILES_FOLDER = {
+// ============ 🆕 سیستم ذخیره در GitHub (بدون UI) ============
+const GITHUB_STORAGE = {
     getUserId: function() {
         let userId = localStorage.getItem('user_id');
         if (!userId) {
@@ -820,35 +809,65 @@ const FILES_FOLDER = {
         return userId;
     },
     
-    saveFile: function(fileName, blob, topic, docType) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = function() {
-                const base64 = reader.result.split(',')[1];
-                const userId = FILES_FOLDER.getUserId();
-                const allFiles = JSON.parse(localStorage.getItem('all_generated_files') || '{}');
-                if (!allFiles[userId]) allFiles[userId] = [];
-                
-                // اگر فایل قبلاً وجود دارد، جایگزین کن
-                const existingIndex = allFiles[userId].findIndex(f => f.name === fileName);
-                const fileData = {
-                    name: fileName, data: base64, type: blob.type, size: blob.size,
-                    topic: topic, docType: docType, createdAt: Date.now(),
-                    paid: docType !== 'پایان نامه'  // پایان‌نامه نیاز به پرداخت دارد
-                };
-                
-                if (existingIndex !== -1) {
-                    allFiles[userId][existingIndex] = fileData;
-                } else {
-                    allFiles[userId].push(fileData);
+    async getFileSha(filePath) {
+        try {
+            const response = await fetch(
+                `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${filePath}?ref=${GITHUB_CONFIG.BRANCH}`,
+                {
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
                 }
+            );
+            if (response.ok) {
+                const data = await response.json();
+                return data.sha;
+            }
+            return null;
+        } catch (e) { return null; }
+    },
+    
+    async saveFile(fileName, blob, topic, docType) {
+        const reader = new FileReader();
+        return new Promise((resolve, reject) => {
+            reader.onload = async () => {
+                const base64 = reader.result.split(',')[1];
+                const userId = this.getUserId();
+                const filePath = `user_files/${userId}/${fileName}`;
+                const existingSha = await this.getFileSha(filePath);
+                
+                const body = {
+                    message: `📄 ذخیره فایل: ${fileName}`,
+                    content: base64,
+                    branch: GITHUB_CONFIG.BRANCH
+                };
+                if (existingSha) body.sha = existingSha;
                 
                 try {
-                    localStorage.setItem('all_generated_files', JSON.stringify(allFiles));
-                    console.log(`✓ فایل در پوشه ذخیره شد: ${fileName}`);
+                    const response = await fetch(
+                        `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${filePath}`,
+                        {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                                'Accept': 'application/vnd.github.v3+json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(body)
+                        }
+                    );
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || `خطای GitHub: ${response.status}`);
+                    }
+                    
+                    await this.updateIndex(fileName, blob.size, topic, docType);
+                    console.log(`✓ فایل در GitHub ذخیره شد: ${filePath}`);
                     resolve();
                 } catch (e) {
-                    console.error('خطا در ذخیره فایل:', e);
+                    console.error('خطا در ذخیره GitHub:', e);
                     reject(e);
                 }
             };
@@ -857,30 +876,119 @@ const FILES_FOLDER = {
         });
     },
     
-    markAllAsPaid: function() {
+    async updateIndex(fileName, fileSize, topic, docType) {
         const userId = this.getUserId();
-        const allFiles = JSON.parse(localStorage.getItem('all_generated_files') || '{}');
-        if (allFiles[userId]) {
-            let marked = 0;
-            allFiles[userId].forEach(file => {
-                if (!file.paid) { file.paid = true; file.paidAt = Date.now(); marked++; }
-            });
-            localStorage.setItem('all_generated_files', JSON.stringify(allFiles));
-            console.log(`✓ ${marked} فایل به عنوان پرداخت شده علامت‌گذاری شد`);
+        const indexPath = `user_files/${userId}/index.json`;
+        let files = [];
+        const existingSha = await this.getFileSha(indexPath);
+        
+        if (existingSha) {
+            try {
+                const response = await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${indexPath}?ref=${GITHUB_CONFIG.BRANCH}`,
+                    {
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    }
+                );
+                if (response.ok) {
+                    const data = await response.json();
+                    files = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+                }
+            } catch (e) {}
         }
+        
+        const existingIndex = files.findIndex(f => f.name === fileName);
+        const fileData = {
+            name: fileName, size: fileSize, topic: topic, docType: docType,
+            createdAt: Date.now(), paid: docType !== 'پایان نامه', userId: userId
+        };
+        
+        if (existingIndex !== -1) files[existingIndex] = fileData;
+        else files.push(fileData);
+        
+        const indexBody = {
+            message: `📋 به‌روزرسانی index برای ${fileName}`,
+            content: btoa(unescape(encodeURIComponent(JSON.stringify(files, null, 2)))),
+            branch: GITHUB_CONFIG.BRANCH
+        };
+        if (existingSha) indexBody.sha = existingSha;
+        
+        await fetch(
+            `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${indexPath}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(indexBody)
+            }
+        );
+    },
+    
+    async markAllAsPaid() {
+        const userId = this.getUserId();
+        const indexPath = `user_files/${userId}/index.json`;
+        const existingSha = await this.getFileSha(indexPath);
+        if (!existingSha) return;
+        
+        try {
+            const response = await fetch(
+                `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${indexPath}?ref=${GITHUB_CONFIG.BRANCH}`,
+                {
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                }
+            );
+            if (!response.ok) return;
+            
+            const data = await response.json();
+            const files = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+            
+            files.forEach(file => {
+                if (!file.paid) { file.paid = true; file.paidAt = Date.now(); }
+            });
+            
+            const body = {
+                message: '💳 علامت‌گذاری همه فایل‌ها به عنوان پرداخت شده',
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(files, null, 2)))),
+                branch: GITHUB_CONFIG.BRANCH, sha: existingSha
+            };
+            
+            await fetch(
+                `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${indexPath}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                }
+            );
+            console.log('✓ همه فایل‌ها به عنوان پرداخت شده علامت‌گذاری شدند');
+        } catch (e) { console.error('خطا:', e); }
     }
 };
 
-// ============ 🆕 PAYMENT FUNCTIONS - فقط برای پایان‌نامه ============
+// ============ 🆕 PAYMENT FUNCTIONS ============
 function isThesis() { return state.docType === 'پایان نامه'; }
 function needsPaymentForDownload() { return isThesis() && !state.paymentCompleted; }
 
 function showPaymentModal() {
-    console.log('🔔 نمایش مودال پرداخت (برای دانلود پایان‌نامه)');
-    // اضافه کردن پارامتر به لینک پرداخت
-    const baseUrl = window.location.origin + window.location.pathname;
+    console.log('🔔 نمایش مودال پرداخت');
+    // 🆕 اضافه کردن نام فایل به لینک پرداخت
+    const baseUrl = window.location.origin + window.location.pathname.replace('yazr2.html', 'files.html');
     const paymentLink = document.getElementById('paymentLink');
-    paymentLink.href = `https://ppng.ir/d/9IrT?return=${encodeURIComponent(baseUrl)}`;
+    const fileName = state.lastGeneratedFileName || '';
+    paymentLink.href = `https://ppng.ir/d/9IrT?return=${encodeURIComponent(baseUrl)}&file=${encodeURIComponent(fileName)}`;
     openModal('paymentModal');
     showToast('⚠️ برای دانلود فایل پایان‌نامه، لطفاً هزینه را پرداخت کنید', 'warning');
 }
@@ -1097,7 +1205,7 @@ function renderHypothesesList() {
     const list = document.getElementById('hypothesesList');
     const hypotheses = state.statisticalData.hypotheses;
     if (hypotheses.length === 0) {
-        list.innerHTML = '<div class="empty-hypotheses">هنوز فرضیه‌ای تعریف نشده است. از فرم بالا برای افزودن فرضیه استفاده کنید.</div>';
+        list.innerHTML = '<div class="empty-hypotheses">هنوز فرضیه‌ای تعریف نشده است.</div>';
         document.getElementById('hypothesisCount').textContent = '0'; return;
     }
     document.getElementById('hypothesisCount').textContent = hypotheses.length;
@@ -1179,7 +1287,7 @@ function loadSampleHypotheses() {
     renderHypothesesList(); showToast(`✓ ${samples.length} فرضیه نمونه بارگذاری شد`, 'success');
 }
 
-// ============ STATS & HYPOTHESES FOR PROMPT ============
+// ============ STATS TABLE FOR PROMPT ============
 function buildStatsTableForPrompt() {
     const { headers, statistics, rows } = state.statisticalData;
     if (!headers.length || !rows.length) return '';
@@ -1217,8 +1325,6 @@ function buildHypothesesTextForPrompt() {
     });
     return text;
 }
-
-// ============ CHAPTER FOUR PROMPT ============
 function buildChapterFourSubsectionPrompt(sectionTitle, previousContent) {
     const { researchType, analysisMethod, sampleInfo, statSoftware, significanceLevel, samplingMethod, includeReliability, includeValidity, includeNormality } = state.statisticalData;
     const statsTable = buildStatsTableForPrompt();
@@ -1229,11 +1335,11 @@ function buildChapterFourSubsectionPrompt(sectionTitle, previousContent) {
     if (sectionTitle.includes('مقدمه')) specificInstructions = `📝 این بخش مقدمه فصل چهارم است.\n✅ در ۲-۳ پاراگراف کوتاه، هدف فصل و ساختار آن را بیان کن.\n❌ از تکرار مطالب فصل‌های قبلی خودداری کن.`;
     else if (sectionTitle.includes('تحلیل کیفی') || sectionTitle.includes('اسناد') || sectionTitle.includes('مصاحبه') || sectionTitle.includes('کدگذاری')) specificInstructions = `📝 این بخش تحلیل کیفی است.\n✅ بر اساس داده‌های پژوهش، تحلیل کیفی ارائه بده.\n✅ از کدگذاری باز، محوری و انتخابی استفاده کن.\n❌ از تکرار جملات خودداری کن.`;
     else if (sectionTitle.includes('آمار توصیفی') || sectionTitle.includes('جمعیت‌شناختی') || sectionTitle.includes('فراوانی')) specificInstructions = `📝 این بخش آمار توصیفی است.\n✅ حتماً از اعداد واقعی جداول بالا استفاده کن.\n✅ جداول را با Tab یا فرمت منظم نمایش بده.\n❌ داده جعلی نساز.`;
-    else if (sectionTitle.includes('آزمون فرضیه') || sectionTitle.includes('آزمون فرضیات') || sectionTitle.includes('استنباطی')) specificInstructions = `📝 این بخش آزمون فرضیات است.\n✅ فرضیه‌های تعریف شده را یکی یکی آزمون کن.\n✅ برای هر فرضیه: نام آزمون، آماره آزمون، df، p-value، نتیجه.\n✅ از نرم‌افزار ${statSoftware.toUpperCase()} استفاده کن.\n❌ فرضیه اضافه نکن.`;
+    else if (sectionTitle.includes('آزمون فرضیه') || sectionTitle.includes('آزمون فرضیات') || sectionTitle.includes('استنباطی')) specificInstructions = `📝 این بخش آزمون فرضیات است.\n✅ فرضیه‌های تعریف شده را یکی یکی آزمون کن.\n✅ از نرم‌افزار ${statSoftware.toUpperCase()} استفاده کن.\n❌ فرضیه اضافه نکن.`;
     else if (sectionTitle.includes('همبستگی') || sectionTitle.includes('رگرسیون')) specificInstructions = `📝 این بخش تحلیل همبستگی/رگرسیون است.\n✅ ضریب همبستگی (r)، ضریب تعیین (R²)، آماره F یا t، و سطح معناداری را گزارش کن.\n❌ جملات را تکرار نکن.`;
-    else if (sectionTitle.includes('SEM') || sectionTitle.includes('معادلات ساختاری') || sectionTitle.includes('عاملی')) specificInstructions = `📝 این بخش مدل‌سازی معادلات ساختاری است.\n✅ شاخص‌های برازش (RMSEA، CFI، GFI، NFI، AGFI) را گزارش کن.\n✅ بارهای عاملی (Factor Loadings) را ارائه بده.\n❌ جملات را تکرار نکن.`;
-    else if (sectionTitle.includes('پایایی') || sectionTitle.includes('آلفا')) specificInstructions = `📝 این بخش بررسی پایایی است.\n✅ آلفای کرونباخ را برای هر متغیر گزارش کن (باید بالای ۰.۷ باشد).\n✅ پایایی ترکیبی (CR) را محاسبه کن.\n❌ جملات را تکرار نکن.`;
-    else if (sectionTitle.includes('روایی') || sectionTitle.includes('KMO') || sectionTitle.includes('AVE')) specificInstructions = `📝 این بخش بررسی روایی است.\n✅ شاخص KMO (باید بالای ۰.۶ باشد) را گزارش کن.\n✅ آزمون Bartlett's Test را ارائه بده.\n✅ AVE (روایی همگرا) را محاسبه کن (باید بالای ۰.۵ باشد).\n❌ جملات را تکرار نکن.`;
+    else if (sectionTitle.includes('SEM') || sectionTitle.includes('معادلات ساختاری') || sectionTitle.includes('عاملی')) specificInstructions = `📝 این بخش مدل‌سازی معادلات ساختاری است.\n✅ شاخص‌های برازش (RMSEA، CFI، GFI، NFI، AGFI) را گزارش کن.\n❌ جملات را تکرار نکن.`;
+    else if (sectionTitle.includes('پایایی') || sectionTitle.includes('آلفا')) specificInstructions = `📝 این بخش بررسی پایایی است.\n✅ آلفای کرونباخ را برای هر متغیر گزارش کن (باید بالای ۰.۷ باشد).\n❌ جملات را تکرار نکن.`;
+    else if (sectionTitle.includes('روایی') || sectionTitle.includes('KMO') || sectionTitle.includes('AVE')) specificInstructions = `📝 این بخش بررسی روایی است.\n✅ شاخص KMO (باید بالای ۰.۶ باشد) را گزارش کن.\n✅ AVE (روایی همگرا) را محاسبه کن (باید بالای ۰.۵ باشد).\n❌ جملات را تکرار نکن.`;
     else if (sectionTitle.includes('نرمال') || sectionTitle.includes('کلموگروف') || sectionTitle.includes('شاپیرو')) specificInstructions = `📝 این بخش آزمون نرمال بودن است.\n✅ نتایج آزمون کلموگروف-اسمیرنف و شاپیرو-ویلک را گزارش کن.\n❌ جملات را تکرار نکن.`;
     else if (sectionTitle.includes('جمع‌بندی') || sectionTitle.includes('خلاصه')) specificInstructions = `📝 این بخش جمع‌بندی فصل است.\n✅ یافته‌های اصلی را خلاصه کن.\n✅ به فرضیه‌های تأیید/رد شده اشاره کن.\n❌ مطالب قبلی را تکرار نکن.`;
     else specificInstructions = `📝 این بخش از فصل چهارم است.\n✅ تحلیل علمی و آکادمیک ارائه بده.\n✅ از اعداد واقعی داده‌ها استفاده کن.\n❌ جملات و مفاهیم را تکرار نکن.\n❌ داده جعلی نساز.`;
@@ -1649,7 +1755,6 @@ async function runGenerationLoop() {
         onGenerationComplete();
     } catch (e) { showToast(`خطا: ${e.message}`, 'error'); onGenerationComplete(); }
 }
-
 async function startGeneration() {
     state.topic = document.getElementById('topicInput').value.trim();
     state.docType = document.getElementById('docTypeSelect').value;
@@ -1669,7 +1774,6 @@ async function startGeneration() {
     state.isRunning = true; state.stopFlag = false; state.currentSectionIndex = 0;
     state.previousSummary = ''; state.generatedContent = {};
     state.foundReferences = []; state.sectionReferences = {}; state.inChapterFour = false;
-    // 🆕 ریست وضعیت پرداخت برای نگارش جدید
     state.paymentCompleted = false;
     localStorage.removeItem('payment_completed');
     await requestWakeLock();
@@ -1684,7 +1788,6 @@ async function startGeneration() {
     hideStatus();
     await runGenerationLoop();
 }
-
 function stopGeneration() {
     state.stopFlag = true; state.isRunning = false;
     if (state.generationAbortController) state.generationAbortController.abort();
@@ -1694,22 +1797,16 @@ function stopGeneration() {
     document.getElementById('progressLabel').textContent = '⛔ متوقف شد';
     showToast('متوقف شد', 'warning'); saveProgress();
 }
-
 function onGenerationComplete() {
     state.isRunning = false; releaseWakeLock();
     document.getElementById('startBtn').disabled = false;
     document.getElementById('stopBtn').disabled = true;
-    
-    // 🆕 مدیریت قفل دانلود بر اساس نوع سند
     if (needsPaymentForDownload()) {
-        // پایان‌نامه - قفل دانلود
         applyThesisLockUI();
         showToast('🔒 برای دانلود فایل پایان‌نامه، روی دکمه دانلود کلیک کنید', 'warning');
     } else {
-        // سایر اسناد - دانلود آزاد
         document.getElementById('downloadBtn').disabled = false;
     }
-    
     if (!state.stopFlag) {
         document.getElementById('progressLabel').textContent = '100٪ | ✔ تکمیل شد';
         document.getElementById('progressFill').style.width = '100%';
@@ -1717,19 +1814,14 @@ function onGenerationComplete() {
         let totalWords = 0;
         Object.values(state.generatedContent).forEach(c => { totalWords += c.split(/\s+/).length; });
         showStatus(`✓ تکمیل شد! ${convertToPersianNumbers(state.sections.length)} بخش | ${convertToPersianNumbers(totalWords)} کلمه`, 'success');
-        showToast('✓ نگارش تکمیل شد!', 'success');
-        saveProgress();
+        showToast('✓ نگارش تکمیل شد!', 'success'); saveProgress();
     }
 }
-
 async function downloadWord() {
-    // 🆕 بررسی پرداخت برای پایان‌نامه - هدایت به مودال پرداخت
     if (needsPaymentForDownload()) {
         showToast('⚠️ برای دانلود فایل پایان‌نامه، ابتدا پرداخت کنید', 'warning');
-        showPaymentModal();
-        return;
+        showPaymentModal(); return;
     }
-    
     if (Object.keys(state.generatedContent).length === 0) {
         showToast('محتوایی نیست', 'warning'); return;
     }
@@ -1775,15 +1867,17 @@ async function downloadWord() {
         const safeTopic = state.topic.replace(/[^\w\u0600-\u06FF\s-]/g, '').substring(0, 30);
         const fileName = `${state.docType}_${safeTopic}_${timestamp}.docx`;
         
-        // 🆕 ذخیره نام فایل برای استفاده بعدی
+        // 🆕 ذخیره نام فایل
         state.lastGeneratedFileName = fileName;
         
-        // 🆕 ذخیره خودکار فایل در پوشه (مشترک با files.html)
+        // 🆕 ذخیره خودکار در GitHub
+        showToast('⏳ در حال ذخیره در GitHub...', 'warning');
         try {
-            await FILES_FOLDER.saveFile(fileName, blob, state.topic, state.docType);
-            console.log(`✓ فایل در پوشه ذخیره شد: ${fileName}`);
+            await GITHUB_STORAGE.saveFile(fileName, blob, state.topic, state.docType);
+            showToast('✓ فایل در GitHub ذخیره شد', 'success');
         } catch (e) {
-            console.error('خطا در ذخیره فایل در پوشه:', e);
+            console.error('خطا در ذخیره GitHub:', e);
+            showToast(`⚠️ خطا در GitHub: ${e.message}`, 'error');
         }
         
         // دانلود فایل
@@ -1795,10 +1889,9 @@ async function downloadWord() {
             document.body.appendChild(link); link.click();
             document.body.removeChild(link); URL.revokeObjectURL(url);
         }
-        showToast('✓ فایل ذخیره و دانلود شد', 'success');
+        showToast('✓ دانلود شد', 'success');
     } catch (e) { showToast(`خطا: ${e.message}`, 'error'); }
 }
-
 function openModal(id) { document.getElementById(id).classList.add('active'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 function switchTab(tabName) {
@@ -1965,10 +2058,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (savedRefSections) { try { state.sectionsWithRefs = JSON.parse(savedRefSections); } catch (e) {} }
     const savedChapters = localStorage.getItem('writer_selected_chapters');
     if (savedChapters) { try { state.selectedChapters = JSON.parse(savedChapters); } catch (e) {} }
-    
-    // 🆕 بررسی وضعیت پرداخت (فقط برای پایان‌نامه)
     const savedPayment = localStorage.getItem('payment_completed');
-    if (savedPayment === 'true') { state.paymentCompleted = true; console.log('✅ پرداخت قبلاً انجام شده است'); }
+    if (savedPayment === 'true') { state.paymentCompleted = true; }
     else { state.paymentCompleted = false; }
     
     // 🆕 بررسی بازگشت از درگاه پرداخت
@@ -1978,17 +2069,12 @@ document.addEventListener('DOMContentLoaded', function() {
         state.paymentCompleted = true;
         localStorage.setItem('payment_completed', 'true');
         window.history.replaceState({}, document.title, window.location.pathname);
-        showToast('✓ پرداخت موفق - دانلود فعال شد', 'success');
-        
-        // 🆕 علامت‌گذاری همه فایل‌های کاربر به عنوان پرداخت شده
-        FILES_FOLDER.markAllAsPaid();
-        
-        // فعال‌سازی دانلود و باز کردن پوشه فایل‌ها
+        showToast('✓ پرداخت موفق - در حال بازگشت به پوشه فایل‌ها...', 'success');
+        GITHUB_STORAGE.markAllAsPaid();
+        // 🆕 باز کردن خودکار پوشه فایل‌ها
         setTimeout(() => {
-            unlockThesisDownload();
-            // باز کردن پوشه فایل‌ها در تب جدید
             window.open('files.html', '_blank');
-        }, 500);
+        }, 1000);
     }
     
     document.getElementById('startBtn').addEventListener('click', startGeneration);
@@ -2105,27 +2191,15 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('beforeunload', function(e) {
         if (state.isRunning) { saveProgress(); e.preventDefault(); e.returnValue = 'در حال نگارش...'; }
     });
-    
-    // 🆕 Event listeners برای جلوگیری از کپی
-    function preventCopy(e) { e.preventDefault(); showToast('⚠️ کپی کردن متن مجاز نیست', 'warning'); return false; }
-    document.addEventListener('copy', preventCopy);
-    document.addEventListener('cut', preventCopy);
-    document.addEventListener('contextmenu', function(e) {
-        if (e.target.closest('.output-content')) {
-            e.preventDefault(); showToast('⚠️ کلیک راست مجاز نیست', 'warning'); return false;
-        }
-    });
-    document.addEventListener('selectstart', function(e) {
-        if (e.target.closest('.output-content')) { e.preventDefault(); return false; }
-    });
+    document.addEventListener('copy', function(e) { if (e.target.closest('.output-content')) { e.preventDefault(); showToast('⚠️ کپی کردن مجاز نیست', 'warning'); } });
+    document.addEventListener('cut', function(e) { if (e.target.closest('.output-content')) { e.preventDefault(); } });
+    document.addEventListener('contextmenu', function(e) { if (e.target.closest('.output-content')) { e.preventDefault(); showToast('⚠️ کلیک راست مجاز نیست', 'warning'); } });
+    document.addEventListener('selectstart', function(e) { if (e.target.closest('.output-content')) { e.preventDefault(); } });
     document.addEventListener('keydown', function(e) {
-        if (e.target.closest('.output-content')) {
-            if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'a' || e.key === 'C' || e.key === 'X' || e.key === 'A')) {
-                e.preventDefault(); showToast('⚠️ این عملیات مجاز نیست', 'warning'); return false;
-            }
+        if (e.target.closest('.output-content') && (e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'a' || e.key === 'C' || e.key === 'X' || e.key === 'A')) {
+            e.preventDefault(); showToast('⚠️ این عملیات مجاز نیست', 'warning');
         }
     });
-    
     const savedStatData = localStorage.getItem('writer_statistical_data');
     if (savedStatData) {
         try {
@@ -2140,8 +2214,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('includeReliability').checked = data.includeReliability !== false;
             document.getElementById('includeValidity').checked = data.includeValidity !== false;
             document.getElementById('includeNormality').checked = data.includeNormality !== false;
-            if (data.hasData) showToast(`✓ داده‌های قبلی بازیابی شد (${convertToPersianNumbers(data.rows.length)} مشاهده، ${convertToPersianNumbers(data.hypotheses.length)} فرضیه)`, 'success');
-            renderHypothesesList(); updateDataPreview();
+            if (data.hasData) showToast(`✓ داده‌های قبلی بازیابی شد`, 'success');
+            renderHypothesesList();
         } catch (e) { console.error('Error loading stat data:', e); }
     }
     onDocTypeChange(); updateRefSectionsCount();
