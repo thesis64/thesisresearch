@@ -65,53 +65,29 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .section-item .skipped-badge { background: #95a5a6; color: white; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
 
 /* ============ 🆕 غیرقابل کپی کردن ============ */
-.output-content,
-.output-content *,
-.section-title,
-.section-content,
-.thinking-box,
-.search-box,
-.ref-found,
-.part-indicator {
-    -webkit-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
-    user-select: none !important;
+.output-content, .output-content *, .section-title, .section-content, .thinking-box, .search-box, .ref-found, .part-indicator {
+    -webkit-user-select: none !important; -moz-user-select: none !important;
+    -ms-user-select: none !important; user-select: none !important;
     -webkit-touch-callout: none !important;
 }
 
 /* ============ 🆕 قفل دانلود پایان‌نامه ============ */
 .output-panel.thesis-locked::before {
     content: "🔒 برای دانلود فایل پایان‌نامه، ابتدا پرداخت کنید - روی دکمه دانلود کلیک کنید";
-    position: sticky;
-    top: 0;
-    display: block;
+    position: sticky; top: 0; display: block;
     background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-    color: #991b1b;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 0.95em;
-    text-align: center;
-    z-index: 10;
-    margin-bottom: 15px;
-    border: 2px solid #dc2626;
+    color: #991b1b; padding: 12px 20px; border-radius: 8px;
+    font-weight: bold; font-size: 0.95em; text-align: center;
+    z-index: 10; margin-bottom: 15px; border: 2px solid #dc2626;
     animation: pulse-lock 2s infinite;
 }
-@keyframes pulse-lock {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.75; }
-}
+@keyframes pulse-lock { 0%, 100% { opacity: 1; } 50% { opacity: 0.75; } }
 
 .download-btn-locked {
     background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
-    position: relative;
-    cursor: pointer !important;
-    opacity: 1 !important;
+    cursor: pointer !important; opacity: 1 !important;
 }
-.download-btn-locked::after {
-    content: " 🔒";
-}
+.download-btn-locked::after { content: " 🔒"; }
 
 .output-content { font-family: 'Tahoma', serif; font-size: 1.05em; line-height: 1.9; color: #2c3e50; white-space: pre-wrap; word-wrap: break-word; }
 .section-title { font-size: 1.3em; font-weight: bold; color: #1a1a1a; margin: 20px 0 10px; padding-bottom: 8px; border-bottom: 2px solid #667eea; text-decoration: underline; }
@@ -231,107 +207,27 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ============ 🆕 مودال پرداخت ============ */
 .payment-modal { max-width: 700px; }
-.payment-box {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border-right: 4px solid #f59e0b;
-    padding: 25px;
-    border-radius: 12px;
-    margin: 20px 0;
-    text-align: center;
-}
+.payment-box { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-right: 4px solid #f59e0b; padding: 25px; border-radius: 12px; margin: 20px 0; text-align: center; }
 .payment-box h3 { color: #92400e; margin-bottom: 15px; font-size: 1.4em; }
 .payment-box p { color: #78350f; line-height: 1.8; margin-bottom: 15px; font-size: 1.05em; }
-.payment-box .price {
-    font-size: 2.5em;
-    font-weight: bold;
-    color: #dc2626;
-    margin: 20px 0;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-}
+.payment-box .price { font-size: 2.5em; font-weight: bold; color: #dc2626; margin: 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
 .payment-box .price small { font-size: 0.4em; color: #6b7280; }
-.payment-link {
-    display: inline-block;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-    padding: 20px 50px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-size: 1.3em;
-    font-weight: bold;
-    margin: 20px 0;
-    transition: all 0.3s;
-    box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
-    animation: pulse-button 2s infinite;
-}
-@keyframes pulse-button {
-    0%, 100% { transform: scale(1); box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4); }
-    50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6); }
-}
+.payment-link { display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 20px 50px; border-radius: 12px; text-decoration: none; font-size: 1.3em; font-weight: bold; margin: 20px 0; transition: all 0.3s; box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4); animation: pulse-button 2s infinite; }
+@keyframes pulse-button { 0%, 100% { transform: scale(1); box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4); } 50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6); } }
 .payment-link:hover { background: linear-gradient(135deg, #059669 0%, #047857 100%); transform: scale(1.08); }
-.payment-features {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin: 20px 0;
-    text-align: right;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
+.payment-features { background: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: right; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
 .payment-features h3 { color: #2c3e50; margin-bottom: 15px; }
 .payment-features ul { list-style: none; padding: 0; }
-.payment-features li {
-    padding: 10px 0;
-    color: #374151;
-    border-bottom: 1px solid #e5e7eb;
-    font-size: 1.05em;
-}
+.payment-features li { padding: 10px 0; color: #374151; border-bottom: 1px solid #e5e7eb; font-size: 1.05em; }
 .payment-features li:last-child { border-bottom: none; }
 .payment-features li::before { content: "✅ "; margin-left: 10px; font-size: 1.2em; }
-.payment-urgency {
-    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-    border-right: 4px solid #dc2626;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 15px 0;
-    text-align: center;
-    color: #991b1b;
-    font-weight: bold;
-    font-size: 1.1em;
-}
+.payment-urgency { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-right: 4px solid #dc2626; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: center; color: #991b1b; font-weight: bold; font-size: 1.1em; }
 .payment-urgency::before { content: "⚠️ "; font-size: 1.3em; }
-.payment-bonus {
-    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-    border-right: 4px solid #3b82f6;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 15px 0;
-    text-align: center;
-    color: #1e3a8a;
-    font-weight: bold;
-}
+.payment-bonus { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-right: 4px solid #3b82f6; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: center; color: #1e3a8a; font-weight: bold; }
 .payment-bonus::before { content: "🎁 "; font-size: 1.3em; }
-.payment-waiting {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border-right: 4px solid #f59e0b;
-    padding: 20px;
-    border-radius: 10px;
-    margin: 20px 0;
-    text-align: center;
-    color: #92400e;
-    font-weight: bold;
-    font-size: 1.1em;
-}
+.payment-waiting { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-right: 4px solid #f59e0b; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; color: #92400e; font-weight: bold; font-size: 1.1em; }
 .payment-waiting::before { content: "⏳ "; font-size: 1.5em; }
-.payment-close-btn {
-    background: #e74c3c;
-    color: white;
-    padding: 10px 25px;
-    border-radius: 8px;
-    border: none;
-    font-size: 1em;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 15px;
-}
+.payment-close-btn { background: #e74c3c; color: white; padding: 10px 25px; border-radius: 8px; border: none; font-size: 1em; font-weight: bold; cursor: pointer; margin-top: 15px; }
 .payment-close-btn:hover { background: #c0392b; }
 </style>
 </head>
@@ -718,18 +614,10 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 // ============ CONFIG ============
 const CONFIG = {
     API_BASE_URL: "https://api.groq.com/openai/v1/chat/completions",
-    TEMPERATURE: 0.4,
-    MAX_TOKENS: 2000,
-    MAX_PREVIOUS_CHARS: 200,
-    MAX_REFERENCES_PER_LANGUAGE: 8,
-    RETRY_ATTEMPTS: 6,
-    RETRY_DELAY: 10000,
-    SECTION_DELAY: 5000,
-    PART_DELAY: 2000,
-    MIN_REFERENCES_REQUIRED: 5,
-    MAX_SEARCH_ATTEMPTS: 3,
-    REFS_PER_SECTION: 8,
-    SEARCH_TIMEOUT: 20000
+    TEMPERATURE: 0.4, MAX_TOKENS: 2000, MAX_PREVIOUS_CHARS: 200,
+    MAX_REFERENCES_PER_LANGUAGE: 8, RETRY_ATTEMPTS: 6, RETRY_DELAY: 10000,
+    SECTION_DELAY: 5000, PART_DELAY: 2000, MIN_REFERENCES_REQUIRED: 5,
+    MAX_SEARCH_ATTEMPTS: 3, REFS_PER_SECTION: 8, SEARCH_TIMEOUT: 20000
 };
 
 const OUTLINES = {
@@ -775,43 +663,28 @@ const SYSTEM_PROMPT = `نویسنده دانشگاهی حرفه‌ای. فقط �
 // ============ STATE ============
 const state = {
     apiKey: localStorage.getItem('groq_api_key') || '',
-    isRunning: false,
-    stopFlag: false,
+    isRunning: false, stopFlag: false,
     paymentCompleted: false,  // 🆕 فقط برای پایان‌نامه
-    sections: [],
-    sectionNumbers: {},
-    currentSectionIndex: 0,
-    previousSummary: '',
-    topic: '',
-    docType: '',
-    model: '',
-    generatedContent: {},
-    structureMode: 'auto',
-    customStructure: [],
+    sections: [], sectionNumbers: {}, currentSectionIndex: 0, previousSummary: '',
+    topic: '', docType: '', model: '', generatedContent: {},
+    structureMode: 'auto', customStructure: [],
     userReferences: { persian: [], english: [], raw_text: '' },
-    sectionsWithRefs: [],
-    foundReferences: [],
-    sectionReferences: {},
-    wakeLock: null,
-    generationAbortController: null,
-    selectedChapters: [],
-    allChapters: [],
-    inChapterFour: false,
-    lastGeneratedFileName: '',  // 🆕 نام آخرین فایل تولید شده
+    sectionsWithRefs: [], foundReferences: [], sectionReferences: {},
+    wakeLock: null, generationAbortController: null,
+    selectedChapters: [], allChapters: [], inChapterFour: false,
+    lastGeneratedFileName: '',  // 🆕 نام آخرین فایل
     statisticalData: {
         rawData: null, headers: [], rows: [], statistics: {},
         researchType: 'quantitative', analysisMethod: 'descriptive',
         sampleInfo: '', statSoftware: 'spss', significanceLevel: '0.05',
         samplingMethod: 'random',
         includeReliability: true, includeValidity: true, includeNormality: true,
-        hasData: false,
-        hypotheses: []
+        hasData: false, hypotheses: []
     }
 };
 
 // ============ HELPER FUNCTIONS ============
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
-
 function isChapterHeader(title) {
     if (!title) return false;
     const patterns = [/فصل\s+[\w۰-۹]+/i, /chapter\s+\w+/i, /^[\d۰-۹]+\s*[-\.:)\]]\s*فصل/i,
@@ -819,13 +692,11 @@ function isChapterHeader(title) {
         /^فصل\s+ششم/i, /^فصل\s+هفتم/i, /^فصل\s+هشتم/i, /^فصل\s+نهم/i, /^فصل\s+دهم/i];
     return patterns.some(p => p.test(title));
 }
-
 function isChapterFour(title) {
     if (!title) return false;
     const patterns = [/فصل\s+چهارم/i, /فصل\s+۴/i, /chapter\s+4/i, /تجزیه\s+و\s+تحلیل/i, /یافته‌ها/i, /تحلیل\s+داده/i];
     return patterns.some(p => p.test(title));
 }
-
 function isChapterFourSubsection(title) {
     if (!title) return false;
     const normalizedTitle = title.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
@@ -850,7 +721,6 @@ function isChapterFourSubsection(title) {
     }
     return false;
 }
-
 function extractChapterNumber(title) {
     if (!title) return null;
     const persianNumbers = { 'اول': 1, 'دوم': 2, 'سوم': 3, 'چهارم': 4, 'پنجم': 5, 'ششم': 6, 'هفتم': 7, 'هشتم': 8, 'نهم': 9, 'دهم': 10 };
@@ -864,15 +734,12 @@ function extractChapterNumber(title) {
     }
     return null;
 }
-
 function isMainChapter(title) {
     if (!title) return false;
     return isChapterHeader(title) || title === 'چکیده' || title === 'منابع' || title === 'فهرست منابع';
 }
-
 function extractChapters() {
-    const chapters = [];
-    const seen = new Set();
+    const chapters = []; const seen = new Set();
     state.sections.forEach(section => {
         if (isMainChapter(section) && !seen.has(section)) {
             seen.add(section);
@@ -882,14 +749,10 @@ function extractChapters() {
     });
     chapters.sort((a, b) => {
         if (a.number && b.number) return a.number - b.number;
-        if (a.number) return -1;
-        if (b.number) return 1;
-        return 0;
+        if (a.number) return -1; if (b.number) return 1; return 0;
     });
-    state.allChapters = chapters;
-    return chapters;
+    state.allChapters = chapters; return chapters;
 }
-
 function getChapterDescription(title) {
     if (title === 'چکیده') return 'خلاصه پژوهش';
     if (title === 'منابع' || title === 'فهرست منابع') return 'لیست منابع و مراجع';
@@ -900,7 +763,6 @@ function getChapterDescription(title) {
     if (title.includes('پنجم')) return 'نتیجه‌گیری و پیشنهادها';
     return 'بخش';
 }
-
 function getWordRangeFromTitle(title) {
     if (!title) return { min: 600, max: 1200 };
     for (const [key, range] of Object.entries(SECTION_WORD_MAP)) {
@@ -908,27 +770,22 @@ function getWordRangeFromTitle(title) {
     }
     return { min: 600, max: 1200 };
 }
-
 function convertToPersianNumbers(input) {
     if (input === null || input === undefined) return '';
     const str = String(input);
     const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
     return str.replace(/[0-9]/g, d => persianDigits[parseInt(d)]);
 }
-
 function escapeHtml(text) {
     const div = document.createElement('div');
-    div.textContent = text || '';
-    return div.innerHTML;
+    div.textContent = text || ''; return div.innerHTML;
 }
-
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     toast.textContent = message;
     toast.className = `toast show ${type}`;
     setTimeout(() => { toast.className = 'toast'; }, 3000);
 }
-
 function showStatus(message, type = 'success') {
     const banner = document.getElementById('statusBanner');
     const icon = document.getElementById('statusIcon');
@@ -939,9 +796,7 @@ function showStatus(message, type = 'success') {
     icon.textContent = type === 'error' ? '⛔' : type === 'warning' ? '⚠️' : '✓';
     text.textContent = message;
 }
-
 function hideStatus() { document.getElementById('statusBanner').className = 'status-banner'; }
-
 async function requestWakeLock() {
     if ('wakeLock' in navigator) {
         try {
@@ -952,35 +807,9 @@ async function requestWakeLock() {
     }
     return false;
 }
+function releaseWakeLock() { if (state.wakeLock) { state.wakeLock.release(); state.wakeLock = null; } }
 
-function releaseWakeLock() {
-    if (state.wakeLock) { state.wakeLock.release(); state.wakeLock = null; }
-}
-
-// ============ 🆕 PAYMENT FUNCTIONS - فقط برای پایان‌نامه ============
-function showPaymentModal() {
-    console.log('🔔 نمایش مودال پرداخت (برای دانلود پایان‌نامه)');
-    // 🆕 اضافه کردن پارامتر به لینک پرداخت
-    const baseUrl = window.location.href.split('?')[0];
-    const paymentLink = document.getElementById('paymentLink');
-    paymentLink.href = `https://ppng.ir/d/9IrT?return=${encodeURIComponent(baseUrl)}`;
-    openModal('paymentModal');
-    showToast('⚠️ برای دانلود فایل پایان‌نامه، لطفاً هزینه را پرداخت کنید', 'warning');
-}
-
-function closePaymentModal() { closeModal('paymentModal'); }
-
-// 🆕 بررسی اینکه آیا سند پایان‌نامه است
-function isThesis() {
-    return state.docType === 'پایان نامه';
-}
-
-// 🆕 بررسی اینکه آیا پرداخت لازم است (فقط برای پایان‌نامه)
-function needsPaymentForDownload() {
-    return isThesis() && !state.paymentCompleted;
-}
-
-// ============ 🆕 سیستم پوشه فایل‌ها ============
+// ============ 🆕 سیستم پوشه فایل‌ها (مشترک با files.html) ============
 const FILES_FOLDER = {
     getUserId: function() {
         let userId = localStorage.getItem('user_id');
@@ -1000,59 +829,32 @@ const FILES_FOLDER = {
                 const allFiles = JSON.parse(localStorage.getItem('all_generated_files') || '{}');
                 if (!allFiles[userId]) allFiles[userId] = [];
                 
-                // 🆕 بررسی اینکه فایل قبلاً وجود دارد یا نه
+                // اگر فایل قبلاً وجود دارد، جایگزین کن
                 const existingIndex = allFiles[userId].findIndex(f => f.name === fileName);
+                const fileData = {
+                    name: fileName, data: base64, type: blob.type, size: blob.size,
+                    topic: topic, docType: docType, createdAt: Date.now(),
+                    paid: docType !== 'پایان نامه'  // پایان‌نامه نیاز به پرداخت دارد
+                };
+                
                 if (existingIndex !== -1) {
-                    allFiles[userId][existingIndex] = {
-                        name: fileName,
-                        data: base64,
-                        type: blob.type,
-                        size: blob.size,
-                        topic: topic,
-                        docType: docType,
-                        createdAt: Date.now(),
-                        paid: docType !== 'پایان نامه'
-                    };
+                    allFiles[userId][existingIndex] = fileData;
                 } else {
-                    allFiles[userId].push({
-                        name: fileName,
-                        data: base64,
-                        type: blob.type,
-                        size: blob.size,
-                        topic: topic,
-                        docType: docType,
-                        createdAt: Date.now(),
-                        paid: docType !== 'پایان نامه'
-                    });
+                    allFiles[userId].push(fileData);
                 }
                 
-                localStorage.setItem('all_generated_files', JSON.stringify(allFiles));
-                console.log(`✓ فایل ذخیره شد: ${fileName}`);
-                resolve();
+                try {
+                    localStorage.setItem('all_generated_files', JSON.stringify(allFiles));
+                    console.log(`✓ فایل در پوشه ذخیره شد: ${fileName}`);
+                    resolve();
+                } catch (e) {
+                    console.error('خطا در ذخیره فایل:', e);
+                    reject(e);
+                }
             };
             reader.onerror = reject;
             reader.readAsDataURL(blob);
         });
-    },
-    
-    getUserFiles: function() {
-        const userId = this.getUserId();
-        const allFiles = JSON.parse(localStorage.getItem('all_generated_files') || '{}');
-        return allFiles[userId] || [];
-    },
-    
-    markAsPaid: function(fileName) {
-        const userId = this.getUserId();
-        const allFiles = JSON.parse(localStorage.getItem('all_generated_files') || '{}');
-        if (allFiles[userId]) {
-            const file = allFiles[userId].find(f => f.name === fileName);
-            if (file) {
-                file.paid = true;
-                file.paidAt = Date.now();
-                localStorage.setItem('all_generated_files', JSON.stringify(allFiles));
-                console.log(`✓ فایل به عنوان پرداخت شده علامت‌گذاری شد: ${fileName}`);
-            }
-        }
     },
     
     markAllAsPaid: function() {
@@ -1061,25 +863,53 @@ const FILES_FOLDER = {
         if (allFiles[userId]) {
             let marked = 0;
             allFiles[userId].forEach(file => {
-                if (!file.paid) {
-                    file.paid = true;
-                    file.paidAt = Date.now();
-                    marked++;
-                }
+                if (!file.paid) { file.paid = true; file.paidAt = Date.now(); marked++; }
             });
             localStorage.setItem('all_generated_files', JSON.stringify(allFiles));
             console.log(`✓ ${marked} فایل به عنوان پرداخت شده علامت‌گذاری شد`);
         }
-    },
-    
-    getLastFileName: function() {
-        const files = this.getUserFiles();
-        if (files.length === 0) return null;
-        // مرتب‌سازی بر اساس تاریخ و بازگرداندن آخرین
-        const sorted = [...files].sort((a, b) => b.createdAt - a.createdAt);
-        return sorted[0].name;
     }
 };
+
+// ============ 🆕 PAYMENT FUNCTIONS - فقط برای پایان‌نامه ============
+function isThesis() { return state.docType === 'پایان نامه'; }
+function needsPaymentForDownload() { return isThesis() && !state.paymentCompleted; }
+
+function showPaymentModal() {
+    console.log('🔔 نمایش مودال پرداخت (برای دانلود پایان‌نامه)');
+    // اضافه کردن پارامتر به لینک پرداخت
+    const baseUrl = window.location.origin + window.location.pathname;
+    const paymentLink = document.getElementById('paymentLink');
+    paymentLink.href = `https://ppng.ir/d/9IrT?return=${encodeURIComponent(baseUrl)}`;
+    openModal('paymentModal');
+    showToast('⚠️ برای دانلود فایل پایان‌نامه، لطفاً هزینه را پرداخت کنید', 'warning');
+}
+function closePaymentModal() { closeModal('paymentModal'); }
+
+function applyThesisLockUI() {
+    const outputPanel = document.getElementById('outputPanel');
+    const downloadBtn = document.getElementById('downloadBtn');
+    if (needsPaymentForDownload()) {
+        outputPanel.classList.add('thesis-locked');
+        downloadBtn.disabled = false;
+        downloadBtn.classList.add('download-btn-locked');
+        downloadBtn.title = 'برای دانلود، کلیک کنید تا به لینک پرداخت هدایت شوید';
+    } else {
+        outputPanel.classList.remove('thesis-locked');
+        downloadBtn.classList.remove('download-btn-locked');
+        downloadBtn.title = '';
+    }
+}
+
+function unlockThesisDownload() {
+    const outputPanel = document.getElementById('outputPanel');
+    const downloadBtn = document.getElementById('downloadBtn');
+    outputPanel.classList.remove('thesis-locked');
+    downloadBtn.disabled = false;
+    downloadBtn.classList.remove('download-btn-locked');
+    downloadBtn.title = '';
+    showToast('✓ پرداخت تأیید شد - دانلود فعال شد', 'success');
+}
 
 // ============ CHAPTERS SELECTION ============
 function populateChaptersModal() {
@@ -1088,8 +918,7 @@ function populateChaptersModal() {
     container.innerHTML = '';
     if (state.allChapters.length === 0) {
         container.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;">⚠️ هیچ فصلی در ساختار تعریف نشده است</p>';
-        updateSelectionSummary();
-        return;
+        updateSelectionSummary(); return;
     }
     state.allChapters.forEach((chapter, idx) => {
         const isSelected = state.selectedChapters.includes(chapter.title);
@@ -1101,8 +930,7 @@ function populateChaptersModal() {
 <div class="chapter-title">${chapter.number ? `فصل ${convertToPersianNumbers(chapter.number)}: ` : ''}${escapeHtml(chapter.title)}</div>
 <div class="chapter-desc">${escapeHtml(chapter.description)}</div>
 </div>
-<div class="chapter-status">${isSelected ? '✓ انتخاب شده' : 'انتخاب نشده'}</div>
-`;
+<div class="chapter-status">${isSelected ? '✓ انتخاب شده' : 'انتخاب نشده'}</div>`;
         const checkbox = item.querySelector('input');
         checkbox.addEventListener('change', function() {
             if (this.checked) {
@@ -1117,20 +945,15 @@ function populateChaptersModal() {
             updateSelectionSummary();
         });
         item.addEventListener('click', function(e) {
-            if (e.target !== checkbox) {
-                checkbox.checked = !checkbox.checked;
-                checkbox.dispatchEvent(new Event('change'));
-            }
+            if (e.target !== checkbox) { checkbox.checked = !checkbox.checked; checkbox.dispatchEvent(new Event('change')); }
         });
         container.appendChild(item);
     });
     updateSelectionSummary();
 }
-
 function updateSelectionSummary() {
     const summary = document.getElementById('summaryText');
-    const count = state.selectedChapters.length;
-    const total = state.allChapters.length;
+    const count = state.selectedChapters.length; const total = state.allChapters.length;
     if (count === 0) summary.textContent = '⚠️ هیچ فصلی انتخاب نشده - همه بخش‌ها نگارش می‌شوند';
     else if (count === total) summary.textContent = `✓ همه ${convertToPersianNumbers(total)} فصل انتخاب شده‌اند`;
     else {
@@ -1142,7 +965,6 @@ function updateSelectionSummary() {
     }
     document.getElementById('chaptersCount').textContent = convertToPersianNumbers(count);
 }
-
 function selectAllChapters() { state.selectedChapters = [...state.allChapters.map(c => c.title)]; populateChaptersModal(); }
 function deselectAllChapters() { state.selectedChapters = []; populateChaptersModal(); }
 function selectMainChapters() {
@@ -1155,8 +977,7 @@ function selectOnlyChapter(num) {
 }
 function applyChaptersSelection() {
     localStorage.setItem('writer_selected_chapters', JSON.stringify(state.selectedChapters));
-    closeModal('chaptersModal');
-    updateSectionsList();
+    closeModal('chaptersModal'); updateSectionsList();
     if (state.selectedChapters.length === 0) showToast('✓ همه بخش‌ها نگارش خواهند شد', 'success');
     else showToast(`✓ ${convertToPersianNumbers(state.selectedChapters.length)} فصل برای نگارش انتخاب شد`, 'success');
 }
@@ -1171,8 +992,7 @@ function calculateDescriptiveStats(values) {
     const nums = values.filter(v => !isNaN(parseFloat(v))).map(v => parseFloat(v));
     if (nums.length === 0) return null;
     const sorted = [...nums].sort((a, b) => a - b);
-    const n = nums.length;
-    const sum = nums.reduce((a, b) => a + b, 0);
+    const n = nums.length; const sum = nums.reduce((a, b) => a + b, 0);
     const mean = sum / n;
     const median = n % 2 === 0 ? (sorted[n/2 - 1] + sorted[n/2]) / 2 : sorted[Math.floor(n/2)];
     const freq = {};
@@ -1183,14 +1003,12 @@ function calculateDescriptiveStats(values) {
     const stdDev = Math.sqrt(variance);
     return { n, mean, median, mode: parseFloat(mode), stdDev, variance, min: Math.min(...nums), max: Math.max(...nums), sum };
 }
-
 function calculateFrequency(values) {
     const freq = {};
     values.forEach(v => { const key = String(v).trim(); if (key) freq[key] = (freq[key] || 0) + 1; });
     const total = values.length;
     return Object.entries(freq).map(([value, count]) => ({ value, count, percentage: ((count / total) * 100).toFixed(2) })).sort((a, b) => b.count - a.count);
 }
-
 function analyzeStatisticalData() {
     const { headers, rows } = state.statisticalData;
     if (!headers.length || !rows.length) return;
@@ -1204,7 +1022,6 @@ function analyzeStatisticalData() {
     });
     state.statisticalData.statistics = statistics;
 }
-
 function processFile(file) {
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -1226,7 +1043,6 @@ function processFile(file) {
     };
     reader.readAsArrayBuffer(file);
 }
-
 function parseManualData() {
     const text = document.getElementById('manualData').value.trim();
     if (!text) { showToast('داده‌ها را وارد کنید', 'error'); return; }
@@ -1235,11 +1051,9 @@ function parseManualData() {
     const delimiter = lines[0].includes('\t') ? '\t' : ',';
     state.statisticalData.headers = lines[0].split(delimiter).map(h => h.trim());
     state.statisticalData.rows = lines.slice(1).map(line => line.split(delimiter).map(cell => cell.trim()));
-    analyzeStatisticalData();
-    updateDataPreview();
+    analyzeStatisticalData(); updateDataPreview();
     showToast(`✓ ${state.statisticalData.rows.length} ردیف پردازش شد`, 'success');
 }
-
 function updateDataPreview() {
     const { headers, rows, statistics } = state.statisticalData;
     const statsSummary = document.getElementById('statsSummary');
@@ -1253,8 +1067,7 @@ function updateDataPreview() {
             summaryHtml += `<div class="stat-card"><h4>📈 ${escapeHtml(header)}</h4><div class="stat-value">${d.mean.toFixed(2)}</div><div class="stat-label">میانگین (SD=${d.stdDev.toFixed(2)})</div></div>`;
         }
     });
-    summaryHtml += '</div>';
-    statsSummary.innerHTML = summaryHtml;
+    summaryHtml += '</div>'; statsSummary.innerHTML = summaryHtml;
     const previewContainer = document.getElementById('dataPreviewContainer');
     const previewRows = rows.slice(0, 10);
     let tableHtml = '<h3 style="margin: 15px 0 10px;">👁 پیش‌نمایش (10 ردیف اول)</h3><div class="data-preview"><table class="data-table"><thead><tr><th>ردیف</th>';
@@ -1265,8 +1078,7 @@ function updateDataPreview() {
         headers.forEach((_, j) => { tableHtml += `<td>${escapeHtml(row[j] || '')}</td>`; });
         tableHtml += '</tr>';
     });
-    tableHtml += '</tbody></table></div>';
-    previewContainer.innerHTML = tableHtml;
+    tableHtml += '</tbody></table></div>'; previewContainer.innerHTML = tableHtml;
 }
 
 // ============ HYPOTHESES MANAGEMENT ============
@@ -1281,14 +1093,12 @@ function getTestTypeBadge(testType) {
     };
     return badges[testType] || badges['descriptive'];
 }
-
 function renderHypothesesList() {
     const list = document.getElementById('hypothesesList');
     const hypotheses = state.statisticalData.hypotheses;
     if (hypotheses.length === 0) {
         list.innerHTML = '<div class="empty-hypotheses">هنوز فرضیه‌ای تعریف نشده است. از فرم بالا برای افزودن فرضیه استفاده کنید.</div>';
-        document.getElementById('hypothesisCount').textContent = '0';
-        return;
+        document.getElementById('hypothesisCount').textContent = '0'; return;
     }
     document.getElementById('hypothesisCount').textContent = hypotheses.length;
     list.innerHTML = hypotheses.map((h, idx) => {
@@ -1309,11 +1119,9 @@ ${h.description ? `<br><em>${escapeHtml(h.description)}</em>` : ''}
 <button class="btn-edit" onclick="editHypothesis(${idx})">✎</button>
 <button class="btn-delete" onclick="deleteHypothesis(${idx})">🗑</button>
 </div>
-</div>
-`;
+</div>`;
     }).join('');
 }
-
 function addHypothesis() {
     const title = document.getElementById('hypothesisTitle').value.trim();
     const testType = document.getElementById('hypothesisTestType').value;
@@ -1322,11 +1130,9 @@ function addHypothesis() {
     const description = document.getElementById('hypothesisDescription').value.trim();
     if (!title) { showToast('عنوان فرضیه را وارد کنید', 'error'); return; }
     state.statisticalData.hypotheses.push({ title, testType, independentVar, dependentVar, description, id: Date.now() });
-    clearHypothesisForm();
-    renderHypothesesList();
+    clearHypothesisForm(); renderHypothesesList();
     showToast(`✓ فرضیه "${title}" اضافه شد`, 'success');
 }
-
 function editHypothesis(idx) {
     const h = state.statisticalData.hypotheses[idx];
     document.getElementById('hypothesisTitle').value = h.title;
@@ -1335,19 +1141,15 @@ function editHypothesis(idx) {
     document.getElementById('hypothesisDV').value = h.dependentVar;
     document.getElementById('hypothesisDescription').value = h.description || '';
     state.statisticalData.hypotheses.splice(idx, 1);
-    renderHypothesesList();
-    showToast('فرضیه برای ویرایش در فرم قرار گرفت', 'warning');
+    renderHypothesesList(); showToast('فرضیه برای ویرایش در فرم قرار گرفت', 'warning');
 }
-
 function deleteHypothesis(idx) {
     const h = state.statisticalData.hypotheses[idx];
     if (confirm(`آیا از حذف فرضیه "${h.title}" مطمئن هستید؟`)) {
         state.statisticalData.hypotheses.splice(idx, 1);
-        renderHypothesesList();
-        showToast('فرضیه حذف شد', 'success');
+        renderHypothesesList(); showToast('فرضیه حذف شد', 'success');
     }
 }
-
 function clearHypothesisForm() {
     document.getElementById('hypothesisTitle').value = '';
     document.getElementById('hypothesisTestType').value = 'correlation';
@@ -1355,16 +1157,13 @@ function clearHypothesisForm() {
     document.getElementById('hypothesisDV').value = '';
     document.getElementById('hypothesisDescription').value = '';
 }
-
 function clearAllHypotheses() {
     if (state.statisticalData.hypotheses.length === 0) { showToast('هیچ فرضیه‌ای برای حذف وجود ندارد', 'warning'); return; }
     if (confirm(`آیا از حذف همه ${state.statisticalData.hypotheses.length} فرضیه مطمئن هستید؟`)) {
         state.statisticalData.hypotheses = [];
-        renderHypothesesList();
-        showToast('همه فرضیه‌ها حذف شدند', 'success');
+        renderHypothesesList(); showToast('همه فرضیه‌ها حذف شدند', 'success');
     }
 }
-
 function loadSampleHypotheses() {
     const samples = [
         { title: 'رابطه بین ویژگی‌های فناورانه نسل زد با نیاز به متناسب‌سازی محتوای آموزشی', testType: 'correlation', independentVar: 'ویژگی‌های فناورانه نسل زد', dependentVar: 'نیاز به متناسب‌سازی محتوای آموزشی', description: 'فرضیه اول: بین ویژگی‌های فناورانه و نیاز به تغییر محتوا رابطه معناداری وجود دارد.' },
@@ -1377,11 +1176,10 @@ function loadSampleHypotheses() {
         if (!confirm('فرضیه‌های فعلی با نمونه جایگزین خواهند شد. ادامه می‌دهید؟')) return;
     }
     state.statisticalData.hypotheses = samples.map(s => ({ ...s, id: Date.now() + Math.random() }));
-    renderHypothesesList();
-    showToast(`✓ ${samples.length} فرضیه نمونه بارگذاری شد`, 'success');
+    renderHypothesesList(); showToast(`✓ ${samples.length} فرضیه نمونه بارگذاری شد`, 'success');
 }
 
-// ============ STATS TABLE FOR PROMPT ============
+// ============ STATS & HYPOTHESES FOR PROMPT ============
 function buildStatsTableForPrompt() {
     const { headers, statistics, rows } = state.statisticalData;
     if (!headers.length || !rows.length) return '';
@@ -1407,7 +1205,6 @@ function buildStatsTableForPrompt() {
     table += `📊 خلاصه داده‌ها:\n• تعداد مشاهدات: ${rows.length}\n• تعداد متغیرها: ${headers.length}\n• نام متغیرها: ${headers.join('، ')}\n`;
     return table;
 }
-
 function buildHypothesesTextForPrompt() {
     const hypotheses = state.statisticalData.hypotheses;
     if (hypotheses.length === 0) return '(فرضیه‌ای تعریف نشده است)';
@@ -1421,6 +1218,7 @@ function buildHypothesesTextForPrompt() {
     return text;
 }
 
+// ============ CHAPTER FOUR PROMPT ============
 function buildChapterFourSubsectionPrompt(sectionTitle, previousContent) {
     const { researchType, analysisMethod, sampleInfo, statSoftware, significanceLevel, samplingMethod, includeReliability, includeValidity, includeNormality } = state.statisticalData;
     const statsTable = buildStatsTableForPrompt();
@@ -1444,7 +1242,6 @@ function buildChapterFourSubsectionPrompt(sectionTitle, previousContent) {
     prompt += `\n🎯 شروع کن:`;
     return prompt;
 }
-
 function analyzeSection(sectionName) {
     const needsRefs = state.sectionsWithRefs.includes(sectionName);
     const isChapter = isChapterHeader(sectionName);
@@ -1471,7 +1268,6 @@ function analyzeSection(sectionName) {
     const totalParts = Math.max(1, Math.ceil(avgWords / wordsPerPart));
     return { sectionName, isChapterHeader: false, isChapterFour: false, isChapterFourSubsection: false, needsRefs, minWords: range.min, maxWords: range.max, totalParts, wordsPerPart };
 }
-
 function buildPartPrompt(analysis, partNumber, previousContent, sectionRefs) {
     if (analysis.isChapterFourSubsection) return buildChapterFourSubsectionPrompt(analysis.sectionName, previousContent);
     if (analysis.isChapterFour) return buildChapterFourPrompt(analysis, partNumber, previousContent);
@@ -1489,8 +1285,7 @@ function buildPartPrompt(analysis, partNumber, previousContent, sectionRefs) {
         if (!isLast) prompt += `\n❌ نتیجه‌گیری نکن.`;
         else prompt += `\n✅ جمع‌بندی کن.`;
     }
-    let refRule = "❌ بدون رفرنس.";
-    let refCtx = '';
+    let refRule = "❌ بدون رفرنس."; let refCtx = '';
     const hasCustomRefs = state.userReferences.persian.length + state.userReferences.english.length > 0;
     if (analysis.needsRefs && sectionRefs.length > 0) {
         refRule = "✅ فقط از منابع واقعی استفاده کن.";
@@ -1511,7 +1306,6 @@ function buildPartPrompt(analysis, partNumber, previousContent, sectionRefs) {
     const prev = state.previousSummary && isFirst ? `\n🔍 خلاصه قبل: ${state.previousSummary}` : '';
     return `${prompt}\n📋 قوانین:\n- فارسی آکادمیک و روان\n- ❌ عنوان بخش را ننویس\n- ✅ سال‌ها به فارسی: 2020 → ۲۰۲۰\n- ❌ جملات را تکرار نکن\n${refRule}\n${refCtx}${prev}${ctx}\n🎯 شروع کن:`;
 }
-
 function buildChapterFourPrompt(analysis, partNumber, previousContent) {
     const { researchType, analysisMethod, sampleInfo, statSoftware, significanceLevel, samplingMethod, includeReliability, includeValidity, includeNormality } = state.statisticalData;
     const statsTable = buildStatsTableForPrompt();
@@ -1573,8 +1367,7 @@ async function callGroqAPI(prompt, onChunk, attempt = 1) {
             const { done, value } = await reader.read();
             if (done) break;
             buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop();
+            const lines = buffer.split('\n'); buffer = lines.pop();
             for (const line of lines) {
                 if (line.startsWith('data: ')) {
                     const data = line.substring(6);
@@ -1614,7 +1407,6 @@ async function searchCrossRef(query) {
         }).filter(r => r.year && r.authors.length > 0);
     } catch { return []; }
 }
-
 async function searchSemanticScholar(query) {
     try {
         const url = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(query)}&limit=10&fields=title,authors,year,venue,externalIds,citationCount`;
@@ -1627,7 +1419,6 @@ async function searchSemanticScholar(query) {
         return (data.data || []).map(paper => ({ title: paper.title || '', authors: (paper.authors || []).map(a => a.name || '').filter(Boolean), year: paper.year || null, journal: paper.venue || '', doi: paper.externalIds?.DOI || '', source: 'Semantic Scholar', language: 'en', citations: paper.citationCount || 0 })).filter(r => r.year && r.authors.length > 0);
     } catch { return []; }
 }
-
 async function searchOpenAlex(query) {
     try {
         const url = `https://api.openalex.org/works?search=${encodeURIComponent(query)}&per_page=20&select=id,title,authorships,publication_year,primary_location,cited_by_count,doi`;
@@ -1640,7 +1431,6 @@ async function searchOpenAlex(query) {
         return (data.results || []).map(work => ({ title: work.title || '', authors: (work.authorships || []).map(a => a.author?.display_name || '').filter(Boolean), year: work.publication_year || null, journal: work.primary_location?.source?.display_name || '', doi: work.doi ? work.doi.replace('https://doi.org/', '') : '', source: 'OpenAlex', language: 'en', citations: work.cited_by_count || 0 })).filter(r => r.year && r.authors.length > 0);
     } catch { return []; }
 }
-
 async function searchCORE(query) {
     try {
         const apiKey = 'a27c2d68d6a7ec4ac7d6aec6b1e4d3f2';
@@ -1654,7 +1444,6 @@ async function searchCORE(query) {
         return (data.results || []).map(item => ({ title: item.title || '', authors: (item.authors || []).map(a => a.name || '').filter(Boolean), year: item.year || (item.publishedDate ? item.publishedDate.substring(0, 4) : null), journal: item.publisher || item.journalTitle || '', doi: item.doi || '', source: 'CORE', language: 'en' })).filter(r => r.year && r.authors.length > 0);
     } catch { return []; }
 }
-
 async function searchRealReferences(topic, sectionName, onProgress) {
     const topicEn = topic.replace(/[\u0600-\u06FF]+/g, '').replace(/[^\w\s]/g, ' ').trim();
     const queries = [topicEn, topicEn + ' research', topicEn + ' study'].filter(q => q && q.length >= 3);
@@ -1669,9 +1458,7 @@ async function searchRealReferences(topic, sectionName, onProgress) {
         const seen = new Set();
         const combined = [...crossref, ...semantic, ...openalex, ...core].filter(ref => {
             const key = ref.title.toLowerCase().replace(/[^\w\s]/g, '').substring(0, 80);
-            if (seen.has(key)) return false;
-            seen.add(key);
-            return true;
+            if (seen.has(key)) return false; seen.add(key); return true;
         });
         allRefs = [...allRefs, ...combined];
         if (onProgress) onProgress(`✅ مجموع: ${convertToPersianNumbers(allRefs.length)}`);
@@ -1684,8 +1471,7 @@ async function searchRealReferences(topic, sectionName, onProgress) {
 
 // ============ UI UPDATES ============
 function updateSectionsList() {
-    const list = document.getElementById('sectionsList');
-    list.innerHTML = '';
+    const list = document.getElementById('sectionsList'); list.innerHTML = '';
     state.sections.forEach((section, i) => {
         const hasRef = state.sectionsWithRefs.includes(section);
         const isChapter = isChapterHeader(section);
@@ -1694,21 +1480,18 @@ function updateSectionsList() {
         const shouldGenerate = shouldGenerateSection(section);
         const num = state.sectionNumbers[section];
         const displayName = num ? `${num}- ${section}` : `${convertToPersianNumbers(i + 1)}. ${section}`;
-        let badgeClass = 'no-ref-badge';
-        let badgeText = '📄';
+        let badgeClass = 'no-ref-badge'; let badgeText = '📄';
         if (!shouldGenerate) { badgeClass = 'skipped-badge'; badgeText = '⏭'; }
         else if ((isChapter4 || isChapter4Subsection) && state.statisticalData.hasData) { badgeClass = 'data-badge'; badgeText = '📊'; }
         else if (isChapter) { badgeClass = 'chapter-badge'; badgeText = '📖'; }
         else if (hasRef) { badgeClass = 'ref-badge'; badgeText = '📚'; }
         const item = document.createElement('div');
-        item.className = 'section-item';
-        item.id = `section-item-${i}`;
+        item.className = 'section-item'; item.id = `section-item-${i}`;
         const nameStyle = shouldGenerate ? '' : 'style="opacity: 0.5; text-decoration: line-through;"';
         item.innerHTML = `<div class="checkbox" id="checkbox-${i}"></div><div class="section-name" ${nameStyle}>${escapeHtml(displayName)}</div><span class="${badgeClass}">${badgeText}</span><div class="status" id="status-${i}">⏸</div>`;
         list.appendChild(item);
     });
 }
-
 function updateSectionStatus(index, status) {
     const checkbox = document.getElementById(`checkbox-${index}`);
     const statusEl = document.getElementById(`status-${index}`);
@@ -1722,41 +1505,13 @@ function updateSectionStatus(index, status) {
     else if (status === 'skipped') { checkbox.classList.add('skipped'); checkbox.textContent = '⏭'; statusEl.textContent = '⏭'; }
     else if (status === 'error') { checkbox.classList.add('error'); checkbox.textContent = '✗'; statusEl.textContent = '❌'; }
 }
-
 function updateProgress(current, total) {
     const percent = Math.round((current / total) * 100);
     document.getElementById('progressFill').style.width = percent + '%';
     document.getElementById('progressFill').textContent = convertToPersianNumbers(percent) + '%';
     document.getElementById('progressLabel').textContent = `${convertToPersianNumbers(percent)}٪ | بخش ${convertToPersianNumbers(current)} از ${convertToPersianNumbers(total)}`;
 }
-
 function updateRefSectionsCount() { document.getElementById('refSectionsCount').textContent = convertToPersianNumbers(state.sectionsWithRefs.length); }
-
-// ============ 🆕 مدیریت قفل دانلود پایان‌نامه ============
-function applyThesisLockUI() {
-    const outputPanel = document.getElementById('outputPanel');
-    const downloadBtn = document.getElementById('downloadBtn');
-    if (needsPaymentForDownload()) {
-        outputPanel.classList.add('thesis-locked');
-        downloadBtn.disabled = false;  // دکمه فعال است اما با کلاس قفل
-        downloadBtn.classList.add('download-btn-locked');
-        downloadBtn.title = 'برای دانلود، کلیک کنید تا به لینک پرداخت هدایت شوید';
-    } else {
-        outputPanel.classList.remove('thesis-locked');
-        downloadBtn.classList.remove('download-btn-locked');
-        downloadBtn.title = '';
-    }
-}
-
-function unlockThesisDownload() {
-    const outputPanel = document.getElementById('outputPanel');
-    const downloadBtn = document.getElementById('downloadBtn');
-    outputPanel.classList.remove('thesis-locked');
-    downloadBtn.disabled = false;
-    downloadBtn.classList.remove('download-btn-locked');
-    downloadBtn.title = '';
-    showToast('✓ پرداخت تأیید شد - دانلود فعال شد', 'success');
-}
 
 // ============ GENERATION LOOP ============
 async function runGenerationLoop() {
@@ -1776,12 +1531,9 @@ async function runGenerationLoop() {
                 const wrapper = document.createElement('div');
                 wrapper.id = `sec-${state.currentSectionIndex}`;
                 wrapper.innerHTML = `<div class="section-title">${escapeHtml(displayTitle)}</div><div class="thinking-box skipped-box"><div class="thinking-header"><span>⏭</span><span>این بخش انتخاب نشده - رد شد</span></div></div>`;
-                output.appendChild(wrapper);
-                output.scrollTop = output.scrollHeight;
-                state.currentSectionIndex++;
-                updateProgress(state.currentSectionIndex, total);
-                await sleep(100);
-                continue;
+                output.appendChild(wrapper); output.scrollTop = output.scrollHeight;
+                state.currentSectionIndex++; updateProgress(state.currentSectionIndex, total);
+                await sleep(100); continue;
             }
             updateSectionStatus(state.currentSectionIndex, 'thinking');
             const analysis = analyzeSection(section);
@@ -1809,20 +1561,16 @@ async function runGenerationLoop() {
                 thinkingBox.innerHTML = `<div class="thinking-header"><span>🧠</span><span>تحلیل «${escapeHtml(section)}»</span></div><div class="thinking-item">📏 حجم: ${convertToPersianNumbers(analysis.minWords)}-${convertToPersianNumbers(analysis.maxWords)} کلمه</div><div class="thinking-item">📝 پارت‌ها: ${convertToPersianNumbers(analysis.totalParts)}</div><div class="thinking-item">${analysis.needsRefs ? '✅ رفرنس فعال' : '❌ بدون رفرنس'}</div>`;
                 wrapper.appendChild(thinkingBox);
             }
-            output.appendChild(wrapper);
-            output.scrollTop = output.scrollHeight;
+            output.appendChild(wrapper); output.scrollTop = output.scrollHeight;
             await sleep(200);
             if (analysis.isChapterHeader) {
                 updateSectionStatus(state.currentSectionIndex, 'chapter');
-                state.currentSectionIndex++;
-                updateProgress(state.currentSectionIndex, total);
-                await sleep(100);
-                continue;
+                state.currentSectionIndex++; updateProgress(state.currentSectionIndex, total);
+                await sleep(100); continue;
             }
             updateSectionStatus(state.currentSectionIndex, 'in-progress');
             const contentEl = document.createElement('div');
-            contentEl.className = 'section-content';
-            contentEl.id = `content-${state.currentSectionIndex}`;
+            contentEl.className = 'section-content'; contentEl.id = `content-${state.currentSectionIndex}`;
             wrapper.appendChild(contentEl);
             let sectionRefs = [];
             const hasCustom = state.userReferences.persian.length + state.userReferences.english.length > 0;
@@ -1832,8 +1580,7 @@ async function runGenerationLoop() {
                 const progressBox = document.createElement('div');
                 progressBox.className = 'search-box';
                 progressBox.innerHTML = `<div class="search-header"><span>🔍</span><span>جستجوی منابع...</span></div><div id="sp-${state.currentSectionIndex}"></div>`;
-                contentEl.appendChild(progressBox);
-                output.scrollTop = output.scrollHeight;
+                contentEl.appendChild(progressBox); output.scrollTop = output.scrollHeight;
                 const progressEl = document.getElementById(`sp-${state.currentSectionIndex}`);
                 try {
                     const result = await searchRealReferences(state.topic, section, (msg) => {
@@ -1846,8 +1593,7 @@ async function runGenerationLoop() {
                     result.refs.forEach((ref, i) => {
                         html += `<div class="ref-found"><div class="ref-title">📚 ${convertToPersianNumbers(i+1)}. ${escapeHtml(ref.title)}</div><div class="ref-authors">✍️ ${escapeHtml(ref.authors.slice(0, 3).join('، '))}</div><div class="ref-meta">📅 ${ref.year || ''} | 📰 ${escapeHtml(ref.journal || '')}</div></div>`;
                     });
-                    progressBox.innerHTML = html;
-                    output.scrollTop = output.scrollHeight;
+                    progressBox.innerHTML = html; output.scrollTop = output.scrollHeight;
                     showToast(`✅ ${convertToPersianNumbers(result.refs.length)} منبع یافت شد`, 'success');
                 } catch (e) { progressBox.innerHTML = `<div class="search-progress success">⚠️ خطا: ${e.message}</div>`; }
             } else if (analysis.isChapterFour || analysis.isChapterFourSubsection) {
@@ -1890,23 +1636,18 @@ async function runGenerationLoop() {
                     state.previousSummary = fullContent.substring(fullContent.length - CONFIG.MAX_PREVIOUS_CHARS).trim();
                     updateSectionStatus(state.currentSectionIndex, 'completed');
                 }
-                state.currentSectionIndex++;
-                updateProgress(state.currentSectionIndex, total);
+                state.currentSectionIndex++; updateProgress(state.currentSectionIndex, total);
                 saveProgress();
                 if (state.currentSectionIndex < total && !state.stopFlag) await sleep(CONFIG.SECTION_DELAY);
             } catch (e) {
                 updateSectionStatus(state.currentSectionIndex, 'error');
                 contentEl.appendChild(document.createTextNode(`\n[خطا: ${e.message}]`));
-                state.currentSectionIndex++;
-                updateProgress(state.currentSectionIndex, total);
+                state.currentSectionIndex++; updateProgress(state.currentSectionIndex, total);
                 saveProgress();
             }
         }
         onGenerationComplete();
-    } catch (e) {
-        showToast(`خطا: ${e.message}`, 'error');
-        onGenerationComplete();
-    }
+    } catch (e) { showToast(`خطا: ${e.message}`, 'error'); onGenerationComplete(); }
 }
 
 async function startGeneration() {
@@ -1925,20 +1666,14 @@ async function startGeneration() {
     if (state.sectionsWithRefs.length === 0) {
         if (!confirm('⚠️ هیچ بخشی برای رفرنس انتخاب نشده. ادامه می‌دهید؟')) return;
     }
-    state.isRunning = true;
-    state.stopFlag = false;
-    state.currentSectionIndex = 0;
-    state.previousSummary = '';
-    state.generatedContent = {};
-    state.foundReferences = [];
-    state.sectionReferences = {};
-    state.inChapterFour = false;
+    state.isRunning = true; state.stopFlag = false; state.currentSectionIndex = 0;
+    state.previousSummary = ''; state.generatedContent = {};
+    state.foundReferences = []; state.sectionReferences = {}; state.inChapterFour = false;
     // 🆕 ریست وضعیت پرداخت برای نگارش جدید
     state.paymentCompleted = false;
     localStorage.removeItem('payment_completed');
     await requestWakeLock();
     document.getElementById('outputContent').innerHTML = '';
-    // 🆕 پاک کردن قفل پایان‌نامه
     document.getElementById('outputPanel').classList.remove('thesis-locked');
     document.getElementById('downloadBtn').classList.remove('download-btn-locked');
     updateSectionsList();
@@ -1951,26 +1686,23 @@ async function startGeneration() {
 }
 
 function stopGeneration() {
-    state.stopFlag = true;
-    state.isRunning = false;
+    state.stopFlag = true; state.isRunning = false;
     if (state.generationAbortController) state.generationAbortController.abort();
     releaseWakeLock();
     document.getElementById('stopBtn').disabled = true;
     document.getElementById('startBtn').disabled = false;
     document.getElementById('progressLabel').textContent = '⛔ متوقف شد';
-    showToast('متوقف شد', 'warning');
-    saveProgress();
+    showToast('متوقف شد', 'warning'); saveProgress();
 }
 
 function onGenerationComplete() {
-    state.isRunning = false;
-    releaseWakeLock();
+    state.isRunning = false; releaseWakeLock();
     document.getElementById('startBtn').disabled = false;
     document.getElementById('stopBtn').disabled = true;
     
     // 🆕 مدیریت قفل دانلود بر اساس نوع سند
     if (needsPaymentForDownload()) {
-        // پایان‌نامه - قفل دانلود و نمایش مودال پرداخت با کلیک
+        // پایان‌نامه - قفل دانلود
         applyThesisLockUI();
         showToast('🔒 برای دانلود فایل پایان‌نامه، روی دکمه دانلود کلیک کنید', 'warning');
     } else {
@@ -1999,8 +1731,7 @@ async function downloadWord() {
     }
     
     if (Object.keys(state.generatedContent).length === 0) {
-        showToast('محتوایی نیست', 'warning');
-        return;
+        showToast('محتوایی نیست', 'warning'); return;
     }
     try {
         if (typeof docx === 'undefined') throw new Error('کتابخانه docx بارگذاری نشده');
@@ -2047,31 +1778,29 @@ async function downloadWord() {
         // 🆕 ذخیره نام فایل برای استفاده بعدی
         state.lastGeneratedFileName = fileName;
         
-        // 🆕 ذخیره خودکار فایل در پوشه
-        await FILES_FOLDER.saveFile(fileName, blob, state.topic, state.docType);
-        console.log(`✓ فایل در پوشه ذخیره شد: ${fileName}`);
+        // 🆕 ذخیره خودکار فایل در پوشه (مشترک با files.html)
+        try {
+            await FILES_FOLDER.saveFile(fileName, blob, state.topic, state.docType);
+            console.log(`✓ فایل در پوشه ذخیره شد: ${fileName}`);
+        } catch (e) {
+            console.error('خطا در ذخیره فایل در پوشه:', e);
+        }
         
         // دانلود فایل
         if (window.saveAs) window.saveAs(blob, fileName);
         else {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+            link.href = url; link.download = fileName;
+            document.body.appendChild(link); link.click();
+            document.body.removeChild(link); URL.revokeObjectURL(url);
         }
         showToast('✓ فایل ذخیره و دانلود شد', 'success');
-    } catch (e) {
-        showToast(`خطا: ${e.message}`, 'error');
-    }
+    } catch (e) { showToast(`خطا: ${e.message}`, 'error'); }
 }
 
 function openModal(id) { document.getElementById(id).classList.add('active'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
 function switchTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -2079,13 +1808,11 @@ function switchTab(tabName) {
     document.getElementById(`tab-${tabName}`).classList.add('active');
     if (tabName === 'preview') updateDataPreview();
 }
-
 function extractSectionNumber(text) {
     const match = text.match(/^([\d۰-۹]+|[الفبپتثجچحخدرزسشصضطظعغفقکگلمنوهی])\s*[-\.:)\]]\s*(.+)$/);
     if (match) return { number: match[1], title: match[2].trim() };
     return { number: null, title: text.trim() };
 }
-
 function parseCustomStructure(text) {
     if (!text || !text.trim()) return { titles: [], numbers: {} };
     const titles = [], numbers = {};
@@ -2095,20 +1822,16 @@ function parseCustomStructure(text) {
     });
     return { titles, numbers };
 }
-
 function updateStructureCounter() {
     const { titles } = parseCustomStructure(document.getElementById('structureInput').value);
     document.getElementById('structureCounter').textContent = `📊 ${convertToPersianNumbers(titles.length)} بخش`;
 }
-
 function parseUserReferences(text) {
     if (!text || !text.trim()) return { persian: [], english: [] };
-    const persian = [], english = [];
-    let current = null;
+    const persian = [], english = []; let current = null;
     const lines = text.trim().split('\n');
     for (let line of lines) {
-        line = line.trim();
-        if (!line) continue;
+        line = line.trim(); if (!line) continue;
         line = line.replace(/^\d+[\.\-\)\s]+/, '').replace(/^[-•*]\s*/, '').trim();
         if (!line) continue;
         if (/منابع فارسی|منابع ایرانی|فارسی:|منابع داخلی/i.test(line)) { current = 'persian'; continue; }
@@ -2125,33 +1848,27 @@ function parseUserReferences(text) {
     }
     return { persian, english };
 }
-
 function updateRefsCounter() {
     const parsed = parseUserReferences(document.getElementById('refsInput').value);
     document.getElementById('refsCounter').textContent = `📊 ${convertToPersianNumbers(parsed.persian.length)} فارسی | ${convertToPersianNumbers(parsed.english.length)} انگلیسی`;
 }
-
 function autoSelectDefaultRefSections() {
     const keywords = ["بیان مسئله", "مرور ادبیات", "پیشینه", "مبانی نظری", "فصل دوم", "بحث", "اهمیت", "تعاریف"];
     state.sectionsWithRefs = state.sections.filter(s => keywords.some(k => s.includes(k)));
     updateRefSectionsCount();
 }
-
 function onDocTypeChange() {
     const docType = document.getElementById('docTypeSelect').value;
     const structureMode = document.getElementById('structureMode').value;
     if (structureMode === 'auto') {
-        state.sections = [...OUTLINES[docType]];
-        state.sectionNumbers = {};
-        autoSelectDefaultRefSections();
-        updateSectionsList();
+        state.sections = [...OUTLINES[docType]]; state.sectionNumbers = {};
+        autoSelectDefaultRefSections(); updateSectionsList();
     }
     if (docType === 'ساختار دلخواه') {
         document.getElementById('structureMode').value = 'custom';
         onStructureModeChange();
     }
 }
-
 function onStructureModeChange() {
     const mode = document.getElementById('structureMode').value;
     state.structureMode = mode;
@@ -2162,27 +1879,22 @@ function onStructureModeChange() {
     } else {
         document.getElementById('editStructureBtn').disabled = true;
         const docType = document.getElementById('docTypeSelect').value;
-        state.sections = [...OUTLINES[docType]];
-        state.sectionNumbers = {};
-        autoSelectDefaultRefSections();
-        updateSectionsList();
+        state.sections = [...OUTLINES[docType]]; state.sectionNumbers = {};
+        autoSelectDefaultRefSections(); updateSectionsList();
     }
 }
-
 function populateRefsSections() {
-    const container = document.getElementById('sectionsSelectContainer');
-    container.innerHTML = '';
+    const container = document.getElementById('sectionsSelectContainer'); container.innerHTML = '';
     if (state.sections.length === 0) {
         container.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;">⚠️ ابتدا ساختار را تنظیم کنید</p>';
-        updateRefSectionsInfo();
-        return;
+        updateRefSectionsInfo(); return;
     }
     state.sections.forEach((section, i) => {
         const hasRef = state.sectionsWithRefs.includes(section);
         const isChapter = isChapterHeader(section);
         const item = document.createElement('div');
         item.className = `section-select-item ${hasRef ? 'has-ref' : ''} ${isChapter ? 'is-chapter' : ''}`;
-        let badgeClass = 'badge-no-ref', badgeText = '❌ بدون';
+        let badgeClass = 'badge-no-ref'; let badgeText = '❌ بدون';
         if (isChapter) { badgeClass = 'badge-chapter'; badgeText = '📖 سرفصل'; }
         else if (hasRef) { badgeClass = 'badge-ref'; badgeText = '✅ با رفرنس'; }
         item.innerHTML = `<input type="checkbox" class="ref-section-checkbox" value="${escapeHtml(section)}" id="ref-${i}" ${hasRef ? 'checked' : ''} ${isChapter ? 'disabled' : ''}><label for="ref-${i}" class="section-label">${convertToPersianNumbers(i + 1)}. ${escapeHtml(section)}</label><span class="section-badge ${badgeClass}">${badgeText}</span>`;
@@ -2208,12 +1920,10 @@ function populateRefsSections() {
     });
     updateRefSectionsInfo();
 }
-
 function updateRefSectionsInfo() {
     const checked = document.querySelectorAll('.ref-section-checkbox:checked').length;
     document.getElementById('refSectionsInfo').innerHTML = `📊 <strong>${convertToPersianNumbers(checked)}</strong> بخش انتخاب شده`;
 }
-
 function selectAllRefSections() { document.querySelectorAll('.ref-section-checkbox').forEach(cb => { if (!cb.disabled) { cb.checked = true; cb.dispatchEvent(new Event('change')); } }); }
 function deselectAllRefSections() { document.querySelectorAll('.ref-section-checkbox').forEach(cb => { cb.checked = false; cb.dispatchEvent(new Event('change')); }); }
 function selectDefaultRefSections() {
@@ -2225,13 +1935,10 @@ function selectDefaultRefSections() {
 function applyRefsSections() {
     state.sectionsWithRefs = Array.from(document.querySelectorAll('.ref-section-checkbox:checked')).map(cb => cb.value);
     localStorage.setItem('writer_ref_sections', JSON.stringify(state.sectionsWithRefs));
-    closeModal('refsSectionsModal');
-    updateSectionsList();
-    updateRefSectionsCount();
+    closeModal('refsSectionsModal'); updateSectionsList(); updateRefSectionsCount();
     if (state.sectionsWithRefs.length > 0) showToast(`✓ ${convertToPersianNumbers(state.sectionsWithRefs.length)} بخش انتخاب شد`, 'success');
     else showToast('⚠️ هیچ بخشی انتخاب نشد', 'warning');
 }
-
 function saveProgress() {
     try {
         const progress = {
@@ -2261,12 +1968,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 🆕 بررسی وضعیت پرداخت (فقط برای پایان‌نامه)
     const savedPayment = localStorage.getItem('payment_completed');
-    if (savedPayment === 'true') {
-        state.paymentCompleted = true;
-        console.log('✅ پرداخت قبلاً انجام شده است');
-    } else {
-        state.paymentCompleted = false;
-    }
+    if (savedPayment === 'true') { state.paymentCompleted = true; console.log('✅ پرداخت قبلاً انجام شده است'); }
+    else { state.paymentCompleted = false; }
     
     // 🆕 بررسی بازگشت از درگاه پرداخت
     const params = new URLSearchParams(window.location.search);
@@ -2311,16 +2014,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 return num ? `${num}- ${s}` : `${convertToPersianNumbers(i + 1)}- ${s}`;
             }).join('\n');
         }
-        updateStructureCounter();
-        openModal('structureModal');
+        updateStructureCounter(); openModal('structureModal');
     });
     document.getElementById('chaptersBtn').addEventListener('click', function() { populateChaptersModal(); openModal('chaptersModal'); });
     document.getElementById('refsSectionsBtn').addEventListener('click', function() { populateRefsSections(); openModal('refsSectionsModal'); });
     document.getElementById('refsBtn').addEventListener('click', function() {
         const input = document.getElementById('refsInput');
         if (state.userReferences.raw_text) input.value = state.userReferences.raw_text;
-        updateRefsCounter();
-        openModal('refsModal');
+        updateRefsCounter(); openModal('refsModal');
     });
     document.getElementById('dataBtn').addEventListener('click', function() { openModal('dataModal'); });
     document.getElementById('apiBtn').addEventListener('click', function() { openModal('apiModal'); });
@@ -2339,20 +2040,15 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('saveApiKeyBtn').addEventListener('click', function() {
         const key = document.getElementById('apiKeyInput').value.trim();
         if (!key || !key.startsWith('gsk_')) { showToast('کلید نامعتبر', 'error'); return; }
-        state.apiKey = key;
-        localStorage.setItem('groq_api_key', key);
-        closeModal('apiModal');
-        showToast('✓ ذخیره شد', 'success');
+        state.apiKey = key; localStorage.setItem('groq_api_key', key);
+        closeModal('apiModal'); showToast('✓ ذخیره شد', 'success');
     });
     document.getElementById('closeApiBtn').addEventListener('click', function() { closeModal('apiModal'); });
     document.getElementById('applyStructureBtn').addEventListener('click', function() {
         const { titles, numbers } = parseCustomStructure(document.getElementById('structureInput').value);
         if (titles.length === 0) { showToast('حداقل یک بخش', 'error'); return; }
-        state.customStructure = titles;
-        state.sectionNumbers = numbers;
-        state.sections = [...titles];
-        autoSelectDefaultRefSections();
-        updateSectionsList();
+        state.customStructure = titles; state.sectionNumbers = numbers;
+        state.sections = [...titles]; autoSelectDefaultRefSections(); updateSectionsList();
         closeModal('structureModal');
         showToast(`✓ ${convertToPersianNumbers(titles.length)} بخش اعمال شد`, 'success');
     });
@@ -2373,7 +2069,10 @@ document.addEventListener('DOMContentLoaded', function() {
     uploadArea.addEventListener('click', () => fileInput.click());
     uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
     uploadArea.addEventListener('dragleave', () => { uploadArea.classList.remove('dragover'); });
-    uploadArea.addEventListener('drop', (e) => { e.preventDefault(); uploadArea.classList.remove('dragover'); const file = e.dataTransfer.files[0]; if (file) processFile(file); });
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault(); uploadArea.classList.remove('dragover');
+        const file = e.dataTransfer.files[0]; if (file) processFile(file);
+    });
     fileInput.addEventListener('change', (e) => { const file = e.target.files[0]; if (file) processFile(file); });
     document.getElementById('addHypothesisBtn').addEventListener('click', addHypothesis);
     document.getElementById('clearHypothesisFormBtn').addEventListener('click', clearHypothesisForm);
@@ -2396,9 +2095,7 @@ document.addEventListener('DOMContentLoaded', function() {
             closeModal('dataModal');
             showToast(`✓ داده‌ها ذخیره شد (${convertToPersianNumbers(state.statisticalData.rows.length)} مشاهده، ${convertToPersianNumbers(state.statisticalData.hypotheses.length)} فرضیه)`, 'success');
             updateSectionsList();
-        } else {
-            showToast('⚠️ ابتدا داده‌ها را آپلود یا وارد کنید', 'warning');
-        }
+        } else { showToast('⚠️ ابتدا داده‌ها را آپلود یا وارد کنید', 'warning'); }
     });
     document.getElementById('closeDataBtn').addEventListener('click', function() { closeModal('dataModal'); });
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
@@ -2410,32 +2107,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // 🆕 Event listeners برای جلوگیری از کپی
-    function preventCopy(e) {
-        e.preventDefault();
-        showToast('⚠️ کپی کردن متن مجاز نیست', 'warning');
-        return false;
-    }
+    function preventCopy(e) { e.preventDefault(); showToast('⚠️ کپی کردن متن مجاز نیست', 'warning'); return false; }
     document.addEventListener('copy', preventCopy);
     document.addEventListener('cut', preventCopy);
     document.addEventListener('contextmenu', function(e) {
         if (e.target.closest('.output-content')) {
-            e.preventDefault();
-            showToast('⚠️ کلیک راست مجاز نیست', 'warning');
-            return false;
+            e.preventDefault(); showToast('⚠️ کلیک راست مجاز نیست', 'warning'); return false;
         }
     });
     document.addEventListener('selectstart', function(e) {
-        if (e.target.closest('.output-content')) {
-            e.preventDefault();
-            return false;
-        }
+        if (e.target.closest('.output-content')) { e.preventDefault(); return false; }
     });
     document.addEventListener('keydown', function(e) {
         if (e.target.closest('.output-content')) {
             if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'a' || e.key === 'C' || e.key === 'X' || e.key === 'A')) {
-                e.preventDefault();
-                showToast('⚠️ این عملیات مجاز نیست', 'warning');
-                return false;
+                e.preventDefault(); showToast('⚠️ این عملیات مجاز نیست', 'warning'); return false;
             }
         }
     });
@@ -2455,12 +2141,10 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('includeValidity').checked = data.includeValidity !== false;
             document.getElementById('includeNormality').checked = data.includeNormality !== false;
             if (data.hasData) showToast(`✓ داده‌های قبلی بازیابی شد (${convertToPersianNumbers(data.rows.length)} مشاهده، ${convertToPersianNumbers(data.hypotheses.length)} فرضیه)`, 'success');
-            renderHypothesesList();
-            updateDataPreview();
+            renderHypothesesList(); updateDataPreview();
         } catch (e) { console.error('Error loading stat data:', e); }
     }
-    onDocTypeChange();
-    updateRefSectionsCount();
+    onDocTypeChange(); updateRefSectionsCount();
     document.getElementById('chaptersCount').textContent = convertToPersianNumbers(state.selectedChapters.length);
     renderHypothesesList();
 });
