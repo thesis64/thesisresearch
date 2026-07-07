@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📁 پوشه فایل‌های من - دانلود پایان‌نامه</title>
+<title>📁 پوشه فایل‌های من</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Tahoma', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 15px; direction: rtl; }
@@ -11,293 +11,308 @@ body { font-family: 'Tahoma', sans-serif; background: linear-gradient(135deg, #6
 header { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px; text-align: center; }
 header h1 { color: #2c3e50; font-size: 2em; margin-bottom: 8px; }
 header p { color: #7f8c8d; font-size: 1em; }
-.info-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); margin-bottom: 20px; border-right: 4px solid #667eea; }
-.info-box h3 { color: #2c3e50; margin-bottom: 10px; font-size: 1.1em; }
-.info-box p { color: #555; line-height: 1.8; font-size: 0.95em; }
-.info-box .highlight { background: #fef3c7; padding: 10px; border-radius: 6px; margin-top: 10px; color: #92400e; font-weight: bold; }
-.user-info { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 15px; border-radius: 10px; margin-bottom: 20px; border-right: 4px solid #3b82f6; }
-.user-info .user-id { font-family: 'Consolas', monospace; background: white; padding: 5px 10px; border-radius: 4px; color: #1e40af; font-size: 0.9em; }
-.files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; margin-bottom: 20px; }
-.file-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); transition: all 0.3s; border-right: 4px solid #667eea; position: relative; }
-.file-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
-.file-card.paid { border-right-color: #10b981; }
-.file-card.unpaid { border-right-color: #dc2626; }
-.file-card .file-icon { font-size: 2.5em; margin-bottom: 10px; }
-.file-card .file-name { font-weight: bold; color: #2c3e50; margin-bottom: 8px; font-size: 1em; word-break: break-all; }
-.file-card .file-meta { font-size: 0.85em; color: #7f8c8d; margin-bottom: 10px; line-height: 1.7; }
-.file-card .file-meta strong { color: #2c3e50; }
-.file-card .file-topic { background: #f3f4f6; padding: 8px; border-radius: 6px; margin-bottom: 10px; font-size: 0.9em; color: #374151; }
-.file-card .file-status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.8em; font-weight: bold; margin-bottom: 12px; }
-.file-card .file-status.paid { background: #d1fae5; color: #065f46; }
-.file-card .file-status.unpaid { background: #fee2e2; color: #991b1b; }
-.file-card .file-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.btn { padding: 8px 16px; border: none; border-radius: 8px; font-family: 'Tahoma', sans-serif; font-size: 0.9em; font-weight: bold; cursor: pointer; color: white; transition: all 0.3s; text-decoration: none; display: inline-block; }
-.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.status-bar { background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.status-bar .status { font-weight: bold; }
+.status-bar .status.connected { color: #10b981; }
+.status-bar .status.disconnected { color: #dc2626; }
+.btn { padding: 8px 16px; border: none; border-radius: 8px; font-family: 'Tahoma', sans-serif; font-size: 0.9em; font-weight: bold; cursor: pointer; color: white; text-decoration: none; display: inline-block; transition: all 0.3s; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+.btn-back { background: #95a5a6; }
 .btn-download { background: #2980b9; }
 .btn-pay { background: #27ae60; }
 .btn-delete { background: #e74c3c; }
-.btn-back { background: #95a5a6; }
+.files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; margin-bottom: 20px; }
+.file-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); border-right: 4px solid #667eea; transition: all 0.3s; }
+.file-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+.file-card.paid { border-right-color: #10b981; }
+.file-card.unpaid { border-right-color: #dc2626; }
+.file-card .file-name { font-weight: bold; color: #2c3e50; margin-bottom: 8px; word-break: break-all; font-size: 0.95em; }
+.file-card .file-topic { background: #f3f4f6; padding: 8px; border-radius: 6px; margin-bottom: 10px; font-size: 0.9em; }
+.file-card .file-meta { font-size: 0.85em; color: #7f8c8d; margin-bottom: 10px; line-height: 1.7; }
+.file-card .file-status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.8em; font-weight: bold; margin-bottom: 12px; }
+.file-card .file-status.paid { background: #d1fae5; color: #065f46; }
+.file-card .file-status.unpaid { background: #fee2e2; color: #991b1b; }
+.file-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .empty-state { text-align: center; padding: 60px 20px; background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
-.empty-state .empty-icon { font-size: 4em; margin-bottom: 15px; opacity: 0.5; }
-.empty-state h3 { color: #2c3e50; margin-bottom: 10px; }
-.empty-state p { color: #7f8c8d; line-height: 1.8; margin-bottom: 20px; }
-.stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
-.stat-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); text-align: center; }
-.stat-card .stat-value { font-size: 1.8em; font-weight: bold; color: #667eea; }
-.stat-card .stat-label { font-size: 0.85em; color: #7f8c8d; margin-top: 5px; }
-.payment-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-.payment-modal.active { display: flex; }
-.payment-box { background: white; border-radius: 15px; padding: 30px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; }
-.payment-box h2 { color: #2c3e50; margin-bottom: 15px; text-align: center; }
-.payment-link { display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 15px 40px; border-radius: 10px; text-decoration: none; font-size: 1.2em; font-weight: bold; margin: 15px 0; text-align: center; width: 100%; }
+.empty-state h3 { margin-bottom: 15px; color: #2c3e50; }
+.empty-state p { margin-bottom: 20px; color: #7f8c8d; line-height: 1.8; }
+.loading { text-align: center; padding: 40px; color: white; font-size: 1.2em; }
 .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 12px 25px; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 2000; opacity: 0; transition: opacity 0.3s; }
 .toast.show { opacity: 1; }
 .toast.success { background: #27ae60; }
 .toast.error { background: #e74c3c; }
 .toast.warning { background: #f39c12; }
-@media (max-width: 600px) {
-    .files-grid { grid-template-columns: 1fr; }
-    header h1 { font-size: 1.5em; }
-}
+@media (max-width: 600px) { .files-grid { grid-template-columns: 1fr; } header h1 { font-size: 1.5em; } }
 </style>
 </head>
 <body>
 <div class="container">
 <header>
 <h1>📁 پوشه فایل‌های من</h1>
-<p>مدیریت و دانلود فایل‌های تولید شده شما</p>
+<p>فایل‌های شما در GitHub ذخیره شده‌اند</p>
 </header>
 
-<div class="info-box">
-<h3>💡 راهنما</h3>
-<p>
-در این صفحه، تمام فایل‌هایی که توسط شما تولید شده‌اند نمایش داده می‌شوند.
-برای دانلود فایل پایان‌نامه، ابتدا باید هزینه را پرداخت کنید.
-</p>
-<div class="highlight">
-⚠️ توجه: فایل‌ها فقط در همین مرورگر و دستگاه ذخیره می‌شوند. اگر از مرورگر دیگری استفاده کنید، فایل‌ها در دسترس نخواهند بود.
-</div>
+<div class="status-bar" id="statusBar">
+<div class="status" id="connectionStatus">⏳ در حال بررسی...</div>
+<button class="btn btn-back" onclick="window.open('yazr2.html', '_self')">🔙 بازگشت به صفحه اصلی</button>
 </div>
 
-<div class="user-info" id="userInfo">
-<strong>👤 شناسه کاربری شما:</strong>
-<span class="user-id" id="userIdDisplay">در حال بارگذاری...</span>
-</div>
-
-<div class="stats-bar" id="statsBar">
-<div class="stat-card">
-<div class="stat-value" id="totalFiles">0</div>
-<div class="stat-label">📄 کل فایل‌ها</div>
-</div>
-<div class="stat-card">
-<div class="stat-value" id="paidFiles">0</div>
-<div class="stat-label">✅ پرداخت شده</div>
-</div>
-<div class="stat-card">
-<div class="stat-value" id="unpaidFiles">0</div>
-<div class="stat-label">🔒 نیاز به پرداخت</div>
-</div>
-<div class="stat-card">
-<div class="stat-value" id="totalSize">0 KB</div>
-<div class="stat-label">📦 حجم کل</div>
-</div>
-</div>
-
+<div id="loading" class="loading">⏳ در حال بارگذاری فایل‌ها...</div>
 <div id="filesContainer"></div>
-
-<div style="text-align: center; margin-top: 20px;">
-<a href="yazr2.html" class="btn btn-back">🔙 بازگشت به صفحه اصلی</a>
-<button class="btn btn-delete" id="clearAllBtn">🗑 حذف همه فایل‌ها</button>
-</div>
-</div>
-
-<!-- مودال پرداخت -->
-<div class="payment-modal" id="paymentModal">
-<div class="payment-box">
-<h2>💎 پرداخت برای دانلود فایل</h2>
-<p style="text-align: center; color: #7f8c8d; margin-bottom: 15px;">
-برای دانلود فایل پایان‌نامه، لطفاً هزینه را پرداخت کنید.
-</p>
-<div style="text-align: center; font-size: 2em; font-weight: bold; color: #dc2626; margin: 20px 0;">
-۵۰۰,۰۰۰ <small style="font-size: 0.4em; color: #6b7280;">تومان</small>
-</div>
-<a href="https://ppng.ir/d/FLjD" target="_blank" class="payment-link" id="paymentLink">💳 پرداخت و دانلود فایل</a>
-<p style="text-align: center; color: #6b7280; font-size: 0.9em; margin-top: 10px;">
-🔒 پرداخت امن | ✅ پس از پرداخت، به صورت خودکار به این صفحه بازگردید
-</p>
-<div style="text-align: center; margin-top: 20px;">
-<button class="btn btn-back" id="closePaymentBtn">✗ بستن</button>
-</div>
-</div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ============ سیستم مدیریت فایل‌ها ============
-const FILES_MANAGER = {
+// ============ تنظیمات GitHub (هاردکد) ============
+const GITHUB_CONFIG = {
+    TOKEN: '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',
+    OWNER: 'thesis64',
+    REPO: 'thesisresearch',
+    BRANCH: 'main'
+};
+
+const GITHUB = {
     getUserId: function() {
-        let userId = localStorage.getItem('user_id');
-        if (!userId) {
-            userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('user_id', userId);
-        }
-        return userId;
+        return localStorage.getItem('user_id') || '';
     },
     
-    getUserFiles: function() {
+    async getFileSha(filePath) {
+        try {
+            const response = await fetch(
+                `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${filePath}?ref=${GITHUB_CONFIG.BRANCH}`,
+                {
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                }
+            );
+            if (response.ok) {
+                const data = await response.json();
+                return data.sha;
+            }
+            return null;
+        } catch (e) { return null; }
+    },
+    
+    async getUserFiles() {
         const userId = this.getUserId();
-        const allFiles = JSON.parse(localStorage.getItem('all_generated_files') || '{}');
-        return allFiles[userId] || [];
-    },
-    
-    base64ToBlob: function(base64, type) {
-        const byteCharacters = atob(base64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        if (!userId) return [];
+        const indexPath = `user_files/${userId}/index.json`;
+        try {
+            const response = await fetch(
+                `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${indexPath}?ref=${GITHUB_CONFIG.BRANCH}`,
+                {
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                }
+            );
+            if (!response.ok) return [];
+            const data = await response.json();
+            const content = decodeURIComponent(escape(atob(data.content)));
+            return JSON.parse(content);
+        } catch (e) {
+            console.error('خطا:', e);
+            return [];
         }
-        const byteArray = new Uint8Array(byteNumbers);
-        return new Blob([byteArray], { type: type });
     },
     
-    downloadFile: function(fileName) {
-        const files = this.getUserFiles();
-        const file = files.find(f => f.name === fileName);
-        
-        if (!file) {
-            this.showToast('❌ فایل یافت نشد', 'error');
+    async downloadFile(fileName) {
+        const userId = this.getUserId();
+        const filePath = `user_files/${userId}/${fileName}`;
+        try {
+            const response = await fetch(
+                `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${filePath}?ref=${GITHUB_CONFIG.BRANCH}`,
+                {
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                }
+            );
+            if (!response.ok) {
+                this.showToast('❌ فایل یافت نشد', 'error');
+                return false;
+            }
+            const data = await response.json();
+            const base64 = data.content;
+            const byteCharacters = atob(base64);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { 
+                type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' 
+            });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            this.showToast('✓ دانلود شد', 'success');
+            return true;
+        } catch (e) {
+            this.showToast(`❌ خطا: ${e.message}`, 'error');
             return false;
         }
-        
-        // بررسی پرداخت برای پایان‌نامه
-        if (file.docType === 'پایان نامه' && !file.paid) {
-            this.showToast('⚠️ برای دانلود، ابتدا پرداخت کنید', 'warning');
-            this.showPaymentModal(fileName);
-            return false;
+    },
+    
+    async deleteFile(fileName) {
+        if (!confirm(`آیا از حذف "${fileName}" مطمئن هستید؟`)) return;
+        const userId = this.getUserId();
+        const filePath = `user_files/${userId}/${fileName}`;
+        try {
+            const getResponse = await fetch(
+                `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${filePath}?ref=${GITHUB_CONFIG.BRANCH}`,
+                {
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                }
+            );
+            if (!getResponse.ok) {
+                this.showToast('❌ فایل یافت نشد', 'error');
+                return;
+            }
+            const getData = await getResponse.json();
+            const sha = getData.sha;
+            const deleteResponse = await fetch(
+                `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${filePath}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `🗑 حذف: ${fileName}`,
+                        sha: sha,
+                        branch: GITHUB_CONFIG.BRANCH
+                    })
+                }
+            );
+            if (deleteResponse.ok) {
+                this.showToast('✓ فایل حذف شد', 'success');
+                setTimeout(() => this.renderFiles(), 1000);
+            } else {
+                this.showToast('❌ خطا در حذف', 'error');
+            }
+        } catch (e) {
+            this.showToast(`❌ خطا: ${e.message}`, 'error');
         }
-        
-        const blob = this.base64ToBlob(file.data, file.type);
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = file.name;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        this.showToast('✓ دانلود شد', 'success');
-        return true;
     },
     
-    deleteFile: function(fileName) {
+    async markAsPaid(fileName) {
         const userId = this.getUserId();
-        const allFiles = JSON.parse(localStorage.getItem('all_generated_files') || '{}');
-        
-        if (allFiles[userId]) {
-            allFiles[userId] = allFiles[userId].filter(f => f.name !== fileName);
-            localStorage.setItem('all_generated_files', JSON.stringify(allFiles));
-            this.showToast('✓ فایل حذف شد', 'success');
-            this.renderFiles();
-        }
-    },
-    
-    clearAllFiles: function() {
-        if (!confirm('آیا از حذف همه فایل‌ها مطمئن هستید؟')) return;
-        
-        const userId = this.getUserId();
-        const allFiles = JSON.parse(localStorage.getItem('all_generated_files') || '{}');
-        delete allFiles[userId];
-        localStorage.setItem('all_generated_files', JSON.stringify(allFiles));
-        this.showToast('✓ همه فایل‌ها حذف شدند', 'success');
-        this.renderFiles();
-    },
-    
-    showPaymentModal: function(fileName) {
-        const modal = document.getElementById('paymentModal');
-        const paymentLink = document.getElementById('paymentLink');
-        
-        // ذخیره نام فایل برای بعد از پرداخت
-        sessionStorage.setItem('pending_payment_file', fileName);
-        
-        // اضافه کردن پارامتر به لینک پرداخت
-        const baseUrl = window.location.href.split('?')[0];
-        paymentLink.href = `https://ppng.ir/d/FLjD?return=${encodeURIComponent(baseUrl)}&file=${encodeURIComponent(fileName)}`;
-        
-        modal.classList.add('active');
-    },
-    
-    closePaymentModal: function() {
-        document.getElementById('paymentModal').classList.remove('active');
-    },
-    
-    markAsPaid: function(fileName) {
-        const userId = this.getUserId();
-        const allFiles = JSON.parse(localStorage.getItem('all_generated_files') || '{}');
-        
-        if (allFiles[userId]) {
-            const file = allFiles[userId].find(f => f.name === fileName);
+        const indexPath = `user_files/${userId}/index.json`;
+        const existingSha = await this.getFileSha(indexPath);
+        if (!existingSha) return;
+        try {
+            const response = await fetch(
+                `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${indexPath}?ref=${GITHUB_CONFIG.BRANCH}`,
+                {
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                }
+            );
+            if (!response.ok) return;
+            const data = await response.json();
+            const files = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+            const file = files.find(f => f.name === fileName);
             if (file) {
                 file.paid = true;
                 file.paidAt = Date.now();
-                localStorage.setItem('all_generated_files', JSON.stringify(allFiles));
-                this.showToast('✓ پرداخت تأیید شد - می‌توانید دانلود کنید', 'success');
-                this.renderFiles();
+                const body = {
+                    message: `💳 پرداخت: ${fileName}`,
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(files, null, 2)))),
+                    branch: GITHUB_CONFIG.BRANCH, sha: existingSha
+                };
+                await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${indexPath}`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
+                            'Accept': 'application/vnd.github.v3+json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    }
+                );
+                this.showToast('✓ پرداخت ثبت شد', 'success');
+                setTimeout(() => this.renderFiles(), 1000);
             }
+        } catch (e) {
+            this.showToast(`❌ خطا: ${e.message}`, 'error');
         }
     },
     
-    showToast: function(message, type = 'success') {
+    showToast(message, type = 'success') {
         const toast = document.getElementById('toast');
         toast.textContent = message;
         toast.className = `toast show ${type}`;
         setTimeout(() => { toast.className = 'toast'; }, 3000);
     },
     
-    renderFiles: function() {
-        const files = this.getUserFiles();
+    async renderFiles() {
         const container = document.getElementById('filesContainer');
+        const loading = document.getElementById('loading');
+        const status = document.getElementById('connectionStatus');
         
-        // به‌روزرسانی آمار
-        const totalFiles = files.length;
-        const paidFiles = files.filter(f => f.paid).length;
-        const unpaidFiles = files.filter(f => !f.paid).length;
-        const totalSize = files.reduce((sum, f) => sum + (f.size || 0), 0);
+        const userId = this.getUserId();
+        if (!userId) {
+            loading.style.display = 'none';
+            status.className = 'status disconnected';
+            status.textContent = '❌ شناسه کاربر یافت نشد';
+            container.innerHTML = `
+                <div class="empty-state">
+                    <h3>⚠️ شناسه کاربر یافت نشد</h3>
+                    <p>لطفاً ابتدا به صفحه اصلی مراجعه کنید و یک فایل تولید کنید.</p>
+                    <button class="btn btn-download" onclick="window.open('yazr2.html', '_self')">🚀 رفتن به صفحه اصلی</button>
+                </div>
+            `;
+            return;
+        }
         
-        document.getElementById('totalFiles').textContent = totalFiles;
-        document.getElementById('paidFiles').textContent = paidFiles;
-        document.getElementById('unpaidFiles').textContent = unpaidFiles;
-        document.getElementById('totalSize').textContent = (totalSize / 1024).toFixed(2) + ' KB';
+        status.className = 'status connected';
+        status.textContent = `✓ متصل به ${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}`;
+        
+        const files = await this.getUserFiles();
+        loading.style.display = 'none';
         
         if (files.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-icon">📭</div>
-                    <h3>هیچ فایلی ذخیره نشده است</h3>
-                    <p>
-                        برای تولید فایل، به صفحه اصلی مراجعه کنید و نگارش را شروع کنید.
-                        پس از اتمام نگارش، فایل به صورت خودکار در این پوشه ذخیره می‌شود.
-                    </p>
-                    <a href="yazr2.html" class="btn btn-download">🚀 شروع نگارش</a>
+                    <h3>📭 هیچ فایلی ذخیره نشده است</h3>
+                    <p>برای تولید فایل، به صفحه اصلی مراجعه کنید و نگارش را شروع کنید.</p>
+                    <button class="btn btn-download" onclick="window.open('yazr2.html', '_self')">🚀 شروع نگارش</button>
                 </div>
             `;
             return;
         }
         
         let html = '<div class="files-grid">';
-        files.forEach((file, idx) => {
+        files.sort((a, b) => b.createdAt - a.createdAt).forEach(file => {
             const date = new Date(file.createdAt).toLocaleString('fa-IR');
-            const size = (file.size / 1024).toFixed(2);
+            const size = ((file.size || 0) / 1024).toFixed(2);
             const isPaid = file.paid;
             const isThesis = file.docType === 'پایان نامه';
             const statusClass = isPaid ? 'paid' : 'unpaid';
             const statusText = isPaid ? '✅ پرداخت شده' : (isThesis ? '🔒 نیاز به پرداخت' : '✅ رایگان');
-            
             html += `
                 <div class="file-card ${statusClass}">
-                    <div class="file-icon">📄</div>
+                    <div style="font-size: 2em; margin-bottom: 10px;">📄</div>
                     <div class="file-name">${this.escapeHtml(file.name)}</div>
                     <div class="file-topic">
                         <strong>📝 موضوع:</strong> ${this.escapeHtml(file.topic || 'نامشخص')}
@@ -309,70 +324,35 @@ const FILES_MANAGER = {
                     </div>
                     <div class="file-status ${statusClass}">${statusText}</div>
                     <div class="file-actions">
-                        <button class="btn btn-download" onclick="FILES_MANAGER.downloadFile('${file.name}')">
-                            ⬇ دانلود
-                        </button>
-                        ${!isPaid && isThesis ? `
-                            <button class="btn btn-pay" onclick="FILES_MANAGER.showPaymentModal('${file.name}')">
-                                💳 پرداخت
-                            </button>
-                        ` : ''}
-                        <button class="btn btn-delete" onclick="if(confirm('حذف فایل؟')) FILES_MANAGER.deleteFile('${file.name}')">
-                            🗑 حذف
-                        </button>
+                        <button class="btn btn-download" onclick="GITHUB.downloadFile('${file.name}')">⬇ دانلود</button>
+                        ${!isPaid && isThesis ? `<button class="btn btn-pay" onclick="GITHUB.markAsPaid('${file.name}')">💳 پرداخت</button>` : ''}
+                        <button class="btn btn-delete" onclick="GITHUB.deleteFile('${file.name}')">🗑 حذف</button>
                     </div>
                 </div>
             `;
         });
         html += '</div>';
-        
         container.innerHTML = html;
     },
     
-    escapeHtml: function(text) {
+    escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text || '';
         return div.innerHTML;
     }
 };
 
-// ============ Event Listeners ============
-document.addEventListener('DOMContentLoaded', function() {
-    // نمایش شناسه کاربر
-    const userId = FILES_MANAGER.getUserId();
-    document.getElementById('userIdDisplay').textContent = userId;
-    
-    // بررسی بازگشت از درگاه پرداخت
+// بارگذاری اولیه
+document.addEventListener('DOMContentLoaded', async function() {
+    await GITHUB.renderFiles();
     const params = new URLSearchParams(window.location.search);
     if (params.get("paid") === "1" || params.get("status") === "success") {
-        const pendingFile = sessionStorage.getItem('pending_payment_file');
-        if (pendingFile) {
-            FILES_MANAGER.markAsPaid(pendingFile);
-            sessionStorage.removeItem('pending_payment_file');
+        const fileToPay = params.get("file");
+        if (fileToPay) {
+            await GITHUB.markAsPaid(fileToPay);
         }
-        
-        // حذف پارامتر از URL
         window.history.replaceState({}, document.title, window.location.pathname);
     }
-    
-    // رندر فایل‌ها
-    FILES_MANAGER.renderFiles();
-    
-    // Event listeners
-    document.getElementById('clearAllBtn').addEventListener('click', function() {
-        FILES_MANAGER.clearAllFiles();
-    });
-    
-    document.getElementById('closePaymentBtn').addEventListener('click', function() {
-        FILES_MANAGER.closePaymentModal();
-    });
-    
-    // بستن مودال با کلیک روی overlay
-    document.getElementById('paymentModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            FILES_MANAGER.closePaymentModal();
-        }
-    });
 });
 </script>
 </body>
