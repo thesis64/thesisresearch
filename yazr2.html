@@ -624,7 +624,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 </ul>
 </div>
 <div style="text-align: center; margin: 25px 0;">
-<a href="https://ppng.ir/d/9IrT" target="_blank" class="payment-link" id="paymentLink">💳 پرداخت و دانلود فایل</a>
+<a href="https://ppng.ir/d/FLjD" target="_blank" class="payment-link" id="paymentLink">💳 پرداخت و دانلود فایل</a>
 <p style="color: #6b7280; margin-top: 10px; font-size: 0.9em;">🔒 پرداخت امن | ✅ تضمین بازگشت وجه</p>
 </div>
 <div class="payment-waiting">⏳ پس از پرداخت موفق، به صورت خودکار به سایت بازگردید و دانلود فعال می‌شود...</div>
@@ -730,7 +730,6 @@ const CONFIG = {
     MAX_SEARCH_ATTEMPTS: 3,
     REFS_PER_SECTION: 8,
     SEARCH_TIMEOUT: 20000
-    // ❌ PAYMENT_AFTER_SECTION حذف شد - دیگر پرداخت وسط نگارش نداریم
 };
 
 const OUTLINES = {
@@ -798,6 +797,7 @@ const state = {
     selectedChapters: [],
     allChapters: [],
     inChapterFour: false,
+    lastGeneratedFileName: '',  // 🆕 نام آخرین فایل تولید شده
     statisticalData: {
         rawData: null, headers: [], rows: [], statistics: {},
         researchType: 'quantitative', analysisMethod: 'descriptive',
@@ -960,16 +960,10 @@ function releaseWakeLock() {
 // ============ 🆕 PAYMENT FUNCTIONS - فقط برای پایان‌نامه ============
 function showPaymentModal() {
     console.log('🔔 نمایش مودال پرداخت (برای دانلود پایان‌نامه)');
-    // 🆕 ذخیره نام فایل در session برای بعد از پرداخت
-    const files = FILES_FOLDER.getUserFiles();
-    if (files.length > 0) {
-        const lastFile = files[files.length - 1];
-        sessionStorage.setItem('pending_payment_file', lastFile.name);
-        // اضافه کردن پارامتر به لینک پرداخت
-        const baseUrl = window.location.href.split('?')[0];
-        const paymentLink = document.getElementById('paymentLink');
-        paymentLink.href = `https://ppng.ir/d/FLjD?return=${encodeURIComponent(baseUrl)}&file=${encodeURIComponent(lastFile.name)}`;
-    }
+    // 🆕 اضافه کردن پارامتر به لینک پرداخت
+    const baseUrl = window.location.href.split('?')[0];
+    const paymentLink = document.getElementById('paymentLink');
+    paymentLink.href = `https://ppng.ir/d/9IrT?return=${encodeURIComponent(baseUrl)}`;
     openModal('paymentModal');
     showToast('⚠️ برای دانلود فایل پایان‌نامه، لطفاً هزینه را پرداخت کنید', 'warning');
 }
@@ -1005,16 +999,33 @@ const FILES_FOLDER = {
                 const userId = FILES_FOLDER.getUserId();
                 const allFiles = JSON.parse(localStorage.getItem('all_generated_files') || '{}');
                 if (!allFiles[userId]) allFiles[userId] = [];
-                allFiles[userId].push({
-                    name: fileName,
-                    data: base64,
-                    type: blob.type,
-                    size: blob.size,
-                    topic: topic,
-                    docType: docType,
-                    createdAt: Date.now(),
-                    paid: docType !== 'پایان نامه'
-                });
+                
+                // 🆕 بررسی اینکه فایل قبلاً وجود دارد یا نه
+                const existingIndex = allFiles[userId].findIndex(f => f.name === fileName);
+                if (existingIndex !== -1) {
+                    allFiles[userId][existingIndex] = {
+                        name: fileName,
+                        data: base64,
+                        type: blob.type,
+                        size: blob.size,
+                        topic: topic,
+                        docType: docType,
+                        createdAt: Date.now(),
+                        paid: docType !== 'پایان نامه'
+                    };
+                } else {
+                    allFiles[userId].push({
+                        name: fileName,
+                        data: base64,
+                        type: blob.type,
+                        size: blob.size,
+                        topic: topic,
+                        docType: docType,
+                        createdAt: Date.now(),
+                        paid: docType !== 'پایان نامه'
+                    });
+                }
+                
                 localStorage.setItem('all_generated_files', JSON.stringify(allFiles));
                 console.log(`✓ فایل ذخیره شد: ${fileName}`);
                 resolve();
@@ -1039,6 +1050,7 @@ const FILES_FOLDER = {
                 file.paid = true;
                 file.paidAt = Date.now();
                 localStorage.setItem('all_generated_files', JSON.stringify(allFiles));
+                console.log(`✓ فایل به عنوان پرداخت شده علامت‌گذاری شد: ${fileName}`);
             }
         }
     },
@@ -1047,14 +1059,25 @@ const FILES_FOLDER = {
         const userId = this.getUserId();
         const allFiles = JSON.parse(localStorage.getItem('all_generated_files') || '{}');
         if (allFiles[userId]) {
+            let marked = 0;
             allFiles[userId].forEach(file => {
                 if (!file.paid) {
                     file.paid = true;
                     file.paidAt = Date.now();
+                    marked++;
                 }
             });
             localStorage.setItem('all_generated_files', JSON.stringify(allFiles));
+            console.log(`✓ ${marked} فایل به عنوان پرداخت شده علامت‌گذاری شد`);
         }
+    },
+    
+    getLastFileName: function() {
+        const files = this.getUserFiles();
+        if (files.length === 0) return null;
+        // مرتب‌سازی بر اساس تاریخ و بازگرداندن آخرین
+        const sorted = [...files].sort((a, b) => b.createdAt - a.createdAt);
+        return sorted[0].name;
     }
 };
 
@@ -1741,7 +1764,6 @@ async function runGenerationLoop() {
     try {
         while (state.currentSectionIndex < total) {
             if (state.stopFlag) break;
-            // ❌ دیگر بررسی پرداخت وسط نگارش نداریم
             const section = state.sections[state.currentSectionIndex];
             const shouldGenerate = shouldGenerateSection(section);
             if (isChapterFour(section)) state.inChapterFour = true;
@@ -1969,7 +1991,7 @@ function onGenerationComplete() {
 }
 
 async function downloadWord() {
-    // 🆕 بررسی پرداخت برای پایان‌نامه - هدایت به لینک پرداخت
+    // 🆕 بررسی پرداخت برای پایان‌نامه - هدایت به مودال پرداخت
     if (needsPaymentForDownload()) {
         showToast('⚠️ برای دانلود فایل پایان‌نامه، ابتدا پرداخت کنید', 'warning');
         showPaymentModal();
@@ -2022,8 +2044,12 @@ async function downloadWord() {
         const safeTopic = state.topic.replace(/[^\w\u0600-\u06FF\s-]/g, '').substring(0, 30);
         const fileName = `${state.docType}_${safeTopic}_${timestamp}.docx`;
         
+        // 🆕 ذخیره نام فایل برای استفاده بعدی
+        state.lastGeneratedFileName = fileName;
+        
         // 🆕 ذخیره خودکار فایل در پوشه
         await FILES_FOLDER.saveFile(fileName, blob, state.topic, state.docType);
+        console.log(`✓ فایل در پوشه ذخیره شد: ${fileName}`);
         
         // دانلود فایل
         if (window.saveAs) window.saveAs(blob, fileName);
@@ -2218,6 +2244,7 @@ function saveProgress() {
             selectedChapters: state.selectedChapters, foundReferences: state.foundReferences,
             sectionReferences: state.sectionReferences, statisticalData: state.statisticalData,
             paymentCompleted: state.paymentCompleted,
+            lastGeneratedFileName: state.lastGeneratedFileName,
             timestamp: Date.now()
         };
         localStorage.setItem('writer_progress', JSON.stringify(progress));
@@ -2253,10 +2280,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // 🆕 علامت‌گذاری همه فایل‌های کاربر به عنوان پرداخت شده
         FILES_FOLDER.markAllAsPaid();
         
-        // فعال‌سازی دانلود
+        // فعال‌سازی دانلود و باز کردن پوشه فایل‌ها
         setTimeout(() => {
             unlockThesisDownload();
-            // باز کردن پوشه فایل‌ها
+            // باز کردن پوشه فایل‌ها در تب جدید
             window.open('files.html', '_blank');
         }, 500);
     }
@@ -2363,7 +2390,6 @@ document.addEventListener('DOMContentLoaded', function() {
         state.statisticalData.includeReliability = document.getElementById('includeReliability').checked;
         state.statisticalData.includeValidity = document.getElementById('includeValidity').checked;
         state.statisticalData.includeNormality = document.getElementById('includeNormality').checked;
-        // 🆕 فرضیه‌ها از طریق فرم فرضیه‌ها مدیریت می‌شوند (نه از textarea ناموجود)
         if (state.statisticalData.rows.length > 0) {
             state.statisticalData.hasData = true;
             localStorage.setItem('writer_statistical_data', JSON.stringify(state.statisticalData));
