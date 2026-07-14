@@ -3089,11 +3089,45 @@ output.appendChild(wrapper);
 output.scrollTop = output.scrollHeight;
 await sleep(200);
 if (analysis.isChapterHeader) {
-updateSectionStatus(state.currentSectionIndex, 'chapter');
-state.currentSectionIndex++;
-updateProgress(state.currentSectionIndex, total);
-await sleep(100);
-continue;
+    // اگر کاربر صراحتاً برای این سرفصل رفرنس خواسته باشد، جستجو انجام می‌شود
+    let sectionRefs = [];
+    const hasCustom = state.userReferences.persian.length + state.userReferences.english.length > 0;
+    const shouldSearch = analysis.needsRefs && !hasCustom;
+    
+    if (shouldSearch) {
+        updateSectionStatus(state.currentSectionIndex, 'searching');
+        const output = document.getElementById('outputContent');
+        const wrapper = document.getElementById(`sec-${state.currentSectionIndex}`);
+        const progressBox = document.createElement('div');
+        progressBox.className = 'search-box';
+        progressBox.innerHTML = `<div class="search-header"><span>🔍</span><span>جستجوی منابع...</span></div><div id="sp-${state.currentSectionIndex}"></div>`;
+        wrapper.appendChild(progressBox);
+        output.scrollTop = output.scrollHeight;
+        const progressEl = document.getElementById(`sp-${state.currentSectionIndex}`);
+        try {
+            const result = await searchRealReferences(state.topic, section, (msg) => {
+                if (progressEl) {const item = document.createElement('div'); item.className = 'search-progress success'; item.textContent = msg; progressEl.appendChild(item)}
+            });
+            sectionRefs = result.refs;
+            state.sectionReferences[section] = result.refs;
+            result.refs.forEach(r => {if (!state.foundReferences.some(fr => fr.title === r.title)) state.foundReferences.push(r)});
+            let html = `<div class="search-progress success">✅ <strong>${convertToPersianNumbers(result.refs.length)} منبع</strong> یافت شد</div>`;
+            result.refs.forEach((ref, i) => {
+                html += `<div class="ref-found"><div class="ref-title">📚 ${convertToPersianNumbers(i + 1)}. ${escapeHtml(ref.title)}</div><div class="ref-authors">✍️ ${escapeHtml(ref.authors.slice(0, 3).join('، '))}</div><div class="ref-meta">📅 ${ref.year || ''} | 📰 ${escapeHtml(ref.journal || '')}</div></div>`;
+            });
+            progressBox.innerHTML = html;
+            output.scrollTop = output.scrollHeight;
+            showToast(`✅ ${convertToPersianNumbers(result.refs.length)} منبع یافت شد`, 'success');
+        } catch (e) {
+            progressBox.innerHTML = `<div class="search-progress">⚠️ خطا: ${e.message}</div>`;
+        }
+    }
+
+    updateSectionStatus(state.currentSectionIndex, 'chapter');
+    state.currentSectionIndex++;
+    updateProgress(state.currentSectionIndex, total);
+    await sleep(100);
+    continue;
 }
 updateSectionStatus(state.currentSectionIndex, 'in-progress');
 const contentEl = document.createElement('div');
